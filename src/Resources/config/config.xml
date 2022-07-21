@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+    <card>
+        <title>Dotdigital Account</title>
+        <input-field type="single-select">
+            <name>region</name>
+            <label>Region</label>
+            <required>true</required>
+            <defaultValue>r1</defaultValue>
+            <helpText>Please select your Dotdigital account region</helpText>
+            <options>
+                <option>
+                    <id>r1</id>
+                    <name lang="en-GB">Region 1</name>
+                </option>
+                <option>
+                    <id>r2</id>
+                    <name lang="en-GB">Region 2</name>
+                </option>
+                <option>
+                    <id>r3</id>
+                    <name lang="en-GB">Region 3</name>
+                </option>
+            </options>
+        </input-field>
+        <input-field type="text">
+            <name>username</name>
+            <label>API username </label>
+            <required>true</required>
+            <helpText lang="en-GB">Please fill in your Dotdigital API username</helpText>
+        </input-field>
+        <input-field type="password">
+            <name>password</name>
+            <label>API password</label>
+            <required>true</required>
+            <helpText lang="en-GB">Please fill in your Dotdigital API password</helpText>
+        </input-field>
+    </card>
+</config>

@@ -1,0 +1,29 @@
+{
+  "name": "dotdigital/dotdigital-for-shopware-flowbuilder",
+  "description": "Integrate with Dotdigital using Flow Builder actions.",
+  "version": "1.0.0",
+  "type": "shopware-platform-plugin",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Dotdigital"
+    }
+  ],
+  "require": {
+    "shopware/core": "6.4.*"
+  },
+  "extra": {
+    "shopware-plugin-class": "Dotdigital\\Flow\\DotdigitalFlow",
+    "label": {
+      "en-GB": "Dotdigital for Shopware - Flow Builder"
+    },
+    "description": {
+      "en-GB": "Integrate with Dotdigital using Flow Builder actions."
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Dotdigital\\Flow\\": "src/"
+    }
+  }
+}
