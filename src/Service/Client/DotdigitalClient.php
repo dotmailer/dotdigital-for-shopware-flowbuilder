@@ -50,14 +50,15 @@ class DotdigitalClient extends AbstractClient
      * Send triggered campaign to Dotdigital.
      *
      * @param string $toAddress
-     * @param int $campaignId
+     * @param string|int $campaignId
+     * @param mixed $personalisedValues
      * @return void
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function sendEmail($toAddress, $campaignId)
+    public function sendEmail($toAddress, $campaignId, $personalisedValues)
     {
         $this->post('/v2/email/triggered-campaign', [
-            'body' => '{"toAddresses":[' . "'{$toAddress}'" . '], "campaignId":' . $campaignId . '}'
+            'body' => '{"toAddresses":[' . "'{$toAddress}'" . '], "personalizationValues":'. $personalisedValues .' , "campaignId":' . $campaignId . '}'
         ]);
     }
 

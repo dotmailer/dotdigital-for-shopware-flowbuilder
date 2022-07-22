@@ -82,14 +82,25 @@ class DotdigitalEmailSenderAction extends FlowAction
             return;
         }
 
-        $data = $this->businessEventEncoder->encode($event->getEvent());
+        $availableData = $this->businessEventEncoder->encode($event->getEvent());
+
+        $personalisedValues = [];
+
+        foreach ($availableData as $key => $data ) {
+            $personalisedValues[] = [
+                "name" => $key,
+                "value" => $data
+            ];
+        }
+
+
         $context = $event->getContext();
         /** @var SalesChannelContext $channelContext */
         $channelContext = $context->getSource();
-        $customerEmail = $this->stringTemplateRenderer->render($config["recipient"], $data, $context);
+        $customerEmail = $this->stringTemplateRenderer->render($config["recipient"], $availableData, $context);
         $this->dotdigitalClientFactory
             ->createClient($channelContext->getSalesChannelId())
-            ->sendEmail($customerEmail, $config["campaignId"]);
+            ->sendEmail($customerEmail, $config["campaignId"], json_encode($personalisedValues));
     }
 
     /**
