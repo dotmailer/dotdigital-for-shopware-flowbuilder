@@ -80,7 +80,10 @@ class AbstractClient
                 ]
             );
         } catch (\Exception $exception) {
-            $this->logger->error($exception->getMessage(), $exception->getTrace());
+            $this->logger->error(
+                'Dotdigital client request error',
+                ['exception' => $exception]
+            );
         }
 
         return \json_decode($body, true) ?? [];
