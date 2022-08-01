@@ -8,19 +8,23 @@
             <label>Region</label>
             <required>true</required>
             <defaultValue>r1</defaultValue>
-            <helpText>Please select your Dotdigital account region</helpText>
+            <helpText lang="en-GB">Please select your Dotdigital account region</helpText>
+            <helpText lang="de-DE">Bitte wählen Sie die Region Ihres Dotdigital Kontos aus</helpText>
             <options>
                 <option>
                     <id>r1</id>
                     <name lang="en-GB">Region 1</name>
+                    <name lang="de-DE">Region 1</name>
                 </option>
                 <option>
                     <id>r2</id>
                     <name lang="en-GB">Region 2</name>
+                    <name lang="de-DE">Region 2</name>
                 </option>
                 <option>
                     <id>r3</id>
                     <name lang="en-GB">Region 3</name>
+                    <name lang="de-DE">Region 3</name>
                 </option>
             </options>
         </input-field>
@@ -29,6 +33,7 @@
             <label>API username </label>
             <required>true</required>
             <helpText lang="en-GB">Please fill in your Dotdigital API username</helpText>
+            <helpText lang="de-DE">Bitte geben Sie Ihr Dotdigital API Passwort ein</helpText>
         </input-field>
         <input-field type="password">
             <name>password</name>
