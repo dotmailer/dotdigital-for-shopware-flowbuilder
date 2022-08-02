@@ -2,6 +2,8 @@
 
 namespace Dotdigital\Flow\Service\Client;
 
+use Dotdigital\Flow\Core\Framework\DataTypes\RecipientCollection;
+use Dotdigital\Flow\Core\Framework\DataTypes\RecipientStruct;
 use GuzzleHttp\Client as Guzzle;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -47,19 +49,25 @@ class DotdigitalClient extends AbstractClient
     }
 
     /**
-     * Send triggered campaign to Dotdigital.
-     *
-     * @param string $toAddress
-     * @param string|int $campaignId
-     * @param mixed $personalisedValues
+     * @param RecipientCollection $recipients
+     * @param int $campaignId
+     * @param array<int, object> $personalisedValues
      * @return void
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function sendEmail($toAddress, $campaignId, $personalisedValues)
+    public function sendEmail(RecipientCollection $recipients, $campaignId, array $personalisedValues)
     {
-        $this->post('/v2/email/triggered-campaign', [
-            'body' => '{"toAddresses":[' . "'{$toAddress}'" . '], "personalizationValues":'. $personalisedValues .' , "campaignId":' . $campaignId . '}'
-        ]);
+        $body = [
+            "toAddresses" => $recipients->reduce(function($list, RecipientStruct $email){
+                $list[] = $email->getEmail();
+                return $list;
+            }, []),
+            "campaignId" => $campaignId,
+            "personalizationValues" => $personalisedValues
+        ];
+
+        $payload = json_encode($body);
+        $this->post('/v2/email/triggered-campaign', ["body" => $payload]);
     }
 
     /**

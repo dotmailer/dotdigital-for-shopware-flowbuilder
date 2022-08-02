@@ -12,6 +12,8 @@
             <argument type="service" id="Dotdigital\Flow\Service\Client\DotdigitalClientFactory" />
             <argument type="service" id="Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer" />
             <argument type="service" id="Shopware\Core\Framework\Webhook\BusinessEventEncoder" />
+            <argument type="service" id="Doctrine\DBAL\Connection" />
+            <argument type="service" id="Dotdigital\Flow\Util\DotdigitalLogger"/>
             <tag name="kernel.event_subscriber"/>
             <tag name="flow.action" priority="600"/>
         </service>

@@ -1,0 +1,40 @@
+@import "~scss/variables";
+
+.dotdigital-flowbuilder-plugin-modal {
+
+    thead.sw-data-grid__header {
+        display: none;
+    }
+
+    .sw-data-grid .sw-data-grid__body .sw-data-grid__row.is--inline-edit .sw-data-grid__cell{
+        border-top:none;
+    }
+
+    .sw-flow-mail-send-modal__description
+    {
+        margin-top: -25px;
+        margin-bottom: 20px;
+        display: block;
+        color: #8599ad;
+    }
+
+    &__recipient-grid {
+        border: 1px solid $color-gray-300;
+        margin-bottom: 32px;
+
+        &.has--error {
+            border-color: $color-crimson-500;
+        }
+
+        &.sw-data-grid .sw-data-grid__body .sw-data-grid__row.is--inline-edit .sw-data-grid__cell-content {
+            padding: 30px 20px;
+        }
+
+        &.sw-data-grid .sw-data-grid__wrapper {
+            overflow: hidden;
+        }
+    }
+
+
+
+}

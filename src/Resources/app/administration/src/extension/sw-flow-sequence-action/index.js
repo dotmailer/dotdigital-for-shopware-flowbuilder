@@ -24,10 +24,16 @@ Component.override('sw-flow-sequence-action', {
 
     methods: {
         getDotdigitalEmailSenderDescription(config) {
-            const recipient = config.recipient;
+            let recipient = config.recipient.type;
             const campaignId = config.campaignId;
 
-            return this.$tc(`Recipient: ${recipient}, Campaign ID: ${campaignId}`);
+            if (recipient === 'custom') {
+                recipient = 'multiple recipients';
+            }
+
+            return this.$tc(`
+                Recipient: ${recipient.charAt(0).toUpperCase() + recipient.slice(1)}, Campaign ID: ${campaignId}
+            `);
         },
 
         getActionTitle(actionName) {

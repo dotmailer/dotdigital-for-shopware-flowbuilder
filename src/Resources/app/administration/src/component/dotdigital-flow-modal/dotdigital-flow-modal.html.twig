@@ -1,51 +1,119 @@
 {% block dotdigital_flow_modal %}
-    <sw-modal
-        class="dotdigital-flowbuilder-plugin-modal"
-        :title="$tc('Dotdigital sender')"
-        @modal-close="onClose"
+<sw-modal
+    class="dotdigital-flowbuilder-plugin-modal"
+    :title="modalTitle"
+    @modal-close="onClose"
+>
+
+    {% block sw_flow_mail_send_modal_recipient %}
+    <sw-single-select
+        v-model="mailRecipient"
+        class="sw-flow-mail-send-modal__recipient"
+        :options="recipientOptions"
+        :label="$tc('sw-flow.modals.mail.labelRecipient')"
+        :placeholder="$tc('sw-flow.modals.mail.placeholderRecipient')"
+        @change="onChangeRecipient"
     >
-        {% block dotdigital_flowbuilder_plugin_modal_content %}
-            {# Component library https://component-library.shopware.com/#}
-            <sw-text-field
-                v-dd-validate="{type:'required',message:$tc('Recipient is required')}"
-                @dd-validation="handleValidationEvent"
-                v-model="recipient"
-                :label="$tc('Recipient')"
-            />
+    </sw-single-select>
+    <small
+        v-if="mailRecipientDescription"
+        v-html="mailRecipientDescription"
+        id="emailHelp"
+        class="sw-flow-mail-send-modal__description"></small>
 
+    {% endblock %}
+    {% block sw_flow_mail_send_modal_recipient_emails_grid %}
+    <sw-data-grid
+        v-if="showRecipientEmails"
+        ref="recipientsGrid"
+        class="sw-flow-mail-send-modal__recipient-grid"
+        :class="recipientGridError ? 'has--error' : ''"
+        :data-source="recipients"
+        :columns="recipientColumns"
+        :show-selection="false"
+        :plain-appearance="true"
+        @inline-edit-save="saveRecipient"
+        @inline-edit-cancel="cancelSaveRecipient"
+    >
+
+        {% block sw_event_action_detail_recipients_grid_column_email %}
+        <template #column-email="{ item, column, isInlineEdit, compact }">
             <sw-text-field
-                v-dd-validate="{type:'number',message:$tc('Please enter a valid campaign ID.')}"
-                @dd-validation="handleValidationEvent"
-                v-model="campaignId"
-                :label="$tc('Campaign ID')"
+                v-if="isInlineEdit"
+                v-model="item.email"
+                class="sw-flow-mail-send-modal__recipient-email"
+                :size="compact ? 'small' : 'default'"
+                :error="item.errorMail"
+                :placeholder="$tc('Email address or dynamic email tag')"
             />
+        </template>
         {% endblock %}
 
-        {% block dotdigital_flowbuilder_plugin_modal_footer %}
-            <template #modal-footer>
-                {% block dotdigital_flowbuilder_plugin_modal_footer_cancel_button %}
-                    <sw-button
-                        class="dotdigital-flowbuilder-plugin-modal__cancel-button"
-                        size="small"
-                        @click="onClose"
-                    >
-                        {{ $tc('global.default.cancel') }}
-                    </sw-button>
-                {% endblock %}
+        <template #actions="{ item, itemIndex }">
+            {% block sw_event_action_detail_recipients_grid_action_edit %}
+            <sw-context-menu-item
+                class="sw-flow-mail-send-modal__grid-action-edit"
+                @click="onEditRecipient(item)"
+            >
+                {{ $tc('global.default.edit') }}
+            </sw-context-menu-item>
+            {% endblock %}
 
-                {% block dotdigital_flowbuilder_plugin_modal_footer_save_button %}
-                    <sw-button
-                        class="dotdigital-flowbuilder-plugin-modal__save-button"
-                        variant="primary"
-                        size="small"
-                        @click="onSave"
-                    >
-                        {{ sequence.id
-                        ? $tc('Save')
-                        : $tc('Add') }}
-                    </sw-button>
-                {% endblock %}
-            </template>
+            {% block sw_event_action_detail_recipients_grid_action_delete %}
+            <sw-context-menu-item
+                class="sw-flow-mail-send-modal__grid-action-delete"
+                variant="danger"
+                :disabled="!allowDeleteRecipient(itemIndex)"
+                @click="onDeleteRecipient(itemIndex)"
+            >
+                {{ $tc('global.default.delete') }}
+            </sw-context-menu-item>
+            {% endblock %}
+        </template>
+    </sw-data-grid>
+    {% endblock %}
+
+    {% block dotdigital_flowbuilder_plugin_modal_content %}
+    {# Component library https://component-library.shopware.com/#}
+
+    <sw-text-field
+        v-model="campaignId"
+        v-dd-validate="{type:'number',message:$tc('Please enter a valid campaign ID.')}"
+        :label="$tc('Triggered campaign ID')"
+        @dd-validation="handleValidationEvent"
+    />
+    <span class="sw-flow-mail-send-modal__description">
+        <small id="emailHelp" class="form-text text-muted">
+            <strong><a href="https://support.dotdigital.com/hc/en-gb/articles/212214008-Create-a-triggered-campaign" target="_blank"> {{ $tc('Triggered campaigns') }}</a></strong>
+        </small>
+    </span>
+    {% endblock %}
+
+    {% block dotdigital_flowbuilder_plugin_modal_footer %}
+    <template #modal-footer>
+        {% block dotdigital_flowbuilder_plugin_modal_footer_cancel_button %}
+        <sw-button
+            class="dotdigital-flowbuilder-plugin-modal__cancel-button"
+            size="small"
+            @click="onClose"
+        >
+            {{ $tc('global.default.cancel') }}
+        </sw-button>
         {% endblock %}
-    </sw-modal>
+
+        {% block dotdigital_flowbuilder_plugin_modal_footer_save_button %}
+        <sw-button
+            class="dotdigital-flowbuilder-plugin-modal__save-button"
+            variant="primary"
+            size="small"
+            @click="onAddAction"
+        >
+            {{ sequence.id
+                ? $tc('Save')
+                : $tc('Add') }}
+        </sw-button>
+        {% endblock %}
+    </template>
+    {% endblock %}
+</sw-modal>
 {% endblock %}
