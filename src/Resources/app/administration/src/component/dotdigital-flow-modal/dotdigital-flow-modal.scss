@@ -10,9 +10,12 @@
         border-top:none;
     }
 
+    .sw-field {
+        margin-bottom: 5px;
+    }
+
     .sw-flow-mail-send-modal__description
     {
-        margin-top: -25px;
         margin-bottom: 20px;
         display: block;
         color: #8599ad;
@@ -34,7 +37,4 @@
             overflow: hidden;
         }
     }
-
-
-
 }
