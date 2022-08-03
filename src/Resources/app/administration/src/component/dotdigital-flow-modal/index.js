@@ -183,7 +183,6 @@ Component.register('dotdigital-flow-modal', {
                 'UserAware',
                 'OrderAware',
                 'CustomerGroupAware',
-                'mailAware',
             ];
         },
 
