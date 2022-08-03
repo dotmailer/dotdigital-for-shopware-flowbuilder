@@ -1,6 +1,6 @@
 <?php
 
-namespace Dotdigital\Flow\Test;
+namespace Dotdigital\Tests;
 
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
 use Dotdigital\Flow\Core\Content\Flow\Dispatching\Action\DotdigitalEmailSenderAction;
@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Api\Context\ContextSource;
 use Shopware\Core\Content\ContactForm\Event\ContactFormEvent;
 use Doctrine\DBAL\Connection;
+use DG\BypassFinals;
 use Psr\Log\LoggerInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -80,6 +81,7 @@ class DotdigitalEmailSenderActionTest extends TestCase
 
     protected function setUp(): void
     {
+        BypassFinals::enable();
         $this->dotdigitalClientFactoryMock = $this->createMock(DotdigitalClientFactory::class);
         $this->rendererMock = $this->createMock(StringTemplateRenderer::class);
         $this->businessEventLoaderMock = $this->createMock(BusinessEventEncoder::class);

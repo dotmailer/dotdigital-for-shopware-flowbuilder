@@ -25,5 +25,15 @@
     "psr-4": {
       "Dotdigital\\Flow\\": "src/"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Dotdigital\\Tests\\": "tests/PHPUnit"
+    }
+  },
+  "require-dev": {
+     "phpunit/phpunit": "^9.5",
+     "phpstan/phpstan": "^1.8",
+     "dg/bypass-finals": "^1.3"
   }
 }

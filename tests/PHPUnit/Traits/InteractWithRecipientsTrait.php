@@ -1,6 +1,6 @@
 <?php
 
-namespace Dotdigital\Flow\Test\Traits;
+namespace Dotdigital\Tests\Traits;
 
 use Dotdigital\Flow\Core\Framework\DataTypes\RecipientCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\RecipientStruct;

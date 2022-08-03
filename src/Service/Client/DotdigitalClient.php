@@ -51,7 +51,7 @@ class DotdigitalClient extends AbstractClient
     /**
      * @param RecipientCollection $recipients
      * @param int $campaignId
-     * @param array<int, object> $personalisedValues
+     * @param array<int, array<string, mixed>> $personalisedValues
      * @return void
      * @throws \GuzzleHttp\Exception\GuzzleException
      */

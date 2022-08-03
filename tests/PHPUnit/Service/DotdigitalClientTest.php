@@ -1,6 +1,6 @@
 <?php
 
-namespace Dotdigital\Flow\Test\Service;
+namespace Dotdigital\Tests\Service;
 
 use Dotdigital\Flow\Service\Client\DotdigitalClient;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Dotdigital\Flow\Setting\Settings;
 use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
-use Dotdigital\Flow\Test\Traits\InteractWithRecipientsTrait;
+use Dotdigital\Tests\Traits\InteractWithRecipientsTrait;
 
 
 class DotdigitalClientTest extends TestCase
