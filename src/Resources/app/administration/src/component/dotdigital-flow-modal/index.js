@@ -30,43 +30,30 @@ Component.register('dotdigital-flow-modal', {
 
         mailRecipientDescription() {
             let description = '';
-
             switch (this.mailRecipient) {
-                case 'default':
-                    description += this.$tc(`
-                        Choose this if the triggered email should go directly to the customer email address`);
-                    break;
-                case 'admin':
-                    description += this.$tc('Choose this if the triggered email should go to the store admin email address');
-                    break;
                 case 'custom':
                     description += this.$tc(`
-                        Enter the addresses below that
-                        will receive triggered emails. You can hardcode email addresses
-                        (your customer service email for example) or use dynamic ‘tags’
-                        which vary depending on the trigger you choose.
+                        Shopware variables differ depending on the trigger you use.
                     `);
-                    description += `
-                        <br/><br/>
-                        ${this.$tc('For more information')}
-                            <strong>
-                                <a href="#" target="_blank"> ${this.$tc('click here')} </a>
-                        </strong>
-                    `;
+                    description += ` <a href="https://support.dotdigital.com/hc/en-gb/articles/7101774577298" target="_blank"> ${this.$tc('Learn more')} </a>`;
                     break;
                 default:
+                    description += '<br>';
                     break;
             }
-
             return description;
         },
 
         modalTitle() {
-            let title = this.$tc('Dotdigital transactional email');
+            let title = this.$tc('Send email with Dotdigital');
             if (this.mailRecipient === 'custom') {
-                title += '- define recipients';
+                title += ' - define recipients';
             }
             return title;
+        },
+
+        modalSubTitle() {
+            return this.$tc('Automatically send your Dotdigital triggered campaign content as a transactional email. ');;
         },
 
         /**
@@ -125,7 +112,7 @@ Component.register('dotdigital-flow-modal', {
             return [
                 {
                     value: 'custom',
-                    label: this.$tc('Multiple recipients'),
+                    label: this.$tc('Custom'),
                 },
             ];
         },
@@ -254,7 +241,7 @@ Component.register('dotdigital-flow-modal', {
         recipientColumns() {
             return [{
                 property: 'email',
-                label: false,
+                label: this.$tc('Email address or Shopware variable'),
                 inlineEdit: 'string',
             }];
         },

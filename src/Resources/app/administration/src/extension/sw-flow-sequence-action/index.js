@@ -27,10 +27,6 @@ Component.override('sw-flow-sequence-action', {
             let recipient = config.recipient.type;
             const campaignId = config.campaignId;
 
-            if (recipient === 'custom') {
-                recipient = 'multiple recipients';
-            }
-
             return this.$tc(`
                 Recipient: ${recipient.charAt(0).toUpperCase() + recipient.slice(1)}, Campaign ID: ${campaignId}
             `);
@@ -40,7 +36,7 @@ Component.override('sw-flow-sequence-action', {
             if (actionName === ACTION.CREATE_DOTDIGITAL_EMAIL_SENDER) {
                 return {
                     value: actionName,
-                    icon: 'default-badge-help',
+                    icon: 'regular-envelope',
                     label: this.$tc(ACTION.LABEL),
                 };
             }

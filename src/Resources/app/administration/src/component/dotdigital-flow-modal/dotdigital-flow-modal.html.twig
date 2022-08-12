@@ -2,6 +2,7 @@
 <sw-modal
     class="dotdigital-flowbuilder-plugin-modal"
     :title="modalTitle"
+    :subtitle="modalSubTitle"
     @modal-close="onClose"
 >
 
@@ -41,10 +42,10 @@
             <sw-text-field
                 v-if="isInlineEdit"
                 v-model="item.email"
-                class="sw-flow-mail-send-modal__recipient-email"
+                class="sw-flow-mail-send-modal__recipient-email ddg-custom-recipient-email"
                 :size="compact ? 'small' : 'default'"
                 :error="item.errorMail"
-                :placeholder="$tc('Email address or dynamic email tag')"
+                :placeholder="$tc('Enter email address or Shopware variable...')"
             />
         </template>
         {% endblock %}
@@ -74,8 +75,6 @@
     {% endblock %}
 
     {% block dotdigital_flowbuilder_plugin_modal_content %}
-    {# Component library https://component-library.shopware.com/#}
-
     <sw-text-field
         v-model="campaignId"
         v-dd-validate="{type:'number',message:$tc('Please enter a valid campaign ID.')}"
@@ -84,13 +83,14 @@
     />
     <span class="sw-flow-mail-send-modal__description">
         <small id="emailHelp" class="form-text text-muted">
-            <strong><a href="https://support.dotdigital.com/hc/en-gb/articles/212214008-Create-a-triggered-campaign" target="_blank"> {{ $tc('Triggered campaigns') }}</a></strong>
+            {{ $tc('In Dotdigital, go to your triggered campaign and find the ID in the URL (?id=xxxxxx).') }}
         </small>
     </span>
     {% endblock %}
 
     {% block dotdigital_flowbuilder_plugin_modal_footer %}
     <template #modal-footer>
+        <a href="https://support.dotdigital.com/hc/en-gb/articles/7101772942738" class="pull-left" target="_blank">Dotdigital Help Centre</a>
         {% block dotdigital_flowbuilder_plugin_modal_footer_cancel_button %}
         <sw-button
             class="dotdigital-flowbuilder-plugin-modal__cancel-button"
@@ -109,8 +109,8 @@
             @click="onAddAction"
         >
             {{ sequence.id
-                ? $tc('Save')
-                : $tc('Add') }}
+                ? $tc('Save Action')
+                : $tc('Add Action') }}
         </sw-button>
         {% endblock %}
     </template>
