@@ -24,7 +24,7 @@ Component.override('sw-flow-sequence-action', {
 
     methods: {
         getDotdigitalEmailSenderDescription(config) {
-            let recipient = config.recipient.type;
+            const recipient = config.recipient.type;
             const campaignId = config.campaignId;
 
             return this.$tc(`

@@ -35,7 +35,11 @@ Component.register('dotdigital-flow-modal', {
                     description += this.$tc(`
                         Shopware variables differ depending on the trigger you use.
                     `);
-                    description += ` <a href="https://support.dotdigital.com/hc/en-gb/articles/7101774577298" target="_blank"> ${this.$tc('Learn more')} </a>`;
+                    description +=
+                        ` <a href="https://support.dotdigital.com/hc/en-gb/articles/7101774577298" target="_blank">
+                                ${this.$tc('Learn more')}
+                          </a>
+                        `;
                     break;
                 default:
                     description += '<br>';
@@ -45,15 +49,11 @@ Component.register('dotdigital-flow-modal', {
         },
 
         modalTitle() {
-            let title = this.$tc('Send email with Dotdigital');
-            if (this.mailRecipient === 'custom') {
-                title += ' - define recipients';
-            }
-            return title;
+            return this.$tc('Send email with Dotdigital');
         },
 
         modalSubTitle() {
-            return this.$tc('Automatically send your Dotdigital triggered campaign content as a transactional email. ');;
+            return this.$tc('Automatically send your Dotdigital triggered campaign content as a transactional email. ');
         },
 
         /**
