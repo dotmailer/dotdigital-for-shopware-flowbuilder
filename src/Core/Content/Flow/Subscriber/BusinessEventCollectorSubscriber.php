@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Dotdigital\Flow\Core\Content\Flow\Subscriber;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Dotdigital\Flow\Core\Framework\Event\DotdigitalEmailSenderAware;
 use Shopware\Core\Framework\Event\BusinessEventCollectorEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class BusinessEventCollectorSubscriber implements EventSubscriberInterface
 {
@@ -22,9 +22,6 @@ class BusinessEventCollectorSubscriber implements EventSubscriberInterface
 
     /**
      * Add Dotdigital email sender aware.
-     *
-     * @param BusinessEventCollectorEvent $event
-     * @return void
      */
     public function addDotdigitalEmailSenderAware(BusinessEventCollectorEvent $event): void
     {

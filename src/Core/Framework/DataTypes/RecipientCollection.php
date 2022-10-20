@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Dotdigital\Flow\Core\Framework\DataTypes;
 
@@ -8,8 +8,6 @@ final class RecipientCollection extends Collection
 {
     /**
      * Collection expected class
-     *
-     * @return string|null
      */
     protected function getExpectedClass(): ?string
     {

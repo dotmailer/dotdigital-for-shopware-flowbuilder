@@ -1,22 +1,22 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Dotdigital\Flow\Core\Content\Flow\Dispatching\Action;
 
 use Doctrine\DBAL\Connection;
+use Dotdigital\Flow\Core\Framework\DataTypes\RecipientCollection;
+use Dotdigital\Flow\Core\Framework\DataTypes\RecipientStruct;
+use Dotdigital\Flow\Core\Framework\Event\DotdigitalEmailSenderAware;
+use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\ContactForm\Event\ContactFormEvent;
 use Shopware\Core\Content\Flow\Dispatching\Action\FlowAction;
 use Shopware\Core\Content\MailTemplate\Exception\MailEventConfigurationException;
 use Shopware\Core\Framework\Adapter\Twig\Exception\StringTemplateRenderingException;
-use Shopware\Core\Framework\Event\FlowEvent;
 use Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer;
+use Shopware\Core\Framework\Event\FlowEvent;
 use Shopware\Core\Framework\Event\MailAware;
 use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
-use Dotdigital\Flow\Core\Framework\Event\DotdigitalEmailSenderAware;
-use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Dotdigital\Flow\Core\Framework\DataTypes\RecipientCollection;
-use Dotdigital\Flow\Core\Framework\DataTypes\RecipientStruct;
 
 class DotdigitalEmailSenderAction extends FlowAction
 {
@@ -24,39 +24,18 @@ class DotdigitalEmailSenderAction extends FlowAction
     private const RECIPIENT_CONFIG_CUSTOM = 'custom';
     private const RECIPIENT_CONFIG_CONTACT_FORM_MAIL = 'contactFormMail';
 
-    /**
-     * @var DotdigitalClientFactory
-     */
     private DotdigitalClientFactory $dotdigitalClientFactory;
 
-    /**
-     * @var StringTemplateRenderer
-     */
     private StringTemplateRenderer $stringTemplateRenderer;
 
-    /**
-     * @var BusinessEventEncoder
-     */
     private BusinessEventEncoder $businessEventEncoder;
 
-    /**
-     * @var Connection
-     */
     private Connection $connection;
 
-    /**
-     * @var LoggerInterface
-     */
     private LoggerInterface $logger;
 
     /**
      * Constructor.
-     *
-     * @param DotdigitalClientFactory $dotdigitalClientFactory
-     * @param StringTemplateRenderer $stringTemplateRenderer
-     * @param BusinessEventEncoder $businessEventEncoder
-     * @param Connection $connection
-     * @param LoggerInterface $logger
      */
     public function __construct(
         DotdigitalClientFactory $dotdigitalClientFactory,
@@ -91,14 +70,12 @@ class DotdigitalEmailSenderAction extends FlowAction
      */
     public function requirements(): array
     {
-        return [DotdigitalEmailSenderAware::class,MailAware::class];
+        return [DotdigitalEmailSenderAware::class, MailAware::class];
     }
 
     /**
      * Handle Dotdigital action.
      *
-     * @param FlowEvent $event
-     * @return void
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function handle(FlowEvent $event): void
@@ -120,6 +97,7 @@ class DotdigitalEmailSenderAction extends FlowAction
                 'Dotdigital recipients collection error',
                 ['exception' => $exception]
             );
+
             return;
         }
 
@@ -129,10 +107,10 @@ class DotdigitalEmailSenderAction extends FlowAction
 
         $availableData = $this->businessEventEncoder->encode($event->getEvent());
         $personalisedValues = [];
-        foreach ($availableData as $key => $data ) {
+        foreach ($availableData as $key => $data) {
             $personalisedValues[] = [
-                "name" => $key,
-                "value" => $data
+                'name' => $key,
+                'value' => $data,
             ];
         }
         $context = $event->getContext();
@@ -140,13 +118,11 @@ class DotdigitalEmailSenderAction extends FlowAction
         $channelContext = $context->getSource();
         $this->dotdigitalClientFactory
             ->createClient($channelContext->getSalesChannelId())
-            ->sendEmail($recipients, $eventConfig["campaignId"], $personalisedValues);
+            ->sendEmail($recipients, $eventConfig['campaignId'], $personalisedValues);
     }
 
     /**
      * Get Name.
-     *
-     * @return string
      */
     public static function getName(): string
     {
@@ -156,9 +132,6 @@ class DotdigitalEmailSenderAction extends FlowAction
     /**
      * Get recipients for mail
      *
-     * @param mixed $recipients
-     * @param FlowEvent $event
-     * @return RecipientCollection
      * @throws \Doctrine\DBAL\Exception
      */
     private function getRecipients($recipients, FlowEvent $event): RecipientCollection
@@ -170,12 +143,13 @@ class DotdigitalEmailSenderAction extends FlowAction
         $collection = new RecipientCollection();
 
         switch ($recipients['type']) {
-            /**
+            /*
              * On custom return array values from data structure;
              */
             case self::RECIPIENT_CONFIG_CUSTOM:
                 foreach (array_values($recipients['data']) as $recipient) {
                     $data = $this->businessEventEncoder->encode($event->getEvent());
+
                     try {
                         $collection->add(new RecipientStruct(
                             $this->stringTemplateRenderer->render(
@@ -184,17 +158,17 @@ class DotdigitalEmailSenderAction extends FlowAction
                                 $event->getContext()
                             )
                         ));
-                    } catch (StringTemplateRenderingException $exception)
-                    {
+                    } catch (StringTemplateRenderingException $exception) {
                         $this->logger->error(
                             'Dotdigital template render error',
                             ['exception' => $exception]
                         );
                     }
                 }
+
                 break;
 
-            /**
+            /*
              * On admin return the admin email address.
              */
             case self::RECIPIENT_CONFIG_ADMIN:
@@ -204,9 +178,10 @@ class DotdigitalEmailSenderAction extends FlowAction
                 foreach ($admins as $admin) {
                     $collection->add(new RecipientStruct($admin['email']));
                 }
+
                 break;
 
-            /**
+            /*
              * On contact form event return the email address from the event.
              */
             case self::RECIPIENT_CONFIG_CONTACT_FORM_MAIL:
@@ -218,15 +193,17 @@ class DotdigitalEmailSenderAction extends FlowAction
                     break;
                 }
                 $collection->add(new RecipientStruct($data['email']));
+
                 break;
 
-            /**
+            /*
              * By default pull keys(email) from MailRecipientStruct::class
              */
             default:
                 foreach (array_keys($mailEvent->getMailStruct()->getRecipients()) as $recipient) {
                     $collection->add(new RecipientStruct($recipient));
                 }
+
                 break;
         }
 
