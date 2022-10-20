@@ -1,4 +1,4 @@
-import { ACTION } from '../../constant/dotdigital-flow.constant';
+import { ACTION,CONTACT_ACTION } from '../../constant/dotdigital-flow.constant';
 
 const { Component } = Shopware;
 
@@ -9,7 +9,15 @@ Component.override('sw-flow-sequence-action', {
                 return 'dotdigital-flow-modal';
             }
 
-            return this.$super('modalName');
+            switch (this.selectedAction) {
+                case ACTION.HANDLE:
+                    return 'dotdigital-flow-modal';
+                case CONTACT_ACTION.HANDLE:
+                    return CONTACT_ACTION.COMPONENT_NAME;
+                default:
+                    return this.$super('modalName');
+            }
+
         },
 
         actionDescription() {
@@ -17,12 +25,20 @@ Component.override('sw-flow-sequence-action', {
 
             return {
                 ...actionDescriptionList,
-                [ACTION.CREATE_DOTDIGITAL_EMAIL_SENDER]: (config) => this.getDotdigitalEmailSenderDescription(config),
+                [ACTION.HANDLE]: (config) => this.getDotdigitalEmailSenderDescription(config),
+                [CONTACT_ACTION.HANDLE]: (config) => this.getDotdigitalContactDescription(config),
             };
         },
     },
 
     methods: {
+
+        getDotdigitalContactDescription(config) {
+            return this.$tc(`
+                Contact action
+            `);
+        },
+
         getDotdigitalEmailSenderDescription(config) {
             const recipient = config.recipient.type;
             const campaignId = config.campaignId;
@@ -33,15 +49,24 @@ Component.override('sw-flow-sequence-action', {
         },
 
         getActionTitle(actionName) {
-            if (actionName === ACTION.CREATE_DOTDIGITAL_EMAIL_SENDER) {
-                return {
-                    value: actionName,
-                    icon: 'regular-envelope',
-                    label: this.$tc(ACTION.LABEL),
-                };
+
+            switch (actionName) {
+                case ACTION.HANDLE:
+                    return {
+                        value: actionName,
+                        icon: 'regular-envelope',
+                        label: this.$tc(ACTION.LABEL),
+                    };
+                case CONTACT_ACTION.HANDLE:
+                    return {
+                        value: actionName,
+                        icon: CONTACT_ACTION.ICON,
+                        label: this.$tc(CONTACT_ACTION.LABEL),
+                    };
+                default:
+                    return this.$super('getActionTitle', actionName);
             }
 
-            return this.$super('getActionTitle', actionName);
         },
     },
 });

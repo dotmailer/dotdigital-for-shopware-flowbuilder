@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="Dotdigital\Flow\Core\Content\Flow\Dispatching\Action\DotdigitalEmailSenderAction">
+            <argument type="service" id="Dotdigital\Flow\Service\Client\DotdigitalClientFactory" />
+            <argument type="service" id="Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer" />
+            <argument type="service" id="Shopware\Core\Framework\Webhook\BusinessEventEncoder" />
+            <argument type="service" id="Doctrine\DBAL\Connection" />
+            <argument type="service" id="Dotdigital\Flow\Util\DotdigitalLogger"/>
+            <tag name="kernel.event_subscriber"/>
+            <tag name="flow.action" priority="600"/>
+        </service>
+    </services>
+</container>

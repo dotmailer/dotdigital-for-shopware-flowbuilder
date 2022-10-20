@@ -6,19 +6,6 @@
     <imports>
         <import resource="./services/client.xml"/>
         <import resource="./services/util.xml"/>
+        <import resource="./flow-actions/dotdigital-flow-action.xml"/>
     </imports>
-    <services>
-        <service id="Dotdigital\Flow\Core\Content\Flow\Dispatching\Action\DotdigitalEmailSenderAction">
-            <argument type="service" id="Dotdigital\Flow\Service\Client\DotdigitalClientFactory" />
-            <argument type="service" id="Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer" />
-            <argument type="service" id="Shopware\Core\Framework\Webhook\BusinessEventEncoder" />
-            <argument type="service" id="Doctrine\DBAL\Connection" />
-            <argument type="service" id="Dotdigital\Flow\Util\DotdigitalLogger"/>
-            <tag name="kernel.event_subscriber"/>
-            <tag name="flow.action" priority="600"/>
-        </service>
-        <service id="Dotdigital\Flow\Core\Content\Flow\Subscriber\BusinessEventCollectorSubscriber">
-            <tag name="kernel.event_subscriber"/>
-        </service>
-    </services>
 </container>

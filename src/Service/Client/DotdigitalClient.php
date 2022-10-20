@@ -2,15 +2,25 @@
 
 namespace Dotdigital\Flow\Service\Client;
 
+use Dotdigital\Flow\Core\Framework\DataTypes\AddressBookCollection;
+use Dotdigital\Flow\Core\Framework\DataTypes\AddressBookStruct;
+use Dotdigital\Flow\Core\Framework\DataTypes\ContactDataFieldStruct;
+use Dotdigital\Flow\Core\Framework\DataTypes\ContactStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\RecipientCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\RecipientStruct;
 use Dotdigital\Flow\Setting\Settings;
 use GuzzleHttp\Client as Guzzle;
+use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class DotdigitalClient extends AbstractClient
 {
+    public const RESUBSCRIBE_CONTACT_TO_ADDRESS_BOOK_ENDPOINT = 'v2/address-books/%s/contacts/resubscribe';
+    public const ADD_CONTACT_TO_ADDRESS_BOOK_ENDPOINT = 'v2/address-books/%s/contacts';
+    public const GET_ADDRESS_BOOKS_ENDPOINT = 'v2/address-books';
+    public const EMAIL_TRIGGERED_CAMPAIGN_ENDPOINT = 'v2/email/triggered-campaign';
+
     private SystemConfigService $systemConfigService;
 
     private ?string $salesChannelId;
@@ -39,10 +49,93 @@ class DotdigitalClient extends AbstractClient
     }
 
     /**
+     * Resubscribe contact to address book
+     *
+     * @throws GuzzleException
+     */
+    public function resubscribeContactToAddressBook(
+        ContactStruct $contact,
+        AddressBookStruct $addressBook
+    ): ?ContactStruct {
+        $resubscribedContactResponse = $this->post(
+            sprintf(self::RESUBSCRIBE_CONTACT_TO_ADDRESS_BOOK_ENDPOINT, $addressBook->getId()),
+            [
+                'json' => [
+                    'unsubscribedContact' => [
+                        'email' => $contact->getEmail(),
+                        'dataFields' => $contact->getDataFields()->reduce(function ($list, ContactDataFieldStruct $dataField) {
+                            $list[] = [
+                                'key' => $dataField->getKey(),
+                                'value' => $dataField->getValue(),
+                            ];
+
+                            return $list;
+                        }, []),
+                    ],
+                ],
+            ]
+        );
+
+        return ContactStruct::createFromResponse($resubscribedContactResponse);
+    }
+
+    /**
+     * Add contact to address book
+     *
+     * @throws GuzzleException
+     */
+    public function addContactToAddressBook(
+        ContactStruct $contact,
+        AddressBookStruct $addressBook
+    ): ?ContactStruct {
+        $addContactResponse = $this->post(
+            sprintf(self::ADD_CONTACT_TO_ADDRESS_BOOK_ENDPOINT, $addressBook->getId()),
+            [
+                'json' => [
+                    'email' => $contact->getEmail(),
+                    'dataFields' => $contact->getDataFields()->reduce(function ($list, ContactDataFieldStruct $dataField) {
+                        $list[] = [
+                            'key' => $dataField->getKey(),
+                            'value' => $dataField->getValue(),
+                        ];
+
+                        return $list;
+                    }, []),
+                ],
+            ]
+        );
+
+        return ContactStruct::createFromResponse($addContactResponse);
+    }
+
+    /**
+     * Get Collection of address books
+     *
+     * @throws GuzzleException
+     */
+    public function getAddressBooks(): AddressBookCollection
+    {
+        $addressBooksResponse = $this->get(self::GET_ADDRESS_BOOKS_ENDPOINT, []);
+        $addressBooks = new AddressBookCollection();
+        foreach ($addressBooksResponse as $addressBook) {
+            $addressBooks->add(new AddressBookStruct(
+                $addressBook['id'],
+                $addressBook['name'],
+                $addressBook['visibility'],
+                $addressBook['contacts']
+            ));
+        }
+
+        return $addressBooks;
+    }
+
+    /**
+     * Send email triggered campaign
+     *
      * @param int                              $campaignId
      * @param array<int, array<string, mixed>> $personalisedValues
      *
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function sendEmail(RecipientCollection $recipients, $campaignId, array $personalisedValues): void
     {
@@ -57,7 +150,7 @@ class DotdigitalClient extends AbstractClient
         ];
 
         $payload = json_encode($body);
-        $this->post('/v2/email/triggered-campaign', ['body' => $payload]);
+        $this->post(self::EMAIL_TRIGGERED_CAMPAIGN_ENDPOINT, ['body' => $payload]);
     }
 
     /**

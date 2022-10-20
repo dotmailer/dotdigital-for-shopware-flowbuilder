@@ -1,0 +1,40 @@
+{% block dotdigital_flow_contact_modal %}
+<sw-modal
+    class="dotdigital-flowbuilder-plugin-modal"
+    :title="modalTitle"
+    :subtitle="modalSubTitle"
+    @modal-close="onClose"
+>
+    <h4>Example payload pushed to handler:</h4>
+    <pre>{{ tempData | json }}</pre>
+
+    {% block dotdigital_flowbuilder_plugin_modal_footer %}
+        <template #modal-footer>
+            <a :href="helpLink" class="pull-left" target="_blank">{{ $tc('Dotdigital Help Centre') }}</a>
+            {% block dotdigital_flowbuilder_plugin_modal_footer_cancel_button %}
+                <sw-button
+                    class="dotdigital-flowbuilder-plugin-modal__cancel-button"
+                    size="small"
+                    @click="onClose"
+                >
+                    {{ $tc('global.default.cancel') }}
+                </sw-button>
+            {% endblock %}
+
+            {% block dotdigital_flowbuilder_plugin_modal_footer_save_button %}
+                <sw-button
+                    class="dotdigital-flowbuilder-plugin-modal__save-button"
+                    variant="primary"
+                    size="small"
+                    @click="onAddAction"
+                >
+                    {{ sequence.id
+                    ? $tc('Save Action')
+                    : $tc('Add Action') }}
+                </sw-button>
+            {% endblock %}
+        </template>
+    {% endblock %}
+
+</sw-modal>
+{% endblock %}

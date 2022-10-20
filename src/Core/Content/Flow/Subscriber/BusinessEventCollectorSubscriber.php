@@ -2,6 +2,7 @@
 
 namespace Dotdigital\Flow\Core\Content\Flow\Subscriber;
 
+use Dotdigital\Flow\Core\Framework\Event\DotdigitalContactAware;
 use Dotdigital\Flow\Core\Framework\Event\DotdigitalEmailSenderAware;
 use Shopware\Core\Framework\Event\BusinessEventCollectorEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -16,17 +17,18 @@ class BusinessEventCollectorSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            BusinessEventCollectorEvent::NAME => 'addDotdigitalEmailSenderAware',
+            BusinessEventCollectorEvent::NAME => 'addDotdigitalAwareEvents',
         ];
     }
 
     /**
      * Add Dotdigital email sender aware.
      */
-    public function addDotdigitalEmailSenderAware(BusinessEventCollectorEvent $event): void
+    public function addDotdigitalAwareEvents(BusinessEventCollectorEvent $event): void
     {
         foreach ($event->getCollection()->getElements() as $definition) {
             $definition->addAware(DotdigitalEmailSenderAware::class);
+            $definition->addAware(DotdigitalContactAware::class);
         }
     }
 }

@@ -36,6 +36,20 @@ class AbstractClient
     }
 
     /**
+     * Call Get
+     *
+     * @param array<string,mixed> $options
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return array<string,mixed>
+     */
+    protected function get(string $uri, array $options): array
+    {
+        return $this->request(Request::METHOD_GET, $uri, $options);
+    }
+
+    /**
      * Make new guzzle async request
      *
      * @param array<string,mixed> $options
