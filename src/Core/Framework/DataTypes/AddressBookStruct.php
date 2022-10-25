@@ -2,11 +2,12 @@
 
 namespace Dotdigital\Flow\Core\Framework\DataTypes;
 
+use Dotdigital\Flow\Core\Framework\Traits\InteractsWithResponseTrait;
+
 class AddressBookStruct
 {
-    /**
-     * @var string
-     */
+    use InteractsWithResponseTrait;
+
     private int $id;
 
     private string $name;
@@ -15,9 +16,6 @@ class AddressBookStruct
 
     private int $contacts;
 
-    /**
-     * @param string $email
-     */
     public function __construct(int $id, string $name = '', string $visibility = 'public', int $contacts = 0)
     {
         $this->setId($id);

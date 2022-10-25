@@ -55,25 +55,21 @@ class DotdigitalContactAction extends FlowAction
     public function handle(FlowEvent $event): void
     {
         if (!$event->getEvent() instanceof MailAware) {
-            throw new \Exception('Not an instance of MailAware', \get_class($event->getEvent()));
+            throw new \Exception('Not an instance of MailAware', 422);
         }
 
         $eventConfig = $event->getConfig();
 
         if (!\array_key_exists('contactEmail', $eventConfig) && !\is_string($eventConfig['contactEmail'])) {
-            throw new \InvalidArgumentException('The contactEmail value in the flow action configuration is invalid or missing.', \get_class($event));
+            throw new \InvalidArgumentException('The contactEmail value in the flow action configuration is invalid or missing.', 422);
         }
 
         if (!\array_key_exists('addressBook', $eventConfig) && !is_iterable($eventConfig['addressBook'])) {
-            throw new \InvalidArgumentException('The addressBook value in the flow action configuration is invalid or missing.', \get_class($event));
+            throw new \InvalidArgumentException('The addressBook value in the flow action configuration is invalid or missing.', 422);
         }
 
         if (!\array_key_exists('resubscribe', $eventConfig)) {
-            throw new \InvalidArgumentException('The resubscribe value in the flow action configuration is invalid or missing.', \get_class($event));
-        }
-
-        if (!\array_key_exists('addressBook', $eventConfig) && !\is_bool($eventConfig['addressBook'])) {
-            throw new \InvalidArgumentException('The addressBook value in the flow action configuration is invalid or missing.', \get_class($event));
+            throw new \InvalidArgumentException('The resubscribe value in the flow action configuration is invalid or missing.', 422);
         }
 
         $context = $event->getContext();
@@ -89,7 +85,7 @@ class DotdigitalContactAction extends FlowAction
             $eventConfig['contactDataFields'],
         );
 
-        if ((bool) ($eventConfig['resubscribe'])) {
+        if ((bool) $eventConfig['resubscribe']) {
             $this->dotdigitalClientFactory
                 ->createClient($channelContext->getSalesChannelId())
                 ->resubscribeContactToAddressBook(

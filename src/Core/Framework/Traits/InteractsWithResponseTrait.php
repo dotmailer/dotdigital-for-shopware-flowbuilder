@@ -5,15 +5,21 @@ namespace Dotdigital\Flow\Core\Framework\Traits;
 trait InteractsWithResponseTrait
 {
     /**
-     * @var array
+     * @var array<int|string,mixed>
      */
-    private $_messages = [];
+    private array $_messages = [];
 
-    public static function createFromResponse(array $response): self
+    /**
+     * @param array<int|string,mixed> $response
+     *
+     * @throws \ReflectionException
+     */
+    public static function createFromResponse(array $response): ?self
     {
+        $reflector = new \ReflectionClass(static::class);
+        $reflectorInstance = $reflector->newInstanceWithoutConstructor();
+
         try {
-            $reflector = new \ReflectionClass(static::class);
-            $reflectorInstance = $reflector->newInstanceWithoutConstructor();
             if (empty($response)) {
                 $reflectorInstance->_messages[] = 'Response body is empty';
             }
@@ -33,11 +39,7 @@ trait InteractsWithResponseTrait
         return $reflectorInstance;
     }
 
-    /**
-     * @param $property
-     * @param $value
-     */
-    private function assignProperty($property, $value): void
+    private function assignProperty(\ReflectionProperty $property, $value): void
     {
         try {
             if ($property->isProtected() or $property->isPrivate()) {

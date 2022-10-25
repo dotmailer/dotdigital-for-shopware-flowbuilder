@@ -21,7 +21,7 @@ class ContactStruct
     private ContactDataFieldCollection $dataFields;
 
     /**
-     * @param array|ContactDataFieldCollection $dataFields
+     * @param ContactDataFieldCollection|array<string,mixed> $dataFields
      */
     public function __construct(
         ?int $id,
@@ -29,7 +29,7 @@ class ContactStruct
         string $status,
         string $optInType = 'Single',
         string $emailType = 'Html',
-        $dataFields = []
+        iterable $dataFields = []
     ) {
         $this->setId($id);
         $this->setEmail($email);
@@ -52,7 +52,7 @@ class ContactStruct
     /**
      * Get Id
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -131,8 +131,6 @@ class ContactStruct
 
     /**
      * Get DataFields
-     *
-     * @return array
      */
     public function getDataFields(): ContactDataFieldCollection
     {
@@ -141,10 +139,12 @@ class ContactStruct
 
     /**
      * Set DataFields
+     *
+     * @param ContactDataFieldCollection|array<string,mixed> $dataFields
      */
     public function setDataFields(iterable $dataFields): void
     {
-        if (is_a($dataFields, ContactDataFieldCollection::class)) {
+        if (\is_object($dataFields) && is_a($dataFields, ContactDataFieldCollection::class)) {
             $this->dataFields = $dataFields;
 
             return;

@@ -130,11 +130,11 @@ class DotdigitalEmailSenderAction extends FlowAction
     }
 
     /**
-     * Get recipients for mail
+     * @param array<string,mixed> $recipients
      *
      * @throws \Doctrine\DBAL\Exception
      */
-    private function getRecipients($recipients, FlowEvent $event): RecipientCollection
+    private function getRecipients(array $recipients, FlowEvent $event): RecipientCollection
     {
         /**
          * @var MailAware $mailEvent

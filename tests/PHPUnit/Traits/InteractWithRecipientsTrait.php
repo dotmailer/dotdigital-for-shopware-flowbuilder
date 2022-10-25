@@ -7,6 +7,9 @@ use Dotdigital\Flow\Core\Framework\DataTypes\RecipientStruct;
 
 trait InteractWithRecipientsTrait
 {
+
+    use UtilitiesTrait;
+
     /**
      * @param int $count
      * @return RecipientCollection
@@ -22,20 +25,4 @@ trait InteractWithRecipientsTrait
         return $recipientCollection;
     }
 
-    /**
-     * @param float $length
-     * @return false|string
-     */
-    private function generateRandomString(float $length = 10.0) {
-        /* @phpstan-ignore-next-line */
-        return substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
-    }
-
-    /**
-     * @return string
-     */
-    private function generateValidEmail():string
-    {
-        return $this->generateRandomString(5).'@'.$this->generateRandomString(5).'.test';
-    }
 }

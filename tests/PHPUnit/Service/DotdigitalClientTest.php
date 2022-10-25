@@ -2,8 +2,14 @@
 
 namespace Dotdigital\Tests\Service;
 
+use DG\BypassFinals;
+use Dotdigital\Flow\Core\Framework\DataTypes\AddressBookCollection;
+use Dotdigital\Flow\Core\Framework\DataTypes\ContactCollection;
+use Dotdigital\Flow\Core\Framework\DataTypes\ContactStruct;
 use Dotdigital\Flow\Service\Client\DotdigitalClient;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
+use Dotdigital\Tests\Traits\InteractWithAddressBooksTrait;
+use Dotdigital\Tests\Traits\InteractWithContactsTrait;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Dotdigital\Flow\Setting\Settings;
@@ -15,6 +21,8 @@ use Dotdigital\Tests\Traits\InteractWithRecipientsTrait;
 class DotdigitalClientTest extends TestCase
 {
     use InteractWithRecipientsTrait;
+    use InteractWithAddressBooksTrait;
+    use InteractWithContactsTrait;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|SalesChannelEntity
@@ -35,7 +43,6 @@ class DotdigitalClientTest extends TestCase
      * @var \PHPUnit\Framework\MockObject\MockObject|SystemConfigService
      */
     private $mockSystemConfig;
-
 
     /**
      * Setup test prerequisites
@@ -109,7 +116,6 @@ class DotdigitalClientTest extends TestCase
             'https://mock-region-api.dotdigital.com',
             $client->getBaseUrl()
         );
-
     }
 
     /**
@@ -145,7 +151,6 @@ class DotdigitalClientTest extends TestCase
             base64_encode( "mock-username:mock-password"),
             $client->generateScopedAuthorizationToken()
         );
-
     }
 
     /**
@@ -166,7 +171,63 @@ class DotdigitalClientTest extends TestCase
             $templateID,
             []
         );
+    }
 
+    /**
+     * @return void
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testAddContactToAddressBookMethod()
+    {
+        BypassFinals::enable();
+        $contact = $this->generateContact();
+        $addressBook = $this->generateAddressBook();
+
+        $this->mockDotdigitalClient->expects($this->atLeastOnce())
+            ->method('addContactToAddressBook')
+            ->with($contact,$addressBook);
+
+        $this->mockDotdigitalClient->addContactToAddressBook(
+            $contact,
+            $addressBook
+        );
+    }
+
+    /**
+     * @return void
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testResubscribeContactToAddressBookMethod()
+    {
+        BypassFinals::enable();
+        $contact = $this->generateContact();
+        $addressBook = $this->generateAddressBook();
+
+        $this->mockDotdigitalClient->expects($this->atLeastOnce())
+            ->method('resubscribeContactToAddressBook')
+            ->with($contact,$addressBook);
+
+        $this->mockDotdigitalClient->resubscribeContactToAddressBook(
+            $contact,
+            $addressBook
+        );
+    }
+
+    /**
+     * @return void
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Exception
+     */
+    public function testGetAddressBooksMethod()
+    {
+        BypassFinals::enable();
+        $this->mockDotdigitalClient->expects($this->atLeastOnce())
+            ->method('getAddressBooks');
+
+        $response = $this->mockDotdigitalClient->getAddressBooks();
+        $this->assertInstanceOf(AddressBookCollection::class,$response);
     }
 
 }

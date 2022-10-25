@@ -4,30 +4,15 @@ namespace Dotdigital\Flow\Core\Framework\DataTypes;
 
 class ContactDataFieldStruct
 {
-    /**
-     * @var mixed
-     */
     private string $key;
 
-    /**
-     * @var string
-     */
-    private $value;
+    private string $value;
 
-    /**
-     * @var string
-     */
-    private $visibility;
+    private string $visibility;
 
-    /**
-     * @var string|null
-     */
-    private $defaultValue;
+    private ?string $defaultValue;
 
-    /**
-     * @param mixed $key
-     */
-    public function __construct(string $key, $value, $visibility = 'Private', $defaultValue = null)
+    public function __construct(string $key, ?string $value, string $visibility = 'Private', ?string $defaultValue = null)
     {
         $this->setKey($key);
         $this->setValue($value);
@@ -96,17 +81,15 @@ class ContactDataFieldStruct
     /**
      * Get DefaultValue
      */
-    public function getDefaultValue(): string
+    public function getDefaultValue(): ?string
     {
         return $this->defaultValue;
     }
 
     /**
      * Set DefaultValue
-     *
-     * @param $defaultValue
      */
-    public function setDefaultValue($defaultValue): void
+    public function setDefaultValue(?string $defaultValue): void
     {
         $this->defaultValue = $defaultValue;
     }
