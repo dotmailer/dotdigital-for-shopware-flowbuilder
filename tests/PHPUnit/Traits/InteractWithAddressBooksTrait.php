@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Dotdigital\Tests\Traits;
 
@@ -10,29 +10,28 @@ trait InteractWithAddressBooksTrait
     use UtilitiesTrait;
 
     /**
-     * @return AddressBookStruct
      * @throws \Exception
      */
-    protected function generateAddressBook():AddressBookStruct{
+    protected function generateAddressBook(): AddressBookStruct
+    {
         return AddressBookStruct::createFromResponse([
             'id' => $this->generateInteger(),
             'name' => $this->generateRandomString(),
             'visibility' => 'Public',
-            'contacts' => $this->generateInteger()
+            'contacts' => $this->generateInteger(),
         ]);
     }
 
     /**
-     * @param int $count
-     * @return AddressBookCollection
      * @throws \Exception
      */
-    protected function generateAddressBookCollection(int $count = 1):AddressBookCollection{
+    protected function generateAddressBookCollection(int $count = 1): AddressBookCollection
+    {
         $addressBooks = new AddressBookCollection();
-        for ($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; ++$i) {
             $addressBooks->add($this->generateAddressBook());
         }
+
         return $addressBooks;
     }
-
 }

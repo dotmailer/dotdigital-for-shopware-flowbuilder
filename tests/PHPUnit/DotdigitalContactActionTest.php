@@ -1,24 +1,19 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Dotdigital\Tests;
 
+use DG\BypassFinals;
 use Dotdigital\Flow\Core\Content\Flow\Dispatching\Action\DotdigitalContactAction;
-use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
 use Dotdigital\Flow\Core\Content\Flow\Dispatching\Action\DotdigitalEmailSenderAction;
+use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
 use Dotdigital\Tests\Traits\InteractWithContactDataFieldsTrait;
 use Dotdigital\Tests\Traits\UtilitiesTrait;
-use Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer;
-use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
+use PHPUnit\Framework\TestCase;
+use Shopware\Core\Content\ContactForm\Event\ContactFormEvent;
+use Shopware\Core\Framework\Api\Context\ContextSource;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Event\FlowEvent;
 use Shopware\Core\Framework\Event\MailAware;
-use Shopware\Core\Framework\Event\EventData\MailRecipientStruct;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Api\Context\ContextSource;
-use Shopware\Core\Content\ContactForm\Event\ContactFormEvent;
-use Doctrine\DBAL\Connection;
-use DG\BypassFinals;
-use Psr\Log\LoggerInterface;
-use PHPUnit\Framework\TestCase;
 
 class DotdigitalContactActionTest extends TestCase
 {
@@ -29,7 +24,6 @@ class DotdigitalContactActionTest extends TestCase
      * @var DotdigitalEmailSenderAction
      */
     private $dotdigitalContactAction;
-
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|MailAware
@@ -76,16 +70,15 @@ class DotdigitalContactActionTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function testDotdigitalContactResubscribeHandler()
+    public function testDotdigitalContactResubscribeHandler(): void
     {
-        $this->eventMock->expects($this->atLeastOnce())
+        $this->eventMock->expects(static::atLeastOnce())
             ->method('getEvent')
             ->willReturn($this->mailAwareMock);
 
-        $this->eventMock->expects($this->once())
+        $this->eventMock->expects(static::once())
             ->method('getConfig')
             ->willReturn([
                 'contactEmail' => $this->generateValidEmail(),
@@ -93,19 +86,16 @@ class DotdigitalContactActionTest extends TestCase
                 'resubscribe' => true,
                 'contactOptIn' => 'Single',
                 'contactDataFields' => $this->generateContactDataFieldArray(10),
-
             ]);
 
-        $this->eventMock->expects($this->once())
+        $this->eventMock->expects(static::once())
             ->method('getContext')
             ->willReturn($this->contextMock);
 
-        $this->contextMock->expects($this->once())
+        $this->contextMock->expects(static::once())
             ->method('getSource')
             ->willReturn($this->contextSourceMock);
 
         $this->dotdigitalContactAction->handle($this->eventMock);
     }
-
-
 }

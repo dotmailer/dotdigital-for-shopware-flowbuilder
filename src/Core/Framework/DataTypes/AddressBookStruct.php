@@ -34,65 +34,41 @@ class AddressBookStruct
         return $this->name;
     }
 
-    /**
-     * Get Id
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set Id
-     */
     public function setId(int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * Get Name
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * Set Name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * Get Visibility
-     */
     public function getVisibility(): string
     {
         return $this->visibility;
     }
 
-    /**
-     * Set Visibility
-     */
     public function setVisibility(string $visibility): void
     {
         $this->visibility = $visibility;
     }
 
-    /**
-     * Get Contacts
-     */
     public function getContacts(): int
     {
         return $this->contacts;
     }
 
-    /**
-     * Set Contacts
-     */
     public function setContacts(int $contacts): void
     {
         $this->contacts = $contacts;

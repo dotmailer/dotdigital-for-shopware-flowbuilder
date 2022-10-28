@@ -1,22 +1,19 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Dotdigital\Tests\Service;
 
 use DG\BypassFinals;
 use Dotdigital\Flow\Core\Framework\DataTypes\AddressBookCollection;
-use Dotdigital\Flow\Core\Framework\DataTypes\ContactCollection;
-use Dotdigital\Flow\Core\Framework\DataTypes\ContactStruct;
 use Dotdigital\Flow\Service\Client\DotdigitalClient;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
+use Dotdigital\Flow\Setting\Settings;
 use Dotdigital\Tests\Traits\InteractWithAddressBooksTrait;
 use Dotdigital\Tests\Traits\InteractWithContactsTrait;
+use Dotdigital\Tests\Traits\InteractWithRecipientsTrait;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
-use Dotdigital\Flow\Setting\Settings;
 use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
-use Dotdigital\Tests\Traits\InteractWithRecipientsTrait;
-
 
 class DotdigitalClientTest extends TestCase
 {
@@ -46,8 +43,6 @@ class DotdigitalClientTest extends TestCase
 
     /**
      * Setup test prerequisites
-     *
-     * @return void
      */
     public function setUp(): void
     {
@@ -59,39 +54,30 @@ class DotdigitalClientTest extends TestCase
         $this->mockDotdigitalClient = $this->createMock(DotdigitalClient::class);
     }
 
-    /**
-     * @return void
-     */
-    public function testClientFactoryWithSalesChannel()
+    public function testClientFactoryWithSalesChannel(): void
     {
         $factory = new DotdigitalClientFactory(
             $this->mockLogger,
             $this->mockSystemConfig
         );
         $client = $factory->createClient($this->mockSalesChannel->getId());
-        $this->assertInstanceOf(DotdigitalClient::class,$client);
+        static::assertInstanceOf(DotdigitalClient::class, $client);
     }
 
-    /**
-     * @return void
-     */
-    public function testClientFactoryWithoutSalesChannel()
+    public function testClientFactoryWithoutSalesChannel(): void
     {
         $factory = new DotdigitalClientFactory(
             $this->mockLogger,
             $this->mockSystemConfig
         );
         $client = $factory->createClient();
-        $this->assertInstanceOf(DotdigitalClient::class,$client);
+        static::assertInstanceOf(DotdigitalClient::class, $client);
     }
 
-    /**
-     * @return void
-     */
-    public function testGetBaseUrlMethod()
+    public function testGetBaseUrlMethod(): void
     {
         $this->mockSystemConfig
-            ->expects($this->atLeastOnce())
+            ->expects(static::atLeastOnce())
             ->method('getString')
             ->withConsecutive(
                 [Settings::HOST_REGION_CONFIG_KEY],
@@ -112,19 +98,16 @@ class DotdigitalClientTest extends TestCase
 
         $client = $factory->createClient();
 
-        $this->assertEquals(
+        static::assertEquals(
             'https://mock-region-api.dotdigital.com',
             $client->getBaseUrl()
         );
     }
 
-    /**
-     * @return void
-     */
-    public function testAuthorizationTokenMethod()
+    public function testAuthorizationTokenMethod(): void
     {
         $this->mockSystemConfig
-            ->expects($this->atLeastOnce())
+            ->expects(static::atLeastOnce())
             ->method('getString')
             ->withConsecutive(
                 [Settings::HOST_REGION_CONFIG_KEY],
@@ -147,24 +130,23 @@ class DotdigitalClientTest extends TestCase
 
         $client = $factory->createClient();
 
-        $this->assertEquals(
-            base64_encode( "mock-username:mock-password"),
+        static::assertEquals(
+            base64_encode('mock-username:mock-password'),
             $client->generateScopedAuthorizationToken()
         );
     }
 
     /**
-     * @return void
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function testSendEmailMethod()
+    public function testSendEmailMethod(): void
     {
         $templateID = 'mock-template-id';
         $recipients = $this->generateValidRecipientCollection();
 
-        $this->mockDotdigitalClient->expects($this->atLeastOnce())
+        $this->mockDotdigitalClient->expects(static::atLeastOnce())
             ->method('sendEmail')
-            ->with($recipients,$templateID);
+            ->with($recipients, $templateID);
 
         $this->mockDotdigitalClient->sendEmail(
             $recipients,
@@ -174,19 +156,18 @@ class DotdigitalClientTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Exception
      */
-    public function testAddContactToAddressBookMethod()
+    public function testAddContactToAddressBookMethod(): void
     {
         BypassFinals::enable();
         $contact = $this->generateContact();
         $addressBook = $this->generateAddressBook();
 
-        $this->mockDotdigitalClient->expects($this->atLeastOnce())
+        $this->mockDotdigitalClient->expects(static::atLeastOnce())
             ->method('addContactToAddressBook')
-            ->with($contact,$addressBook);
+            ->with($contact, $addressBook);
 
         $this->mockDotdigitalClient->addContactToAddressBook(
             $contact,
@@ -195,19 +176,18 @@ class DotdigitalClientTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Exception
      */
-    public function testResubscribeContactToAddressBookMethod()
+    public function testResubscribeContactToAddressBookMethod(): void
     {
         BypassFinals::enable();
         $contact = $this->generateContact();
         $addressBook = $this->generateAddressBook();
 
-        $this->mockDotdigitalClient->expects($this->atLeastOnce())
+        $this->mockDotdigitalClient->expects(static::atLeastOnce())
             ->method('resubscribeContactToAddressBook')
-            ->with($contact,$addressBook);
+            ->with($contact, $addressBook);
 
         $this->mockDotdigitalClient->resubscribeContactToAddressBook(
             $contact,
@@ -216,18 +196,16 @@ class DotdigitalClientTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Exception
      */
-    public function testGetAddressBooksMethod()
+    public function testGetAddressBooksMethod(): void
     {
         BypassFinals::enable();
-        $this->mockDotdigitalClient->expects($this->atLeastOnce())
+        $this->mockDotdigitalClient->expects(static::atLeastOnce())
             ->method('getAddressBooks');
 
         $response = $this->mockDotdigitalClient->getAddressBooks();
-        $this->assertInstanceOf(AddressBookCollection::class,$response);
+        static::assertInstanceOf(AddressBookCollection::class, $response);
     }
-
 }

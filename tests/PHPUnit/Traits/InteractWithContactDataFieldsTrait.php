@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Dotdigital\Tests\Traits;
 
@@ -9,25 +9,19 @@ trait InteractWithContactDataFieldsTrait
 {
     use UtilitiesTrait;
 
-    /**
-     * @param int $count
-     * @return array
-     */
     protected function generateContactDataFieldArray(int $count = 1): array
     {
         $contactDataFields = [];
-        for ($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; ++$i) {
             $contactDataFields[] = [
                 'key' => $this->generateRandomString(),
-                'value' => $this->generateRandomString()
+                'value' => $this->generateRandomString(),
             ];
         }
+
         return $contactDataFields;
     }
 
-    /**
-     * @return ContactDataFieldStruct
-     */
     protected function generateContactDataField(): ContactDataFieldStruct
     {
         return new ContactDataFieldStruct(
@@ -39,10 +33,10 @@ trait InteractWithContactDataFieldsTrait
     protected function generateContactDataFieldCollection(int $count = 1): ContactDataFieldCollection
     {
         $contactDataFields = new ContactDataFieldCollection();
-        for ($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; ++$i) {
             $contactDataFields->add($this->generateContactDataField());
         }
+
         return $contactDataFields;
     }
-
 }

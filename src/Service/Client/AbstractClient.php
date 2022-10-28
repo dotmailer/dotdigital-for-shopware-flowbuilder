@@ -12,9 +12,6 @@ class AbstractClient
 
     private ClientInterface $client;
 
-    /**
-     * AbstractClient constructor.
-     */
     public function __construct(ClientInterface $client, LoggerInterface $logger)
     {
         $this->client = $client;

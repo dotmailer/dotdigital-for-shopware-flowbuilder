@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Dotdigital\Tests\Traits;
 
@@ -25,17 +25,15 @@ trait InteractWithContactsTrait
     }
 
     /**
-     * @param int $count
-     * @return ContactCollection
      * @throws \Exception
      */
     protected function generateContactCollection(int $count = 1): ContactCollection
     {
         $contacts = new ContactCollection();
-        for ($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; ++$i) {
             $contacts->add($this->generateContact());
         }
+
         return $contacts;
     }
-
 }

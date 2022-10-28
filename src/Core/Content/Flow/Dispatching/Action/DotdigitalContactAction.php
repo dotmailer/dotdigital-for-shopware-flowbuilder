@@ -16,9 +16,6 @@ class DotdigitalContactAction extends FlowAction
 {
     private DotdigitalClientFactory $dotdigitalClientFactory;
 
-    /**
-     * Constructor.
-     */
     public function __construct(
         DotdigitalClientFactory $dotdigitalClientFactory
     ) {
@@ -50,7 +47,7 @@ class DotdigitalContactAction extends FlowAction
     /**
      * Handle Dotdigital action.
      *
-     * @throws GuzzleException | \InvalidArgumentException
+     * @throws GuzzleException|\InvalidArgumentException
      */
     public function handle(FlowEvent $event): void
     {
@@ -102,9 +99,6 @@ class DotdigitalContactAction extends FlowAction
         }
     }
 
-    /**
-     * Get Name.
-     */
     public static function getName(): string
     {
         return 'action.create.dotdigital_contact';

@@ -21,17 +21,11 @@ class RecipientStruct
         return $this->email;
     }
 
-    /**
-     * Get Email
-     */
     public function getEmail(): string
     {
         return $this->email;
     }
 
-    /**
-     * Set Email
-     */
     public function setEmail(string $email): void
     {
         if (!filter_var($email, \FILTER_VALIDATE_EMAIL)) {

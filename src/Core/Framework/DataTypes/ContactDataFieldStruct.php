@@ -30,65 +30,41 @@ class ContactDataFieldStruct
         return $this->value;
     }
 
-    /**
-     * Get Key
-     */
     public function getKey(): string
     {
         return $this->key;
     }
 
-    /**
-     * Set Key
-     */
     public function setKey(string $key): void
     {
         $this->key = $key;
     }
 
-    /**
-     * Get Value
-     */
     public function getValue(): string
     {
         return $this->value;
     }
 
-    /**
-     * Set Value
-     */
     public function setValue($value): void
     {
         $this->value = $value;
     }
 
-    /**
-     * Get Visibility
-     */
     public function getVisibility(): string
     {
         return $this->visibility;
     }
 
-    /**
-     * Set Visibility
-     */
     public function setVisibility(string $visibility): void
     {
         $this->visibility = $visibility;
     }
 
-    /**
-     * Get DefaultValue
-     */
     public function getDefaultValue(): ?string
     {
         return $this->defaultValue;
     }
 
-    /**
-     * Set DefaultValue
-     */
     public function setDefaultValue(?string $defaultValue): void
     {
         $this->defaultValue = $defaultValue;

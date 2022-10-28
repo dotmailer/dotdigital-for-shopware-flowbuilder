@@ -1,21 +1,21 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Dotdigital\Tests;
 
-use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
+use DG\BypassFinals;
+use Doctrine\DBAL\Connection;
 use Dotdigital\Flow\Core\Content\Flow\Dispatching\Action\DotdigitalEmailSenderAction;
+use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
+use Shopware\Core\Content\ContactForm\Event\ContactFormEvent;
 use Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer;
-use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
+use Shopware\Core\Framework\Api\Context\ContextSource;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Event\EventData\MailRecipientStruct;
 use Shopware\Core\Framework\Event\FlowEvent;
 use Shopware\Core\Framework\Event\MailAware;
-use Shopware\Core\Framework\Event\EventData\MailRecipientStruct;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Api\Context\ContextSource;
-use Shopware\Core\Content\ContactForm\Event\ContactFormEvent;
-use Doctrine\DBAL\Connection;
-use DG\BypassFinals;
-use Psr\Log\LoggerInterface;
-use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
 
 class DotdigitalEmailSenderActionTest extends TestCase
 {
@@ -108,38 +108,37 @@ class DotdigitalEmailSenderActionTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function testDotdigitalEmailSenderCustomerEmail()
+    public function testDotdigitalEmailSenderCustomerEmail(): void
     {
-        $this->eventMock->expects($this->atLeastOnce())
+        $this->eventMock->expects(static::atLeastOnce())
             ->method('getEvent')
             ->willReturn($this->mailAwareMock);
 
-        $this->eventMock->expects($this->once())
+        $this->eventMock->expects(static::once())
             ->method('getConfig')
             ->willReturn([
                 'recipient' => [
-                    'type' => "default",
-                    'data' => []
+                    'type' => 'default',
+                    'data' => [],
                 ],
-                'campaignId' => 100000
+                'campaignId' => 100000,
             ]);
 
-        $this->mailAwareMock->expects($this->atLeastOnce())
+        $this->mailAwareMock->expects(static::atLeastOnce())
             ->method('getMailStruct')
             ->willReturn($this->mailRecipientStructMock);
 
-        $this->mailRecipientStructMock->expects($this->atLeastOnce())
+        $this->mailRecipientStructMock->expects(static::atLeastOnce())
             ->method('getRecipients')
-            ->willReturn(['chaz@emailsim.io' => "Chaz Kangaroo"]);
+            ->willReturn(['chaz@emailsim.io' => 'Chaz Kangaroo']);
 
-        $this->eventMock->expects($this->once())
+        $this->eventMock->expects(static::once())
             ->method('getContext')
             ->willReturn($this->contextMock);
 
-        $this->contextMock->expects($this->once())
+        $this->contextMock->expects(static::once())
             ->method('getSource')
             ->willReturn($this->contextSourceMock);
 
@@ -147,35 +146,34 @@ class DotdigitalEmailSenderActionTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function testDotdigitalEmailSenderContactFormEmail()
+    public function testDotdigitalEmailSenderContactFormEmail(): void
     {
-        $this->eventMock->expects($this->atLeastOnce())
+        $this->eventMock->expects(static::atLeastOnce())
             ->method('getEvent')
             ->willReturn($this->contactFormEventMock);
 
-        $this->eventMock->expects($this->once())
+        $this->eventMock->expects(static::once())
             ->method('getConfig')
             ->willReturn([
                 'recipient' => [
-                    'type' => "contactFormMail",
-                    'data' => []
+                    'type' => 'contactFormMail',
+                    'data' => [],
                 ],
-                'campaignId' => 100000
+                'campaignId' => 100000,
             ]);
 
         /* @phpstan-ignore-next-line */
-        $this->contactFormEventMock->expects($this->once())
+        $this->contactFormEventMock->expects(static::once())
             ->method('getContactFormData')
-            ->willReturn(['email' => "chaz@emailsim.io"]);
+            ->willReturn(['email' => 'chaz@emailsim.io']);
 
-        $this->eventMock->expects($this->once())
+        $this->eventMock->expects(static::once())
             ->method('getContext')
             ->willReturn($this->contextMock);
 
-        $this->contextMock->expects($this->once())
+        $this->contextMock->expects(static::once())
             ->method('getSource')
             ->willReturn($this->contextSourceMock);
 
@@ -183,42 +181,41 @@ class DotdigitalEmailSenderActionTest extends TestCase
     }
 
     /**
-     * @return void
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function testDotdigitalEmailSenderAdminEmail()
+    public function testDotdigitalEmailSenderAdminEmail(): void
     {
-        $this->eventMock->expects($this->atLeastOnce())
+        $this->eventMock->expects(static::atLeastOnce())
             ->method('getEvent')
             ->willReturn($this->mailAwareMock);
 
-        $this->eventMock->expects($this->once())
+        $this->eventMock->expects(static::once())
             ->method('getConfig')
             ->willReturn([
                 'recipient' => [
-                    'type' => "admin",
-                    'data' => []
+                    'type' => 'admin',
+                    'data' => [],
                 ],
-                'campaignId' => 100000
+                'campaignId' => 100000,
             ]);
 
-        $this->connectionMock->expects($this->once())
+        $this->connectionMock->expects(static::once())
             ->method('fetchAllAssociative')
             ->willReturn(
                 [
                     [
                         'fist_name' => 'Chaz',
                         'last_name' => 'Kangaroo',
-                        'email' => 'chaz@emailsim.io'
-                    ]
+                        'email' => 'chaz@emailsim.io',
+                    ],
                 ]
             );
 
-        $this->eventMock->expects($this->once())
+        $this->eventMock->expects(static::once())
             ->method('getContext')
             ->willReturn($this->contextMock);
 
-        $this->contextMock->expects($this->once())
+        $this->contextMock->expects(static::once())
             ->method('getSource')
             ->willReturn($this->contextSourceMock);
 

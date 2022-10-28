@@ -14,18 +14,18 @@ Component.register('dotdigital-flow-contact-modal', {
     },
     data() {
         return {
-            tempData:{
-                contactEmail: 'test@email.xyz',
-                addressBook: '4584905',
+            tempData: {
+                contactEmail: 'chaz-shopware@emailsim.io',
+                addressBook: '30203316',
                 contactDataFields: [
                     {
-                        key: 'FirstName',
-                        value: 'TEST FIRSTNAME'
+                        key: 'FIRSTNAME',
+                        value: 'Chaz',
                     },
                     {
-                        key: 'LastName',
-                        value: 'TEST LASTNaME '
-                    }
+                        key: 'LASTNAME',
+                        value: 'Kangaroo',
+                    },
                 ],
                 contactOptIn: true,
                 resubscribe: true

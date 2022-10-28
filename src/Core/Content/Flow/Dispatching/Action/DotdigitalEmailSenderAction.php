@@ -34,9 +34,6 @@ class DotdigitalEmailSenderAction extends FlowAction
 
     private LoggerInterface $logger;
 
-    /**
-     * Constructor.
-     */
     public function __construct(
         DotdigitalClientFactory $dotdigitalClientFactory,
         StringTemplateRenderer $stringTemplateRenderer,
@@ -121,9 +118,6 @@ class DotdigitalEmailSenderAction extends FlowAction
             ->sendEmail($recipients, $eventConfig['campaignId'], $personalisedValues);
     }
 
-    /**
-     * Get Name.
-     */
     public static function getName(): string
     {
         return 'action.create.dotdigital_mail_sender';

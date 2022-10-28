@@ -39,6 +39,9 @@ trait InteractsWithResponseTrait
         return $reflectorInstance;
     }
 
+    /**
+     * @param mixed $value
+     */
     private function assignProperty(\ReflectionProperty $property, $value): void
     {
         try {

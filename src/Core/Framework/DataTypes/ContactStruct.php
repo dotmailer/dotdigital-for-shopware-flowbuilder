@@ -49,97 +49,62 @@ class ContactStruct
         return $this->email;
     }
 
-    /**
-     * Get Id
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set Id
-     */
     public function setId(?int $id): void
     {
         $this->id = $id;
     }
 
-    /**
-     * Get Email
-     */
     public function getEmail(): string
     {
         return $this->email;
     }
 
-    /**
-     * Set Email
-     */
     public function setEmail(string $email): void
     {
         $this->email = $email;
     }
 
-    /**
-     * Get Status
-     */
     public function getStatus(): string
     {
         return $this->status;
     }
 
-    /**
-     * Set Status
-     */
     public function setStatus(string $status): void
     {
         $this->status = $status;
     }
 
-    /**
-     * Get OptInType
-     */
     public function getOptInType(): string
     {
         return $this->optInType;
     }
 
-    /**
-     * Set OptInType
-     */
     public function setOptInType(string $optInType): void
     {
         $this->optInType = $optInType;
     }
 
-    /**
-     * Get EmailType
-     */
     public function getEmailType(): string
     {
         return $this->emailType;
     }
 
-    /**
-     * Set EmailType
-     */
     public function setEmailType(string $emailType): void
     {
         $this->emailType = $emailType;
     }
 
-    /**
-     * Get DataFields
-     */
     public function getDataFields(): ContactDataFieldCollection
     {
         return $this->dataFields;
     }
 
     /**
-     * Set DataFields
-     *
      * @param ContactDataFieldCollection|array<string,mixed> $dataFields
      */
     public function setDataFields(iterable $dataFields): void
