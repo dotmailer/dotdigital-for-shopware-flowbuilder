@@ -2,9 +2,9 @@
 
 namespace Dotdigital\Flow\Core\Framework\DataTypes;
 
-class RecipientStruct
+class RecipientStruct extends AbstractStruct
 {
-    private string $email;
+    protected string $email;
 
     public function __construct(string $email)
     {

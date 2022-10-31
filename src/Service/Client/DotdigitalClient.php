@@ -4,7 +4,9 @@ namespace Dotdigital\Flow\Service\Client;
 
 use Dotdigital\Flow\Core\Framework\DataTypes\AddressBookCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\AddressBookStruct;
-use Dotdigital\Flow\Core\Framework\DataTypes\ContactDataFieldStruct;
+use Dotdigital\Flow\Core\Framework\DataTypes\ApiDataFieldCollection;
+use Dotdigital\Flow\Core\Framework\DataTypes\ApiDataFieldStruct;
+use Dotdigital\Flow\Core\Framework\DataTypes\ContactDataStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\ContactStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\RecipientCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\RecipientStruct;
@@ -20,6 +22,7 @@ class DotdigitalClient extends AbstractClient
     public const ADD_CONTACT_TO_ADDRESS_BOOK_ENDPOINT = 'v2/address-books/%s/contacts';
     public const GET_ADDRESS_BOOKS_ENDPOINT = 'v2/address-books';
     public const EMAIL_TRIGGERED_CAMPAIGN_ENDPOINT = 'v2/email/triggered-campaign';
+    public const GET_DATAFIELDS_ENDPOINT = 'v2/data-fields';
 
     private SystemConfigService $systemConfigService;
 
@@ -63,7 +66,7 @@ class DotdigitalClient extends AbstractClient
                 'json' => [
                     'unsubscribedContact' => [
                         'email' => $contact->getEmail(),
-                        'dataFields' => $contact->getDataFields()->reduce(function ($list, ContactDataFieldStruct $dataField) {
+                        'dataFields' => $contact->getDataFields()->reduce(function ($list, ContactDataStruct $dataField) {
                             $list[] = [
                                 'key' => $dataField->getKey(),
                                 'value' => $dataField->getValue(),
@@ -93,7 +96,7 @@ class DotdigitalClient extends AbstractClient
             [
                 'json' => [
                     'email' => $contact->getEmail(),
-                    'dataFields' => $contact->getDataFields()->reduce(function ($list, ContactDataFieldStruct $dataField) {
+                    'dataFields' => $contact->getDataFields()->reduce(function ($list, ContactDataStruct $dataField) {
                         $list[] = [
                             'key' => $dataField->getKey(),
                             'value' => $dataField->getValue(),
@@ -118,15 +121,39 @@ class DotdigitalClient extends AbstractClient
         $addressBooksResponse = $this->get(self::GET_ADDRESS_BOOKS_ENDPOINT, []);
         $addressBooks = new AddressBookCollection();
         foreach ($addressBooksResponse as $addressBook) {
-            $addressBooks->add(new AddressBookStruct(
+            $struct = new AddressBookStruct(
                 $addressBook['id'],
                 $addressBook['name'],
                 $addressBook['visibility'],
                 $addressBook['contacts']
-            ));
+            );
+
+            $addressBooks->add($struct);
         }
 
         return $addressBooks;
+    }
+
+    /**
+     * Get Collection of DataFields.
+     *
+     * @throws GuzzleException
+     */
+    public function getDataFields(): ApiDataFieldCollection
+    {
+        $dataFieldsResponse = $this->get(self::GET_DATAFIELDS_ENDPOINT, []);
+        $dataFields = new ApiDataFieldCollection();
+        foreach ($dataFieldsResponse as $dataField) {
+            $struct = new ApiDataFieldStruct(
+                $dataField['name'],
+                $dataField['type'],
+                $dataField['visibility'],
+                $dataField['defaultValue']
+            );
+            $dataFields->add($struct);
+        }
+
+        return $dataFields;
     }
 
     /**

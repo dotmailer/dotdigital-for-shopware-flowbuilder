@@ -2,24 +2,28 @@
 
 namespace Dotdigital\Flow\Core\Framework\Traits;
 
+use Dotdigital\Flow\Core\Framework\DataTypes\AbstractStruct;
+use Shopware\Core\Framework\Struct\Collection;
+
 trait InteractsWithResponseTrait
 {
     /**
-     * @var array<int|string,mixed>
+     * @var array<string>
      */
-    private array $_messages = [];
+    private $_messages = [];
 
     /**
-     * @param array<int|string,mixed> $response
+     * @param array<string, mixed> $response
      *
-     * @throws \ReflectionException
+     * @return static
      */
-    public static function createFromResponse(array $response): ?self
+    public static function createFromResponse(array $response): self
     {
-        $reflector = new \ReflectionClass(static::class);
-        $reflectorInstance = $reflector->newInstanceWithoutConstructor();
+        static $reflectorInstance;
 
         try {
+            $reflector = new \ReflectionClass(static::class);
+            $reflectorInstance = $reflector->newInstanceWithoutConstructor();
             if (empty($response)) {
                 $reflectorInstance->_messages[] = 'Response body is empty';
             }
@@ -37,6 +41,20 @@ trait InteractsWithResponseTrait
         }
 
         return $reflectorInstance;
+    }
+
+    /**
+     * @param Collection $structObject
+     *
+     * @return iterable<callable>
+     */
+    public function dotdigitalCollectionToArray($structObject): iterable
+    {
+        return $structObject->reduce(function ($list, AbstractStruct $dotdigitalElement) {
+            $list[] = $dotdigitalElement->toArray();
+
+            return $list;
+        }, []);
     }
 
     /**

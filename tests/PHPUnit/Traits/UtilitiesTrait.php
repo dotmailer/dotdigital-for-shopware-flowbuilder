@@ -7,10 +7,19 @@ trait UtilitiesTrait
     /**
      * @return false|string
      */
-    protected function generateRandomString(float $length = 10.0)
+    protected function generateRandomString(int $length = 10)
     {
         /* @phpstan-ignore-next-line */
-        return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length / \strlen($x)))), 1, $length);
+        return substr(
+            str_shuffle(
+                str_repeat(
+                    $x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                    (int) ceil($length / \strlen($x))
+                )
+            ),
+            1,
+            $length
+        );
     }
 
     protected function generateValidEmail(): string

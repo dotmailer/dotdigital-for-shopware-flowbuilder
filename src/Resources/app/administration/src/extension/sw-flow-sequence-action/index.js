@@ -1,4 +1,4 @@
-import { ACTION,CONTACT_ACTION } from '../../constant/dotdigital-flow.constant';
+import { ACTION, CONTACT_ACTION } from '../../constant/dotdigital-flow.constant';
 
 const { Component } = Shopware;
 
@@ -17,7 +17,6 @@ Component.override('sw-flow-sequence-action', {
                 default:
                     return this.$super('modalName');
             }
-
         },
 
         actionDescription() {
@@ -49,7 +48,6 @@ Component.override('sw-flow-sequence-action', {
         },
 
         getActionTitle(actionName) {
-
             switch (actionName) {
                 case ACTION.HANDLE:
                     return {
@@ -66,7 +64,6 @@ Component.override('sw-flow-sequence-action', {
                 default:
                     return this.$super('getActionTitle', actionName);
             }
-
         },
     },
 });

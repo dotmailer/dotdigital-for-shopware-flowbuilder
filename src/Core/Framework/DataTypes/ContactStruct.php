@@ -4,32 +4,32 @@ namespace Dotdigital\Flow\Core\Framework\DataTypes;
 
 use Dotdigital\Flow\Core\Framework\Traits\InteractsWithResponseTrait;
 
-class ContactStruct
+class ContactStruct extends AbstractStruct
 {
     use InteractsWithResponseTrait;
 
-    private ?int $id;
+    protected ?int $id;
 
-    private string $email;
+    protected string $email;
 
-    private string $status;
+    protected string $status;
 
-    private string $optInType;
+    protected string $optInType;
 
-    private string $emailType;
+    protected string $emailType;
 
-    private ContactDataFieldCollection $dataFields;
+    protected ContactDataCollection $dataFields;
 
     /**
-     * @param ContactDataFieldCollection|array<string,mixed> $dataFields
+     * @param ContactDataCollection $dataFields
      */
     public function __construct(
         ?int $id,
         string $email,
         string $status,
-        string $optInType = 'Single',
-        string $emailType = 'Html',
-        iterable $dataFields = []
+        string $optInType,
+        string $emailType,
+        iterable $dataFields
     ) {
         $this->setId($id);
         $this->setEmail($email);
@@ -64,7 +64,7 @@ class ContactStruct
         return $this->email;
     }
 
-    public function setEmail(string $email): void
+    public function setEmail(string $email = 'Html'): void
     {
         $this->email = $email;
     }
@@ -84,7 +84,7 @@ class ContactStruct
         return $this->optInType;
     }
 
-    public function setOptInType(string $optInType): void
+    public function setOptInType(string $optInType = 'Single'): void
     {
         $this->optInType = $optInType;
     }
@@ -99,25 +99,25 @@ class ContactStruct
         $this->emailType = $emailType;
     }
 
-    public function getDataFields(): ContactDataFieldCollection
+    public function getDataFields(): ContactDataCollection
     {
         return $this->dataFields;
     }
 
     /**
-     * @param ContactDataFieldCollection|array<string,mixed> $dataFields
+     * @param ContactDataCollection|array<string,mixed> $dataFields
      */
     public function setDataFields(iterable $dataFields): void
     {
-        if (\is_object($dataFields) && is_a($dataFields, ContactDataFieldCollection::class)) {
+        if (!is_array($dataFields) && is_a($dataFields, ContactDataCollection::class)) {
             $this->dataFields = $dataFields;
 
             return;
         }
 
-        $this->dataFields = new ContactDataFieldCollection();
+        $this->dataFields = new ContactDataCollection();
         foreach ($dataFields as $dataField) {
-            $this->dataFields->add(new ContactDataFieldStruct(
+            $this->dataFields->add(new ContactDataStruct(
                 $dataField['key'],
                 $dataField['value']
             ));

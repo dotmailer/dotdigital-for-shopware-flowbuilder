@@ -7,5 +7,6 @@
         <import resource="./services/client.xml"/>
         <import resource="./services/util.xml"/>
         <import resource="./flow-actions/dotdigital-flow-action.xml"/>
+        <import resource="./services/controller.xml"/>
     </imports>
 </container>

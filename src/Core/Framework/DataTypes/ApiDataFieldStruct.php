@@ -2,20 +2,20 @@
 
 namespace Dotdigital\Flow\Core\Framework\DataTypes;
 
-class ContactDataFieldStruct
+class ApiDataFieldStruct extends AbstractStruct
 {
-    private string $key;
+    protected string $name;
 
-    private string $value;
+    protected string $type;
 
-    private string $visibility;
+    protected string $visibility;
 
-    private ?string $defaultValue;
+    protected ?string $defaultValue;
 
-    public function __construct(string $key, ?string $value, string $visibility = 'Private', ?string $defaultValue = null)
+    public function __construct(string $name, string $type, string $visibility = 'Private', ?string $defaultValue = null)
     {
-        $this->setKey($key);
-        $this->setValue($value);
+        $this->setName($name);
+        $this->setType($type);
         $this->setVisibility($visibility);
         $this->setDefaultValue($defaultValue);
     }
@@ -27,27 +27,27 @@ class ContactDataFieldStruct
      */
     public function __toString()
     {
-        return $this->value;
+        return $this->name;
     }
 
-    public function getKey(): string
+    public function getName(): string
     {
-        return $this->key;
+        return $this->name;
     }
 
-    public function setKey(string $key): void
+    public function setName(string $name): void
     {
-        $this->key = $key;
+        $this->name = $name;
     }
 
-    public function getValue(): string
+    public function getType(): string
     {
-        return $this->value;
+        return $this->type;
     }
 
-    public function setValue($value): void
+    public function setType(string $type): void
     {
-        $this->value = $value;
+        $this->type = $type;
     }
 
     public function getVisibility(): string

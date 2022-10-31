@@ -1,0 +1,19 @@
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="Dotdigital\Flow\Api\Controller\AddressBooksController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <argument type="service" id="Dotdigital\Flow\Service\Client\DotdigitalClientFactory" />
+        </service>
+        <service id="Dotdigital\Flow\Api\Controller\DataFieldsController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <argument type="service" id="Dotdigital\Flow\Service\Client\DotdigitalClientFactory" />
+        </service>
+    </services>
+</container>

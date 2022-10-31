@@ -1,10 +1,13 @@
 import template from './dotdigital-flow-contact-modal.html.twig';
 import './dotdigital-flow-contact-modal.scss';
 
-const { Component, Mixin} = Shopware;
+const { Component, Mixin } = Shopware;
 
 Component.register('dotdigital-flow-contact-modal', {
     template,
+
+    inject: ['DotdigitalApiService'],
+
     mixins: [Mixin.getByName('notification')],
     props: {
         sequence: {
@@ -15,21 +18,21 @@ Component.register('dotdigital-flow-contact-modal', {
     data() {
         return {
             tempData: {
-                contactEmail: 'chaz-shopware@emailsim.io',
-                addressBook: '30203316',
+                contactEmail: 'test@email.xyz',
+                addressBook: '4584905',
                 contactDataFields: [
                     {
-                        key: 'FIRSTNAME',
-                        value: 'Chaz',
+                        key: 'FirstName',
+                        value: 'TEST FIRSTNAME',
                     },
                     {
-                        key: 'LASTNAME',
-                        value: 'Kangaroo',
+                        key: 'LastName',
+                        value: 'TEST LASTNaME ',
                     },
                 ],
                 contactOptIn: true,
-                resubscribe: true
-            }
+                resubscribe: true,
+            },
         };
     },
 
@@ -66,6 +69,8 @@ Component.register('dotdigital-flow-contact-modal', {
      * Called component create life cycle hook
      */
     created() {
+        this.DotdigitalApiService.getAddressBooks().then(response => { console.log(response); });
+        this.DotdigitalApiService.getDataFields().then(response => { console.log(response); });
         this.createdComponent();
     },
 
@@ -75,23 +80,20 @@ Component.register('dotdigital-flow-contact-modal', {
          * Shopware sequence hook for created component
          */
         createdComponent() {
-
         },
 
         /**
          * Shopware sequence hook to do all the things
          */
         onAddAction() {
-
             const sequence = {
                 ...this.sequence,
-                config: this.tempData
+                config: this.tempData,
             };
 
             this.$nextTick(() => {
                 this.$emit('process-finish', sequence);
             });
-
         },
 
         /**
@@ -101,5 +103,5 @@ Component.register('dotdigital-flow-contact-modal', {
             this.$emit('modal-close');
         },
 
-    }
+    },
 });

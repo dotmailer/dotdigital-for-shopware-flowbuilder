@@ -4,17 +4,17 @@ namespace Dotdigital\Flow\Core\Framework\DataTypes;
 
 use Dotdigital\Flow\Core\Framework\Traits\InteractsWithResponseTrait;
 
-class AddressBookStruct
+class AddressBookStruct extends AbstractStruct
 {
     use InteractsWithResponseTrait;
 
-    private int $id;
+    protected int $id;
 
-    private string $name;
+    protected string $name;
 
-    private string $visibility;
+    protected string $visibility;
 
-    private int $contacts;
+    protected int $contacts;
 
     public function __construct(int $id, string $name = '', string $visibility = 'public', int $contacts = 0)
     {
