@@ -18,7 +18,9 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class DotdigitalClient extends AbstractClient
 {
+    public const RESUBSCRIBE_CONTACT_ENDPOINT = 'v2/contacts/resubscribe';
     public const RESUBSCRIBE_CONTACT_TO_ADDRESS_BOOK_ENDPOINT = 'v2/address-books/%s/contacts/resubscribe';
+    public const ADD_CONTACT_ENDPOINT = '/v2/contacts/';
     public const ADD_CONTACT_TO_ADDRESS_BOOK_ENDPOINT = 'v2/address-books/%s/contacts';
     public const GET_ADDRESS_BOOKS_ENDPOINT = 'v2/address-books';
     public const EMAIL_TRIGGERED_CAMPAIGN_ENDPOINT = 'v2/email/triggered-campaign';
@@ -52,16 +54,19 @@ class DotdigitalClient extends AbstractClient
     }
 
     /**
-     * Resubscribe contact to address book
+     * Resubscribe contact (optionally to an address book)
      *
      * @throws GuzzleException
      */
-    public function resubscribeContactToAddressBook(
+    public function resubscribeContact(
         ContactStruct $contact,
         AddressBookStruct $addressBook
     ): ?ContactStruct {
+        $uri = $addressBook->getId()
+            ? sprintf(self::RESUBSCRIBE_CONTACT_TO_ADDRESS_BOOK_ENDPOINT, $addressBook->getId())
+            : self::RESUBSCRIBE_CONTACT_ENDPOINT;
         $resubscribedContactResponse = $this->post(
-            sprintf(self::RESUBSCRIBE_CONTACT_TO_ADDRESS_BOOK_ENDPOINT, $addressBook->getId()),
+            $uri,
             [
                 'json' => [
                     'unsubscribedContact' => [
@@ -83,19 +88,24 @@ class DotdigitalClient extends AbstractClient
     }
 
     /**
-     * Add contact to address book
+     * Add contact (optionally to an address book)
      *
      * @throws GuzzleException
      */
-    public function addContactToAddressBook(
+    public function addContact(
         ContactStruct $contact,
         AddressBookStruct $addressBook
     ): ?ContactStruct {
+        $uri = $addressBook->getId()
+            ? sprintf(self::ADD_CONTACT_TO_ADDRESS_BOOK_ENDPOINT, $addressBook->getId())
+            : self::ADD_CONTACT_ENDPOINT;
         $addContactResponse = $this->post(
-            sprintf(self::ADD_CONTACT_TO_ADDRESS_BOOK_ENDPOINT, $addressBook->getId()),
+            $uri,
             [
                 'json' => [
                     'email' => $contact->getEmail(),
+                    'emailType' => $contact->getEmailType(),
+                    'optInType' => $contact->getOptInType(),
                     'dataFields' => $contact->getDataFields()->reduce(function ($list, ContactDataStruct $dataField) {
                         $list[] = [
                             'key' => $dataField->getKey(),

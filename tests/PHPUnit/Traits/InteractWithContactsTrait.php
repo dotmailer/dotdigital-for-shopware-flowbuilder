@@ -20,7 +20,7 @@ trait InteractWithContactsTrait
             'email' => $this->generateValidEmail(),
             'emailType' => 'Html',
             'optInType' => 'Active',
-            'dataFields' => $this->generateContactDataFieldCollection(10),
+            'dataFields' => $this->generateContactDataFieldArray(10),
         ]);
     }
 

@@ -166,10 +166,10 @@ class DotdigitalClientTest extends TestCase
         $addressBook = $this->generateAddressBook();
 
         $this->mockDotdigitalClient->expects(static::atLeastOnce())
-            ->method('addContactToAddressBook')
+            ->method('addContact')
             ->with($contact, $addressBook);
 
-        $this->mockDotdigitalClient->addContactToAddressBook(
+        $this->mockDotdigitalClient->addContact(
             $contact,
             $addressBook
         );
@@ -186,10 +186,10 @@ class DotdigitalClientTest extends TestCase
         $addressBook = $this->generateAddressBook();
 
         $this->mockDotdigitalClient->expects(static::atLeastOnce())
-            ->method('resubscribeContactToAddressBook')
+            ->method('resubscribeContact')
             ->with($contact, $addressBook);
 
-        $this->mockDotdigitalClient->resubscribeContactToAddressBook(
+        $this->mockDotdigitalClient->resubscribeContact(
             $contact,
             $addressBook
         );

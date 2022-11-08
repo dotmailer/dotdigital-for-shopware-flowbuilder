@@ -3,14 +3,82 @@
     class="dotdigital-flowbuilder-plugin-modal"
     :title="modalTitle"
     :subtitle="modalSubTitle"
+    :variant="'large'"
     @modal-close="onClose"
 >
-    <h4>Example payload pushed to handler:</h4>
-    <pre>{{ tempData | json }}</pre>
+
+        <dotdigital-recipient-selector
+            :recipient="contactEmail"
+            :exclude="['admin']"
+            :limit="1"
+            @selected-recipient="handleRecipientSelection"
+        />
+        <div class="dd-separator">
+            <span class="border-separator"></span>
+        </div>
+        <sw-single-select
+            v-model="addressBook"
+            class="sw-flow-mail-send-modal__select"
+            :isLoading="!sequenceReady"
+            :disabled="!sequenceReady"
+            :options="availableAddressBooks"
+            :label="$tc('sw-flow.actions.contact.fields.address-book.label')"
+            :placeholder="$tc('sw-flow.actions.contact.fields.address-book.placeholder')"
+            @change="handleAddressBookSelection"
+        />
+        <small class="dd-description">
+            {{ $tc('sw-flow.actions.contact.fields.address-book.description') }}
+        </small>
+        <br>
+        <sw-checkbox-field
+            v-model="resubscribe"
+            class="sw-flow-contact-contact-opt-in"
+            >
+            <template #label>
+                <span class="dd-checkbox-label">
+                    <label class="dd-label">{{ $tc('sw-flow.actions.contact.fields.resubscribe.label') }}</label>
+                    <small class="dd-description">
+                        {{ $tc('sw-flow.actions.contact.fields.resubscribe.description') }}
+                    </small>
+                </span>
+            </template>
+        </sw-checkbox-field>
+
+        <sw-checkbox-field
+            v-model="contactOptIn"
+            class="sw-flow-contact-contact-opt-in"
+            >
+            <template #label>
+                <span class="dd-checkbox-label">
+                    <label class="dd-label">{{ $tc('sw-flow.actions.contact.fields.opt-in.label') }}</label>
+                    <small class="dd-description">
+                        {{ $tc('sw-flow.actions.contact.fields.opt-in.description') }}
+                    </small>
+                </span>
+            </template>
+        </sw-checkbox-field>
+
+        <div class="dd-separator">
+            <span class="border-separator"></span>
+        </div>
+
+        <span class="dd-label-wrapper">
+            <label class="dd-label" for="data-field-selector">{{ $tc('sw-flow.actions.contact.fields.data-field.label') }}</label>
+            <small class="dd-description">{{ $tc('sw-flow.actions.contact.fields.data-field.description') }}</small>
+        </span>
+
+        <dotdigital-data-field-selector
+            id="data-field-selector"
+            :unique="true"
+            :loading="!sequenceReady"
+            :dataFields="dataFields"
+            :dataFieldOptions="availableDataFields"
+            @selected-data-field="handleDataFieldSelection"
+        />
 
     {% block dotdigital_flowbuilder_plugin_modal_footer %}
         <template #modal-footer>
-            <a :href="helpLink" class="pull-left" target="_blank">{{ $tc('Dotdigital Help Centre') }}</a>
+            <a :href="helpLink" class="pull-left" target="_blank">{{ $tc('sw-flow.actions.contact.help-link') }}</a>
             {% block dotdigital_flowbuilder_plugin_modal_footer_cancel_button %}
                 <sw-button
                     class="dotdigital-flowbuilder-plugin-modal__cancel-button"
@@ -23,14 +91,15 @@
 
             {% block dotdigital_flowbuilder_plugin_modal_footer_save_button %}
                 <sw-button
+                    :isLoading="!sequenceReady"
                     class="dotdigital-flowbuilder-plugin-modal__save-button"
                     variant="primary"
                     size="small"
                     @click="onAddAction"
                 >
                     {{ sequence.id
-                    ? $tc('Save Action')
-                    : $tc('Add Action') }}
+                    ? $tc('sw-flow.actions.contact.buttons.save')
+                    : $tc('sw-flow.actions.contact.buttons.add') }}
                 </sw-button>
             {% endblock %}
         </template>

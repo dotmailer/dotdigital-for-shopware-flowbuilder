@@ -1,0 +1,86 @@
+.dotdigital-flowbuilder-plugin-modal {
+
+    .sw-field {
+        margin-bottom: 5px;
+    }
+
+    .sw-flow-mail-send-modal__description {
+        margin-bottom: 20px;
+        display: block;
+        color: #8599ad;
+    }
+
+    .sw-flow-mail-send-modal__recipient-grid {
+        margin-bottom: 0px;
+    }
+
+    .sw-modal__footer {
+        justify-content: end;
+        align-items: center;
+        display: flex;
+
+        .pull-left {
+            margin-right: auto;
+        }
+    }
+
+    .dd-checkbox-label {
+
+        label {
+            width: 100%;
+            display: block;
+        }
+
+    }
+
+    .sw-field--checkbox .sw-field--checkbox__content {
+        display: grid;
+        grid-template-columns: 16px 1fr;
+        align-items: inherit;
+    }
+
+    .dd-contact-model-loader{
+        padding: 2rem;
+        text-align: center;
+        display: block;
+
+        h3 {
+            transform: translate(0,3rem);
+        }
+
+    }
+
+    small.dd-description {
+        display: block;
+        color: #8599ad;
+        font-size: 11.5px;
+    }
+
+    label.dd-label {
+        display: flex;
+        line-height: 16px;
+        font-size: 14px;
+        margin-bottom: 8px;
+        color: #52667a;
+    }
+
+    span.dd-label-wrapper {
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .dd-separator {
+        overflow: hidden;
+        margin: 2rem -30px;
+        box-sizing: border-box;
+        span {
+            clear: both;
+            margin: 0rem 0rem;
+            display: flex;
+            border-top: solid 1px #d1d9e0;
+        }
+
+    }
+
+}
+

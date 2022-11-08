@@ -6,9 +6,15 @@ class ContactDataStruct extends AbstractStruct
 {
     protected string $key;
 
-    protected string $value;
+    /**
+     * @var string|int|float|null
+     */
+    protected $value;
 
-    public function __construct(string $key, string $value)
+    /**
+     * @param string|int|float|null $value
+     */
+    public function __construct(string $key, $value)
     {
         $this->setKey($key);
         $this->setValue($value);
@@ -21,7 +27,7 @@ class ContactDataStruct extends AbstractStruct
      */
     public function __toString()
     {
-        return $this->value;
+        return $this->key;
     }
 
     public function getKey(): string
@@ -34,12 +40,18 @@ class ContactDataStruct extends AbstractStruct
         $this->key = $key;
     }
 
-    public function getValue(): string
+    /**
+     * @return string|int|float|null
+     */
+    public function getValue()
     {
         return $this->value;
     }
 
-    public function setValue(string $value): void
+    /**
+     * @param string|int|float|null $value
+     */
+    public function setValue($value): void
     {
         $this->value = $value;
     }

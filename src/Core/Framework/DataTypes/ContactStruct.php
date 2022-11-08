@@ -21,7 +21,7 @@ class ContactStruct extends AbstractStruct
     protected ContactDataCollection $dataFields;
 
     /**
-     * @param ContactDataCollection $dataFields
+     * @param iterable<int, array<string, mixed>> $dataFields
      */
     public function __construct(
         ?int $id,
@@ -105,20 +105,14 @@ class ContactStruct extends AbstractStruct
     }
 
     /**
-     * @param ContactDataCollection|array<string,mixed> $dataFields
+     * @param iterable<int, array<string, mixed>> $dataFields
      */
     public function setDataFields(iterable $dataFields): void
     {
-        if (!is_array($dataFields) && is_a($dataFields, ContactDataCollection::class)) {
-            $this->dataFields = $dataFields;
-
-            return;
-        }
-
         $this->dataFields = new ContactDataCollection();
         foreach ($dataFields as $dataField) {
             $this->dataFields->add(new ContactDataStruct(
-                $dataField['key'],
+                (string) $dataField['key'],
                 $dataField['value']
             ));
         }

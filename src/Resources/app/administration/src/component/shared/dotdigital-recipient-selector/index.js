@@ -1,68 +1,86 @@
-import template from './dotdigital-flow-modal.html.twig';
-
-import './dotdigital-flow-modal.scss';
+import template from './contact-selector.html.twig';
+import './contact-selector.scss';
 
 const { Component, Utils, Mixin, Classes: { ShopwareError } } = Shopware;
 const { mapState } = Component.getComponentHelper();
 
-Component.register('dotdigital-flow-modal', { // eslint-disable-line
+Component.register('dotdigital-recipient-selector', {// eslint-disable-line
     template,
     mixins: [Mixin.getByName('notification')],
     props: {
-        sequence: {
+        limit: {
+            type: Number,
+            required: false,
+            default: () => Number.MAX_SAFE_INTEGER,
+        },
+        aware: {
+            type: Array,
+            required: false,
+            default() {
+                return [];
+            },
+        },
+        exclude: {
+            type: Array,
+            required: false,
+            default() {
+                return [];
+            },
+        },
+        recipient: {
             type: Object,
-            required: true,
+            required: false,
         },
     },
     data() {
         return {
             showRecipientEmails: false,
             mailRecipient: null,
-            recipients: [],
             selectedRecipient: null,
             recipientGridError: null,
-            campaignId: 0,
-            validation_errors: [],
+            recipients: [],
+            entityAwareness: [
+                'CustomerAware',
+                'UserAware',
+                'OrderAware',
+                'CustomerGroupAware',
+            ],
         };
     },
-
     computed: {
 
+        isLimitReached() {
+            return this.limit === this.recipients.length;
+        },
+
+        /**
+         * Get awareness of the current sequence
+         * @returns {*[]}
+         */
+        entityAware() {
+            return [...this.aware, ...this.entityAwareness];
+        },
+
+        /**
+         * Get recipient aware description of the current sequence
+         * @returns {string}
+         */
         mailRecipientDescription() {
             let description = '';
             switch (this.mailRecipient) {
                 case 'custom':
-                    description += this.$tc(`
-                        Shopware variables differ depending on the trigger you use.
-                    `);
+                    description += this.$tc('sw-flow.shared.recipient-selector.fields.recipients.description');
                     description +=
                         ` <a href="https://support.dotdigital.com/hc/en-gb/articles/7101774577298" target="_blank">
-                                ${this.$tc('Learn more')}
+                                ${this.$tc('sw-flow.shared.recipient-selector.fields.recipients.help-link')}
                           </a>
                         `;
                     break;
                 default:
-                    description += '<br>';
+                    description += '';
                     break;
             }
             return description;
-        },
-
-        modalTitle() {
-            return this.$tc('Send email with Dotdigital');
-        },
-
-        modalSubTitle() {
-            return this.$tc('Automatically send your Dotdigital triggered campaign content as a transactional email. ');
-        },
-
-        /**
-         * Is campaign ID valid
-         *
-         * @returns {boolean}
-         */
-        isValid() {
-            return !this.validation_errors.length > 0;
         },
 
         /**
@@ -70,8 +88,8 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
          *
          * @returns {boolean}
          */
-        isNewMail() {
-            return !this.sequence?.id;
+        isNew() {
+            return !this.recipient?.type;
         },
 
         /**
@@ -112,7 +130,7 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
             return [
                 {
                     value: 'custom',
-                    label: this.$tc('Custom'),
+                    label: this.$tc('sw-flow.shared.recipient-selector.fields.recipients.options.custom'),
                 },
             ];
         },
@@ -154,22 +172,8 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
             return [
                 {
                     value: 'default',
-                    label: this.$tc('Newsletter recipient'),
+                    label: this.$tc('sw-flow.shared.recipient-selector.fields.recipients.options.newsletter'),
                 },
-            ];
-        },
-
-        /**
-         * Get recipient aware of the current sequence
-         *
-         * @returns {string[]}
-         */
-        entityAware() {
-            return [
-                'CustomerAware',
-                'UserAware',
-                'OrderAware',
-                'CustomerGroupAware',
             ];
         },
 
@@ -191,18 +195,18 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
 
             if (this.triggerEvent.name === 'contact_form.send') {
                 return [
-                    ...this.recipientDefault,
-                    ...this.recipientContactFormMail,
-                    ...this.recipientAdmin,
-                    ...this.recipientCustom,
+                    ...this.isRecipientExcluded(this.recipientDefault) ? [] : this.recipientDefault,
+                    ...this.isRecipientExcluded(this.recipientContactFormMail) ? [] : this.recipientContactFormMail,
+                    ...this.isRecipientExcluded(this.recipientAdmin) ? [] : this.recipientAdmin,
+                    ...this.isRecipientExcluded(this.recipientCustom) ? [] : this.recipientCustom,
                 ];
             }
 
             if (this.triggerEvent.name === 'newsletter.confirm') {
                 return [
-                    ...this.recipientFromNewsLetterForm,
-                    ...this.recipientAdmin,
-                    ...this.recipientCustom,
+                    ...this.isRecipientExcluded(this.recipientFromNewsLetterForm) ? [] : this.recipientFromNewsLetterForm,
+                    ...this.isRecipientExcluded(this.recipientAdmin) ? [] : this.recipientAdmin,
+                    ...this.isRecipientExcluded(this.recipientCustom) ? [] : this.recipientCustom,
                 ];
             }
 
@@ -211,9 +215,9 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
                 this.triggerEvent.name === 'newsletter.register'
             ) {
                 return [
-                    ...this.recipientFromNewsLetterForm,
-                    ...this.recipientAdmin,
-                    ...this.recipientCustom,
+                    ...this.isRecipientExcluded(this.recipientFromNewsLetterForm) ? [] : this.recipientFromNewsLetterForm,
+                    ...this.isRecipientExcluded(this.recipientAdmin) ? [] : this.recipientAdmin,
+                    ...this.isRecipientExcluded(this.recipientCustom) ? [] : this.recipientCustom,
                 ];
             }
 
@@ -221,15 +225,15 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
 
             if (hasEntityAware) {
                 return [
-                    ...this.recipientCustomer,
-                    ...this.recipientAdmin,
-                    ...this.recipientCustom,
+                    ...this.isRecipientExcluded(this.recipientCustomer) ? [] : this.recipientCustomer,
+                    ...this.isRecipientExcluded(this.recipientAdmin) ? [] : this.recipientAdmin,
+                    ...this.isRecipientExcluded(this.recipientCustom) ? [] : this.recipientCustom,
                 ];
             }
 
             return [
-                ...this.recipientAdmin,
-                ...this.recipientCustom,
+                ...this.isRecipientExcluded(this.recipientAdmin) ? [] : this.recipientAdmin,
+                ...this.isRecipientExcluded(this.recipientCustom) ? [] : this.recipientCustom,
             ];
         },
 
@@ -241,12 +245,12 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
         recipientColumns() {
             return [{
                 property: 'email',
-                label: this.$tc('Email address or Shopware variable'),
+                label: `${this.$tc('sw-flow.shared.recipient-selector.grid.columns.email.header')} (max ${this.limit}) `,
                 inlineEdit: 'string',
             }];
         },
 
-        ...mapState('swFlowState', ['triggerEvent', 'triggerActions']),
+        ...mapState('swFlowState', ['triggerEvent']),
 
     },
 
@@ -260,34 +264,16 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
     methods: {
 
         /**
-         * Handle Validation events
-         *
-         * @param event
-         */
-        handleValidationEvent(event) {
-            if (event.passes) {
-                this.validation_errors = this.validation_errors.filter((error) => {
-                    return error.key !== event.key;
-                });
-            } else {
-                this.validation_errors.push({ key: event.key, message: event.error });
-            }
-        },
-
-        /**
          * Shopware sequence hook
          */
         createdComponent() {
-            this.campaignId = this.sequence?.config?.campaignId || 0;
-            this.mailRecipient = this.recipientOptions[0].value;
+            this.mailRecipient = (this.recipient?.type)
+                ? this.recipient.type
+                : this.recipientOptions[0].value;
 
-            if (!this.isNewMail) {
-                const { config } = this.sequence;
-
-                this.mailRecipient = config.recipient?.type;
-
-                if (config.recipient?.type === 'custom') {
-                    Object.values(config.recipient.data)
+            if (!this.isNew) {
+                if (this.recipient?.type === 'custom') {
+                    Object.values(this.recipient.data)
                         .forEach(value => {
                             const newId = Utils.createId();
                             this.recipients.push({
@@ -296,18 +282,13 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
                                 isNew: false,
                             });
                         });
-
                     this.addRecipient();
                     this.showRecipientEmails = true;
                 }
             }
-        },
-
-        /**
-         * On Modal closed event hook
-         */
-        onClose() {
-            this.$emit('modal-close');
+            if (this.mailRecipient !== 'custom') {
+                this.emit();
+            }
         },
 
         /**
@@ -343,11 +324,6 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
                 return false;
             }
 
-            if (this.recipients.length === 1 && !this.recipients[0].email) {
-                this.validateRecipient(this.recipients[0], 0);
-                return true;
-            }
-
             const invalidItemIndex = this.recipients.filter(item => !item.isNew)
                 .findIndex(recipient => !recipient.email);
 
@@ -358,31 +334,20 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
             return invalidItemIndex >= 0;
         },
 
+
         /**
-         * Validate recipient and emit event
+         * Validate recipient and emit to parent component
          */
-        onAddAction() {
+        emit() {
             this.recipientGridError = this.isRecipientGridError();
-            if (this.recipientGridError || !this.isValid) {
+            if (this.recipientGridError) {
                 return;
             }
-
-            this.resetError();
-
-            const sequence = {
-                ...this.sequence,
-                config: {
-
-                    campaignId: this.campaignId,
-                    recipient: {
-                        type: this.mailRecipient,
-                        data: this.getRecipientData(),
-                    },
+            this.$emit('selected-recipient', {
+                payload: {
+                    type: this.mailRecipient,
+                    data: this.getRecipientData(),
                 },
-            };
-
-            this.$nextTick(() => {
-                this.$emit('process-finish', sequence);
             });
         },
 
@@ -394,16 +359,19 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
         onChangeRecipient(recipient) {
             if (recipient === 'custom') {
                 this.showRecipientEmails = true;
+                if (this.recipients.length >= 1) return;
                 this.addRecipient();
             } else {
                 this.showRecipientEmails = false;
             }
+            this.emit();
         },
 
         /**
          * Add new recipient to grid
          */
         addRecipient() {
+            if (this.isLimitReached) return;
             const newId = Utils.createId();
 
             this.recipients.push({
@@ -442,6 +410,7 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
             }
 
             this.resetError();
+            this.emit();
         },
 
         /**
@@ -462,6 +431,7 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
             }
 
             this.resetError();
+            this.emit();
         },
 
         /**
@@ -484,6 +454,7 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
             this.$refs.recipientsGrid.currentInlineEditId = item.id;
             this.$refs.recipientsGrid.enableInlineEdit();
             this.selectedRecipient = { ...item };
+            this.emit();
         },
 
         /**
@@ -493,6 +464,7 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
          */
         onDeleteRecipient(itemIndex) {
             this.recipients.splice(itemIndex, 1);
+            this.emit();
         },
 
         fieldError(text) {
@@ -550,6 +522,18 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
                 item.errorMail = null;
             });
         },
+
+        /**
+         * Is recipient type allowed.
+         * @param recipientType
+         * @returns {boolean}
+         */
+        isRecipientExcluded(recipientType) {
+            return this.exclude.includes(
+                recipientType.at(0).value,
+            );
+        },
+
 
         /**
          * Can delete recipient

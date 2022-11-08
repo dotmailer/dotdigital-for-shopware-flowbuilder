@@ -10,9 +10,15 @@ class ApiDataFieldStruct extends AbstractStruct
 
     protected string $visibility;
 
-    protected ?string $defaultValue;
+    /**
+     * @var mixed
+     */
+    protected $defaultValue;
 
-    public function __construct(string $name, string $type, string $visibility = 'Private', ?string $defaultValue = null)
+    /**
+     * @param string|int|float|null $defaultValue
+     */
+    public function __construct(string $name, string $type, string $visibility = 'Private', $defaultValue = null)
     {
         $this->setName($name);
         $this->setType($type);
@@ -60,12 +66,18 @@ class ApiDataFieldStruct extends AbstractStruct
         $this->visibility = $visibility;
     }
 
-    public function getDefaultValue(): ?string
+    /**
+     * @return string|int|float|null
+     */
+    public function getDefaultValue()
     {
         return $this->defaultValue;
     }
 
-    public function setDefaultValue(?string $defaultValue): void
+    /**
+     * @param string|int|float|null $defaultValue
+     */
+    public function setDefaultValue($defaultValue): void
     {
         $this->defaultValue = $defaultValue;
     }

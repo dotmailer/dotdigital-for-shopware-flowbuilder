@@ -1,0 +1,74 @@
+<span>
+
+    {% block sw_flow_data_field_grid %}
+        <sw-data-grid
+            ref="dataFieldsGrid"
+            class="sw-flow-mail-contact__data-field-grid"
+            :class="dataFieldGridError ? 'has--error' : ''"
+            :data-source="dataFieldsGridData"
+            :columns="dataFieldColumns"
+            :show-selection="false"
+            :plain-appearance="true"
+            :isLoading="loading"
+            @inline-edit-save="saveDataField"
+            @inline-edit-cancel="cancelSaveDataField"
+        >
+
+        {% block sw_event_action_detail_data_field_grid_column_select %}
+            <template #column-key="{ item, column, isInlineEdit, compact }">
+                <sw-single-select
+                   v-if="isInlineEdit"
+                   v-model="item.opt.dataFieldSelection"
+                   class="sw-flow-data-field-modal__select"
+                   :options="availableDataFieldOptions"
+                   :size="compact ? 'small' : 'default'"
+                   :placeholder="$tc('sw-flow.shared.data-field-selector.grid.columns.key.placeholder')"
+                   @change="handleDataFieldSelection"
+                ></sw-single-select>
+            </template>
+            <template #column-type="{ item, column, isInlineEdit, compact }">
+                <span style="color: #189eff" class="sw-data-grid__cell-value" v-if="isInlineEdit">
+                    {{ selectedDataField?.type || $tc('sw-flow.shared.data-field-selector.grid.columns.type.placeholder') }}
+                </span>
+            </template>
+            <template #column-value="{ item, column, isInlineEdit, compact }">
+                <sw-text-field
+                    v-if="isInlineEdit"
+                    v-model="selectedDataField.value"
+                    class="sw-flow-mail-send-modal__dataField-email ddg-custom-dataField-email"
+                    :disabled="!selectedDataField?.type"
+                    :size="compact ? 'small' : 'default'"
+                    :placeholder="$tc('sw-flow.shared.data-field-selector.grid.columns.value.placeholder',{
+                    type: selectedDataField?.type
+                    })"
+                ></sw-text-field>
+            </template>
+        {% endblock %}
+
+        <template #actions="{ item, itemIndex }">
+            {% block sw_event_action_detail_dataFields_grid_action_edit %}
+                <sw-context-menu-item
+                    class="sw-flow-mail-send-modal__grid-action-edit"
+                    @click="onEditDataField(item)"
+                >
+                {{ $tc('global.default.edit') }}
+            </sw-context-menu-item>
+            {% endblock %}
+
+            {% block sw_event_action_detail_dataFields_grid_action_delete %}
+                <sw-context-menu-item
+                    class="sw-flow-mail-send-modal__grid-action-delete"
+                    variant="danger"
+                    :disabled="!allowDeleteDataField(itemIndex)"
+                    @click="onDeleteDataField(itemIndex)"
+                >
+                {{ $tc('global.default.delete') }}
+            </sw-context-menu-item>
+            {% endblock %}
+        </template>
+    </sw-data-grid>
+    {% endblock %}
+
+
+
+</span>

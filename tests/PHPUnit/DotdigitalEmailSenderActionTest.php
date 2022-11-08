@@ -5,7 +5,9 @@ namespace Dotdigital\Tests;
 use DG\BypassFinals;
 use Doctrine\DBAL\Connection;
 use Dotdigital\Flow\Core\Content\Flow\Dispatching\Action\DotdigitalEmailSenderAction;
+use Dotdigital\Flow\Core\Framework\DataTypes\RecipientCollection;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
+use Dotdigital\Flow\Service\RecipientResolver;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\ContactForm\Event\ContactFormEvent;
@@ -91,6 +93,7 @@ class DotdigitalEmailSenderActionTest extends TestCase
         $this->mailRecipientStructMock = $this->createMock(MailRecipientStruct::class);
         $this->eventMock = $this->createMock(FlowEvent::class);
         $this->contextMock = $this->createMock(Context::class);
+        $this->recipientResolverMock = $this->createMock(RecipientResolver::class);
         /* @phpstan-ignore-next-line */
         $this->contactFormEventMock = $this->createMock(ContactFormEvent::class);
         $this->contextSourceMock = $this->getMockBuilder(ContextSource::class)
@@ -98,12 +101,25 @@ class DotdigitalEmailSenderActionTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $this->recipientCollectionMock = $this->getMockBuilder(RecipientCollection::class)
+            ->addMethods(['getEmail'])
+            ->onlyMethods(['getElements', 'count'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->recipientResolverMock->expects(static::once())
+            ->method('getRecipients')
+            ->willReturn($this->recipientCollectionMock);
+
+        $this->recipientCollectionMock->expects(static::once())
+            ->method('count')
+            ->willReturn(1);
+
         $this->dotdigitalSenderAction = new DotdigitalEmailSenderAction(
             $this->dotdigitalClientFactoryMock,
-            $this->rendererMock,
             $this->businessEventLoaderMock,
-            $this->connectionMock,
-            $this->loggerMock
+            $this->loggerMock,
+            $this->recipientResolverMock
         );
     }
 
@@ -116,6 +132,10 @@ class DotdigitalEmailSenderActionTest extends TestCase
             ->method('getEvent')
             ->willReturn($this->mailAwareMock);
 
+        $this->recipientCollectionMock->expects(static::atLeastOnce())
+            ->method('count')
+            ->willReturn(1);
+
         $this->eventMock->expects(static::once())
             ->method('getConfig')
             ->willReturn([
@@ -125,14 +145,6 @@ class DotdigitalEmailSenderActionTest extends TestCase
                 ],
                 'campaignId' => 100000,
             ]);
-
-        $this->mailAwareMock->expects(static::atLeastOnce())
-            ->method('getMailStruct')
-            ->willReturn($this->mailRecipientStructMock);
-
-        $this->mailRecipientStructMock->expects(static::atLeastOnce())
-            ->method('getRecipients')
-            ->willReturn(['chaz@emailsim.io' => 'Chaz Kangaroo']);
 
         $this->eventMock->expects(static::once())
             ->method('getContext')
@@ -164,11 +176,6 @@ class DotdigitalEmailSenderActionTest extends TestCase
                 'campaignId' => 100000,
             ]);
 
-        /* @phpstan-ignore-next-line */
-        $this->contactFormEventMock->expects(static::once())
-            ->method('getContactFormData')
-            ->willReturn(['email' => 'chaz@emailsim.io']);
-
         $this->eventMock->expects(static::once())
             ->method('getContext')
             ->willReturn($this->contextMock);
@@ -198,18 +205,6 @@ class DotdigitalEmailSenderActionTest extends TestCase
                 ],
                 'campaignId' => 100000,
             ]);
-
-        $this->connectionMock->expects(static::once())
-            ->method('fetchAllAssociative')
-            ->willReturn(
-                [
-                    [
-                        'fist_name' => 'Chaz',
-                        'last_name' => 'Kangaroo',
-                        'email' => 'chaz@emailsim.io',
-                    ],
-                ]
-            );
 
         $this->eventMock->expects(static::once())
             ->method('getContext')

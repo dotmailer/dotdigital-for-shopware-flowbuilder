@@ -1,16 +1,16 @@
-export const ACTION = Object.freeze({
+export const ACTION = Object.freeze({// eslint-disable-line
     HANDLE: 'action.create.dotdigital_mail_sender',
-    LABEL: 'Send email with Dotdigital',
+    LABEL: 'Send email',
 });
 
-export const CONTACT_ACTION = Object.freeze({
+export const CONTACT_ACTION = Object.freeze({// eslint-disable-line
     HANDLE: 'action.create.dotdigital_contact',
     COMPONENT_NAME: 'dotdigital-flow-contact-modal',
-    LABEL: 'Dotdigital contact',
+    LABEL: 'Add or update contacts',
     ICON: 'regular-user',
 });
 
-export default {
+export default {// eslint-disable-line
     ACTION,
     CONTACT_ACTION,
 };

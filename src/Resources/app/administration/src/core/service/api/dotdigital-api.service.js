@@ -26,4 +26,4 @@ class DotdigitalApiService extends ApiService {
     }
 }
 
-export default DotdigitalApiService;
+export default DotdigitalApiService;// eslint-disable-line
