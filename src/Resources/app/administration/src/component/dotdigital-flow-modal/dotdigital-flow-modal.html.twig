@@ -14,13 +14,13 @@
         :label="$tc('sw-flow.modals.mail.labelRecipient')"
         :placeholder="$tc('sw-flow.modals.mail.placeholderRecipient')"
         @change="onChangeRecipient"
-    >
-    </sw-single-select>
+    />
     <small
         v-if="mailRecipientDescription"
-        v-html="mailRecipientDescription"
         id="emailHelp"
-        class="sw-flow-mail-send-modal__description"></small>
+        class="sw-flow-mail-send-modal__description"
+        v-html="mailRecipientDescription"
+    ></small>
 
     {% endblock %}
     {% block sw_flow_mail_send_modal_recipient_emails_grid %}
@@ -82,7 +82,10 @@
         @dd-validation="handleValidationEvent"
     />
     <span class="sw-flow-mail-send-modal__description">
-        <small id="emailHelp" class="form-text text-muted">
+        <small
+            id="emailHelp"
+            class="form-text text-muted"
+        >
             {{ $tc('In Dotdigital, go to your triggered campaign and find the ID in the URL (?id=xxxxxx).') }}
         </small>
     </span>
@@ -90,7 +93,11 @@
 
     {% block dotdigital_flowbuilder_plugin_modal_footer %}
     <template #modal-footer>
-        <a href="https://support.dotdigital.com/hc/en-gb/articles/7101772942738" class="pull-left" target="_blank">Dotdigital Help Centre</a>
+        <a
+            href="https://support.dotdigital.com/hc/en-gb/articles/7101772942738"
+            class="pull-left"
+            target="_blank"
+        >Dotdigital Help Centre</a>
         {% block dotdigital_flowbuilder_plugin_modal_footer_cancel_button %}
         <sw-button
             class="dotdigital-flowbuilder-plugin-modal__cancel-button"

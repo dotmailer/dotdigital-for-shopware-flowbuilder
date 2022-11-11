@@ -55,10 +55,9 @@
                 },
                 "grid": {
                     "columns": {
-
                         "email": {
-                            "header": "Email address or Shopware variable",
-                            "placeholder": "Enter a static email address or a Shopware.variable"
+                            "header": "Email address",
+                            "placeholder": "Enter a static email address or a Shopware variable"
                         }
                     }
                 }
@@ -72,7 +71,7 @@
                         },
                         "value": {
                             "header": "Shopware variable or value",
-                            "placeholder": "Enter a Shopware.variable or a fixed {type} value"
+                            "placeholder": "Enter a Shopware variable or a fixed value"
                         },
                         "type": {
                             "header": "Type",

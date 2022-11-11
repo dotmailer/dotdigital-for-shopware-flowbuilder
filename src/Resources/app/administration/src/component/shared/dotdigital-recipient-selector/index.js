@@ -195,7 +195,6 @@ Component.register('dotdigital-recipient-selector', {// eslint-disable-line
 
             if (this.triggerEvent.name === 'contact_form.send') {
                 return [
-                    ...this.isRecipientExcluded(this.recipientDefault) ? [] : this.recipientDefault,
                     ...this.isRecipientExcluded(this.recipientContactFormMail) ? [] : this.recipientContactFormMail,
                     ...this.isRecipientExcluded(this.recipientAdmin) ? [] : this.recipientAdmin,
                     ...this.isRecipientExcluded(this.recipientCustom) ? [] : this.recipientCustom,

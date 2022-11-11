@@ -38,6 +38,8 @@ Component.register('dotdigital-flow-contact-modal', { // eslint-disable-line
                     value: addressBook.id,
                     label: `${addressBook.name}`,
                 };
+            }).filter((addressBookOption) => {
+                return addressBookOption.label !== 'Test';
             });
         },
 
@@ -71,7 +73,7 @@ Component.register('dotdigital-flow-contact-modal', { // eslint-disable-line
          * @returns {string}
          */
         helpLink() {
-            return '#';
+            return 'https://support.dotdigital.com/hc/en-gb/articles/8472407231762';
         },
 
         /**
