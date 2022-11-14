@@ -6,6 +6,13 @@
             },
             "contact": {
                 "title": "Add or update a contact",
+                "sequence-description": {
+                    "contact": "Contact Context: {recipient}",
+                    "address-book": "Address book: {addressBook}",
+                    "opt-in": "Double opt-in: {optIn}",
+                    "resubscribe": "Resubscribe: {resubscribe}",
+                    "data-fields": "Contact Data fields: {hasDataFields}"
+                },
                 "subtitle": "Add a contact or update an existing contact in Dotdigital.",
                 "help-link": "Dotdigital Help Centre",
                 "buttons": {
@@ -16,7 +23,7 @@
                     "address-book": {
                         "label": "Add to address book",
                         "description": "If you want, choose an address book to add new and updated contacts to.",
-                        "placeholder": "Choose address book"
+                        "placeholder": "Search or choose address book"
                     },
                     "resubscribe": {
                         "label": "Send resubscribe email",
@@ -37,6 +44,9 @@
             "recipient-selector": {
                 "fields": {
                     "recipients": {
+                        "label": "Email address",
+                        "description": "Shopware variables differ depending on the trigger you use.",
+                        "help-link": "Learn more",
                         "options": {
                             "newsletter": "Newsletter recipient",
                             "custom": "Custom"
@@ -46,8 +56,8 @@
                 "grid": {
                     "columns": {
                         "email": {
-                            "header": "Email address or Shopware variable",
-                            "placeholder": "Enter a static email address or a {{ Shopware.variable }}"
+                            "header": "Email address",
+                            "placeholder": "Enter a static email address or a Shopware variable"
                         }
                     }
                 }
@@ -57,11 +67,21 @@
                     "columns": {
                         "key": {
                             "header": "Dotdigital data field",
-                            "placeholder": "Choose data field"
+                            "placeholder": "Search or choose data field"
                         },
                         "value": {
                             "header": "Shopware variable or value",
-                            "placeholder": "Enter a {{ '{{Shopware.variable}}' }} or a fixed value."
+                            "placeholder": "Enter a Shopware variable or a fixed value"
+                        },
+                        "type": {
+                            "header": "Type",
+                            "placeholder": "Unspecified",
+                            "values": {
+                                "boolean": "Yes/No",
+                                "string": "String",
+                                "date": "Date",
+                                "numeric": "Numeric"
+                            }
                         }
 
                     }

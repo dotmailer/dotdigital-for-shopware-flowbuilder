@@ -244,7 +244,7 @@ Component.register('dotdigital-recipient-selector', {// eslint-disable-line
         recipientColumns() {
             return [{
                 property: 'email',
-                label: `${this.$tc('sw-flow.shared.recipient-selector.grid.columns.email.header')} (max ${this.limit}) `,
+                label: `${this.$tc('sw-flow.shared.recipient-selector.grid.columns.email.header')}`,
                 inlineEdit: 'string',
             }];
         },

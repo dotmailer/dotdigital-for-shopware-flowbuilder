@@ -154,7 +154,6 @@ Component.register('dotdigital-data-field-selector', {// eslint-disable-line
             this.dataFieldsGridData = [...this.dataFields];
         },
 
-
         /**
          * Add dataField
          */
@@ -162,7 +161,7 @@ Component.register('dotdigital-data-field-selector', {// eslint-disable-line
             this.selectedDataField = {
                 ...this.selectedDataField,
                 ...{ key: dataField.name },
-                ...{ type: dataField.type },
+                ...{ type: this.evaluateDataFieldTypeDescription(dataField.type) },
             };
         },
 
@@ -173,6 +172,13 @@ Component.register('dotdigital-data-field-selector', {// eslint-disable-line
             this.$emit('selected-data-field', {
                 payload: this.getDataFields(),
             });
+        },
+
+        evaluateDataFieldTypeDescription(type = null) {
+            if (!type) {
+                return this.$tc('sw-flow.shared.data-field-selector.grid.columns.type.placeholder');
+            }
+            return this.$tc(`sw-flow.shared.data-field-selector.grid.columns.type.values.${type.toLowerCase()}`);
         },
 
         getDataFields() {

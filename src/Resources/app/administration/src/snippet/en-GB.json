@@ -75,7 +75,13 @@
                         },
                         "type": {
                             "header": "Type",
-                            "placeholder": "Unspecified"
+                            "placeholder": "Unspecified",
+                            "values": {
+                                "boolean": "Yes/No",
+                                "string": "String",
+                                "date": "Date",
+                                "numeric": "Numeric"
+                            }
                         }
 
                     }
