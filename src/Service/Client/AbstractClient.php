@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AbstractClient
 {
+    public const SELECT_LIMIT = 1000;
+
     protected LoggerInterface $logger;
 
     private ClientInterface $client;

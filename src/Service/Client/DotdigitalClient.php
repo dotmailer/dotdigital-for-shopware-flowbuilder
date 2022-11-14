@@ -122,13 +122,21 @@ class DotdigitalClient extends AbstractClient
     }
 
     /**
-     * Get Collection of address books
+     * Get Collection of address books.
      *
      * @throws GuzzleException
      */
-    public function getAddressBooks(): AddressBookCollection
+    public function getAddressBooks(int $skipLimit = 0): AddressBookCollection
     {
-        $addressBooksResponse = $this->get(self::GET_ADDRESS_BOOKS_ENDPOINT, []);
+        $addressBooksResponse = $this->get(
+            sprintf(
+                '%s?select=%s&skip=%s',
+                self::GET_ADDRESS_BOOKS_ENDPOINT,
+                self::SELECT_LIMIT,
+                $skipLimit
+            ),
+            []
+        );
         $addressBooks = new AddressBookCollection();
         foreach ($addressBooksResponse as $addressBook) {
             $struct = new AddressBookStruct(

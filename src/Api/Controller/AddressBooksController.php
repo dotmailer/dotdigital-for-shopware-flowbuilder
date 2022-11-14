@@ -3,6 +3,7 @@
 namespace Dotdigital\Flow\Api\Controller;
 
 use Dotdigital\Flow\Core\Framework\Traits\InteractsWithResponseTrait;
+use Dotdigital\Flow\Service\Client\AbstractClient;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
 use Shopware\Core\Framework\Routing\Annotation\Acl;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
@@ -35,8 +36,18 @@ class AddressBooksController extends AbstractController
      */
     public function showAddressBooks(): JsonResponse
     {
-        $addressBooks = $this->dotdigitalClientFactory->createClient()->getAddressBooks();
+        $addressBooks = [];
+        do {
+            $addressBooksCollection = $this->dotdigitalClientFactory
+                ->createClient()
+                ->getAddressBooks(\count($addressBooks));
 
-        return new JsonResponse($this->dotdigitalCollectionToArray($addressBooks));
+            $addressBooks = [
+                ...$addressBooks,
+                ...$this->dotdigitalCollectionToArray($addressBooksCollection),
+            ];
+        } while (\count($addressBooksCollection) === AbstractClient::SELECT_LIMIT);
+
+        return new JsonResponse($addressBooks);
     }
 }
