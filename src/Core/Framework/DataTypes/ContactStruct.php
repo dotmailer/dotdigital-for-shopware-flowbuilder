@@ -3,12 +3,13 @@
 namespace Dotdigital\Flow\Core\Framework\DataTypes;
 
 use Dotdigital\Flow\Core\Framework\Traits\InteractsWithResponseTrait;
+use Dotdigital\Flow\Setting\Defaults;
 
 class ContactStruct extends AbstractStruct
 {
     use InteractsWithResponseTrait;
 
-    protected ?int $id;
+    protected int $id;
 
     protected string $email;
 
@@ -24,12 +25,12 @@ class ContactStruct extends AbstractStruct
      * @param iterable<int, array<string, mixed>> $dataFields
      */
     public function __construct(
-        ?int $id,
-        string $email,
-        string $status,
-        string $optInType,
-        string $emailType,
-        iterable $dataFields
+        int $id = Defaults::DEFAULT_NUMERIC_VALUE,
+        string $email = Defaults::DEFAULT_UNDEFINED_VALUE,
+        string $status = Defaults::DEFAULT_UNDEFINED_VALUE,
+        string $optInType = Defaults::DEFAULT_UNDEFINED_VALUE,
+        string $emailType = Defaults::DEFAULT_UNDEFINED_VALUE,
+        iterable $dataFields = []
     ) {
         $this->setId($id);
         $this->setEmail($email);
@@ -49,14 +50,16 @@ class ContactStruct extends AbstractStruct
         return $this->email;
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function setId(?int $id): void
+    public function setId(int $id): self
     {
         $this->id = $id;
+
+        return $this;
     }
 
     public function getEmail(): string
@@ -64,9 +67,11 @@ class ContactStruct extends AbstractStruct
         return $this->email;
     }
 
-    public function setEmail(string $email = 'Html'): void
+    public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
     }
 
     public function getStatus(): string
@@ -74,9 +79,11 @@ class ContactStruct extends AbstractStruct
         return $this->status;
     }
 
-    public function setStatus(string $status): void
+    public function setStatus(string $status): self
     {
         $this->status = $status;
+
+        return $this;
     }
 
     public function getOptInType(): string
@@ -84,9 +91,11 @@ class ContactStruct extends AbstractStruct
         return $this->optInType;
     }
 
-    public function setOptInType(string $optInType = 'Single'): void
+    public function setOptInType(string $optInType): self
     {
         $this->optInType = $optInType;
+
+        return $this;
     }
 
     public function getEmailType(): string
@@ -94,9 +103,11 @@ class ContactStruct extends AbstractStruct
         return $this->emailType;
     }
 
-    public function setEmailType(string $emailType): void
+    public function setEmailType(string $emailType): self
     {
         $this->emailType = $emailType;
+
+        return $this;
     }
 
     public function getDataFields(): ContactDataCollection
@@ -107,7 +118,7 @@ class ContactStruct extends AbstractStruct
     /**
      * @param iterable<int, array<string, mixed>> $dataFields
      */
-    public function setDataFields(iterable $dataFields): void
+    public function setDataFields(iterable $dataFields): self
     {
         $this->dataFields = new ContactDataCollection();
         foreach ($dataFields as $dataField) {
@@ -116,5 +127,7 @@ class ContactStruct extends AbstractStruct
                 $dataField['value']
             ));
         }
+
+        return $this;
     }
 }

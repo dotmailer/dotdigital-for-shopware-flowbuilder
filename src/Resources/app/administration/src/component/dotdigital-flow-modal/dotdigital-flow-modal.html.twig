@@ -18,7 +18,7 @@
     <small
         v-if="mailRecipientDescription"
         id="emailHelp"
-        class="sw-flow-mail-send-modal__description"
+        class="dd-description"
         v-html="mailRecipientDescription"
     ></small>
 
@@ -81,14 +81,10 @@
         :label="$tc('Triggered campaign ID')"
         @dd-validation="handleValidationEvent"
     />
-    <span class="sw-flow-mail-send-modal__description">
-        <small
-            id="emailHelp"
-            class="form-text text-muted"
-        >
-            {{ $tc('In Dotdigital, go to your triggered campaign and find the ID in the URL (?id=xxxxxx).') }}
-        </small>
-    </span>
+
+    <small id="emailHelp" class="dd-description">
+        {{ $tc('In Dotdigital, go to your triggered campaign and find the ID in the URL (?id=xxxxxx).') }}
+    </small>
     {% endblock %}
 
     {% block dotdigital_flowbuilder_plugin_modal_footer %}

@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @RouteScope(scopes={"api"})
  */
-class AddressBooksController extends AbstractController
+class ProgramsController extends AbstractController
 {
     use InteractsWithResponseTrait;
 
@@ -28,25 +28,26 @@ class AddressBooksController extends AbstractController
 
     /**
      * @Route(
-     *     "/api/dotdigital/address-books",
-     *     name="api.action.dotdigital.address.books",
+     *     "/api/dotdigital/programs",
+     *     name="api.action.dotdigital.",
      *     methods={"GET"}
      * )
      * @Acl({"sales_channel.editor"})
      */
-    public function showAddressBooks(): JsonResponse
+    public function showPrograms(): JsonResponse
     {
-        $addressBooks = [];
+        $programs = [];
         do {
-            $addressBooksCollection = $this->dotdigitalClientFactory
+            $programCollection = $this->dotdigitalClientFactory
                 ->createClient()
-                ->getAddressBooks(\count($addressBooks));
-            $addressBooks = [
-                ...$addressBooks,
-                ...$this->dotdigitalCollectionToArray($addressBooksCollection),
-            ];
-        } while (\count($addressBooksCollection) === AbstractClient::SELECT_LIMIT);
+                ->getPrograms(\count($programs));
 
-        return new JsonResponse($addressBooks);
+            $programs = [
+                ...$programs,
+                ...$this->dotdigitalCollectionToArray($programCollection),
+            ];
+        } while (\count($programCollection) === AbstractClient::SELECT_LIMIT);
+
+        return new JsonResponse($programs);
     }
 }

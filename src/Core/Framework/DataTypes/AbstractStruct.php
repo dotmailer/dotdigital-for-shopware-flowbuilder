@@ -2,7 +2,10 @@
 
 namespace Dotdigital\Flow\Core\Framework\DataTypes;
 
-class AbstractStruct
+use Dotdigital\Flow\Setting\Defaults;
+use Shopware\Core\Framework\Struct\Struct;
+
+class AbstractStruct extends Struct
 {
     /**
      * Convert struct to array.
@@ -11,6 +14,25 @@ class AbstractStruct
      */
     public function toArray(): iterable
     {
-        return get_object_vars($this);
+        return $this->jsonSerialize();
+    }
+
+    /**
+     * Check if attribute has API or user assigned value
+     */
+    public function attributeIsDefault(string $attribute): bool
+    {
+        if (property_exists($this, $attribute)) {
+            $value = $this->{$attribute};
+            if (
+                $value === Defaults::DEFAULT_UNDEFINED_VALUE
+                || $value === Defaults::DEFAULT_DATETIME_VALUE
+                || $value === Defaults::DEFAULT_NUMERIC_VALUE
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

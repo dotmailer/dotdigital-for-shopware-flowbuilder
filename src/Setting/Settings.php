@@ -2,8 +2,6 @@
 
 namespace Dotdigital\Flow\Setting;
 
-use Monolog\Logger;
-
 class Settings
 {
     /**
@@ -24,7 +22,7 @@ class Settings
     public const AUTHENTICATION_PASSWORD_CONFIG_KEY = self::DOTDIGITAL_CONFIG_DOMAIN . 'password';
 
     /**
-     * System Logger
+     * Date time formatting
      */
-    public const DEFAULT_LOGGING_LEVEL = Logger::WARNING;
+    public const DATE_TIME_FORMAT = 'Y-m-d H:i:s.v';
 }

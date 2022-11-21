@@ -2,6 +2,8 @@
 
 namespace Dotdigital\Flow\Core\Framework\DataTypes;
 
+use Dotdigital\Flow\Setting\Defaults;
+
 class ApiDataFieldStruct extends AbstractStruct
 {
     protected string $name;
@@ -18,8 +20,12 @@ class ApiDataFieldStruct extends AbstractStruct
     /**
      * @param string|int|float|null $defaultValue
      */
-    public function __construct(string $name, string $type, string $visibility = 'Private', $defaultValue = null)
-    {
+    public function __construct(
+        string $name = Defaults::DEFAULT_UNDEFINED_VALUE,
+        string $type = Defaults::DEFAULT_UNDEFINED_VALUE,
+        string $visibility = Defaults::DEFAULT_UNDEFINED_VALUE,
+        $defaultValue = Defaults::DEFAULT_UNDEFINED_VALUE
+    ) {
         $this->setName($name);
         $this->setType($type);
         $this->setVisibility($visibility);
@@ -36,14 +42,16 @@ class ApiDataFieldStruct extends AbstractStruct
         return $this->name;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(string $name): void
+    public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
     }
 
     public function getType(): string
@@ -51,9 +59,11 @@ class ApiDataFieldStruct extends AbstractStruct
         return $this->type;
     }
 
-    public function setType(string $type): void
+    public function setType(string $type): self
     {
         $this->type = $type;
+
+        return $this;
     }
 
     public function getVisibility(): string
@@ -61,9 +71,11 @@ class ApiDataFieldStruct extends AbstractStruct
         return $this->visibility;
     }
 
-    public function setVisibility(string $visibility): void
+    public function setVisibility(string $visibility): self
     {
         $this->visibility = $visibility;
+
+        return $this;
     }
 
     /**
@@ -77,8 +89,10 @@ class ApiDataFieldStruct extends AbstractStruct
     /**
      * @param string|int|float|null $defaultValue
      */
-    public function setDefaultValue($defaultValue): void
+    public function setDefaultValue($defaultValue): self
     {
         $this->defaultValue = $defaultValue;
+
+        return $this;
     }
 }

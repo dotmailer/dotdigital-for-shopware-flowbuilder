@@ -15,5 +15,11 @@
             </call>
             <argument type="service" id="Dotdigital\Flow\Service\Client\DotdigitalClientFactory" />
         </service>
+        <service id="Dotdigital\Flow\Api\Controller\ProgramsController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <argument type="service" id="Dotdigital\Flow\Service\Client\DotdigitalClientFactory" />
+        </service>
     </services>
 </container>

@@ -6,7 +6,9 @@
     <imports>
         <import resource="./dotdigital-contact-flow-action.xml"/>
         <import resource="./dotdigital-transactional-email-flow-action.xml"/>
+        <import resource="./dotdigital-program-flow-action.xml"/>
         <import resource="./dotdigital-recipient-resolver.xml"/>
+        <import resource="./dotdigital-program-flow-action.xml"/>
     </imports>
     <services>
         <service id="Dotdigital\Flow\Core\Content\Flow\Subscriber\BusinessEventCollectorSubscriber">

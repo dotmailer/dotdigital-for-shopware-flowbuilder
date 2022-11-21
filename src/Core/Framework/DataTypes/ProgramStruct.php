@@ -4,8 +4,9 @@ namespace Dotdigital\Flow\Core\Framework\DataTypes;
 
 use Dotdigital\Flow\Core\Framework\Traits\InteractsWithResponseTrait;
 use Dotdigital\Flow\Setting\Defaults;
+use Dotdigital\Flow\Setting\Settings;
 
-class AddressBookStruct extends AbstractStruct
+class ProgramStruct extends AbstractStruct
 {
     use InteractsWithResponseTrait;
 
@@ -13,30 +14,30 @@ class AddressBookStruct extends AbstractStruct
 
     protected string $name;
 
-    protected string $visibility;
+    protected string $status;
 
-    protected int $contacts;
+    protected \DateTimeImmutable $dateCreated;
 
     public function __construct(
-        int $id = Defaults::DEFAULT_NUMERIC_VALUE,
+        int $id,
         string $name = Defaults::DEFAULT_UNDEFINED_VALUE,
-        string $visibility = Defaults::DEFAULT_UNDEFINED_VALUE,
-        int $contacts = Defaults::DEFAULT_NUMERIC_VALUE
+        string $status = Defaults::DEFAULT_UNDEFINED_VALUE,
+        string $dateCreated = Defaults::DEFAULT_DATETIME_VALUE
     ) {
         $this->setId($id);
         $this->setName($name);
-        $this->setVisibility($visibility);
-        $this->setContacts($contacts);
+        $this->setStatus($status);
+        $this->setDateCreated($dateCreated);
     }
 
     /**
-     * Get name of address book if class is called as a string
+     * Get name of program if class is called as a string
      *
      * @return string
      */
     public function __toString()
     {
-        return (string) $this->id;
+        return (string) $this->getName();
     }
 
     public function getId(): int
@@ -63,32 +64,27 @@ class AddressBookStruct extends AbstractStruct
         return $this;
     }
 
-    public function getVisibility(): string
+    public function getStatus(): ?string
     {
-        return $this->visibility;
+        return $this->status;
     }
 
-    public function setVisibility(string $visibility): self
+    public function setStatus(string $status): self
     {
-        $this->visibility = $visibility;
+        $this->status = $status;
 
         return $this;
     }
 
-    public function getContacts(): int
+    public function getDateCreated(): string
     {
-        return $this->contacts;
+        return $this->dateCreated->format(Settings::DATE_TIME_FORMAT);
     }
 
-    public function setContacts(int $contacts): self
+    public function setDateCreated(string $dateTime): self
     {
-        $this->contacts = $contacts;
+        $this->dateCreated = new \DateTimeImmutable($dateTime);
 
         return $this;
-    }
-
-    public function isApiReady(): bool
-    {
-        return !empty($this->getId()) && $this->id !== Defaults::DEFAULT_NUMERIC_VALUE;
     }
 }

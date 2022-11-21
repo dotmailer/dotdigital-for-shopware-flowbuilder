@@ -8,6 +8,9 @@ use Dotdigital\Flow\Core\Framework\DataTypes\ApiDataFieldCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\ApiDataFieldStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\ContactDataStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\ContactStruct;
+use Dotdigital\Flow\Core\Framework\DataTypes\ProgramCollection;
+use Dotdigital\Flow\Core\Framework\DataTypes\ProgramEnrolmentStruct;
+use Dotdigital\Flow\Core\Framework\DataTypes\ProgramStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\RecipientCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\RecipientStruct;
 use Dotdigital\Flow\Setting\Settings;
@@ -18,6 +21,7 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class DotdigitalClient extends AbstractClient
 {
+    public const CONTACT_ENROLMENT_ENDPOINT = 'v2/programs/enrolments';
     public const RESUBSCRIBE_CONTACT_ENDPOINT = 'v2/contacts/resubscribe';
     public const RESUBSCRIBE_CONTACT_TO_ADDRESS_BOOK_ENDPOINT = 'v2/address-books/%s/contacts/resubscribe';
     public const ADD_CONTACT_ENDPOINT = '/v2/contacts/';
@@ -25,6 +29,7 @@ class DotdigitalClient extends AbstractClient
     public const GET_ADDRESS_BOOKS_ENDPOINT = 'v2/address-books';
     public const EMAIL_TRIGGERED_CAMPAIGN_ENDPOINT = 'v2/email/triggered-campaign';
     public const GET_DATAFIELDS_ENDPOINT = 'v2/data-fields';
+    public const GET_PROGRAMS_ENDPOINT = 'v2/programs';
 
     private SystemConfigService $systemConfigService;
 
@@ -54,19 +59,16 @@ class DotdigitalClient extends AbstractClient
     }
 
     /**
-     * Resubscribe contact (optionally to an address book)
+     * Resubscribe contact to address book.
      *
      * @throws GuzzleException
      */
-    public function resubscribeContact(
+    public function resubscribeContactToAddressBook(
         ContactStruct $contact,
         AddressBookStruct $addressBook
     ): ?ContactStruct {
-        $uri = $addressBook->getId()
-            ? sprintf(self::RESUBSCRIBE_CONTACT_TO_ADDRESS_BOOK_ENDPOINT, $addressBook->getId())
-            : self::RESUBSCRIBE_CONTACT_ENDPOINT;
-        $resubscribedContactResponse = $this->post(
-            $uri,
+        $response = $this->post(
+            sprintf(self::RESUBSCRIBE_CONTACT_TO_ADDRESS_BOOK_ENDPOINT, $addressBook->getId()),
             [
                 'json' => [
                     'unsubscribedContact' => [
@@ -84,23 +86,82 @@ class DotdigitalClient extends AbstractClient
             ]
         );
 
-        return ContactStruct::createFromResponse($resubscribedContactResponse);
+        return ContactStruct::createFromResponse($response);
     }
 
     /**
-     * Add contact (optionally to an address book)
+     * Resubscribe contact
      *
      * @throws GuzzleException
      */
-    public function addContact(
+    public function resubscribeContact(
+        ContactStruct $contact
+    ): ?ContactStruct {
+        $response = $this->post(
+            self::RESUBSCRIBE_CONTACT_ENDPOINT,
+            [
+                'json' => [
+                    'unsubscribedContact' => [
+                        'email' => $contact->getEmail(),
+                        'dataFields' => $contact->getDataFields()->reduce(function ($list, ContactDataStruct $dataField) {
+                            $list[] = [
+                                'key' => $dataField->getKey(),
+                                'value' => $dataField->getValue(),
+                            ];
+
+                            return $list;
+                        }, []),
+                    ],
+                ],
+            ]
+        );
+
+        return ContactStruct::createFromResponse($response);
+    }
+
+    /**
+     * Create or update contact and return struct
+     *
+     * @throws GuzzleException
+     */
+    public function createOrUpdateContact(ContactStruct $contact): ContactStruct
+    {
+        $response = $this->post(
+            self::ADD_CONTACT_ENDPOINT,
+            [
+                'json' => [
+                    'email' => $contact->getEmail(),
+                    'dataFields' => $contact->getDataFields()->reduce(
+                        function ($list, ContactDataStruct $dataField) {
+                            $list[] = [
+                                'key' => $dataField->getKey(),
+                                'value' => $dataField->getValue(),
+                            ];
+
+                            return $list;
+                        },
+                        []
+                    ),
+                    ...(!$contact->attributeIsDefault('optInType')) ? ['optInType' => $contact->getOptInType()] : [],
+                    ...(!$contact->attributeIsDefault('emailType')) ? ['emailType' => $contact->getEmailType()] : [],
+                ],
+            ]
+        );
+
+        return ContactStruct::createFromResponse($response);
+    }
+
+    /**
+     * Add contact to address book
+     *
+     * @throws GuzzleException
+     */
+    public function addContactToAddressBook(
         ContactStruct $contact,
         AddressBookStruct $addressBook
     ): ?ContactStruct {
-        $uri = $addressBook->getId()
-            ? sprintf(self::ADD_CONTACT_TO_ADDRESS_BOOK_ENDPOINT, $addressBook->getId())
-            : self::ADD_CONTACT_ENDPOINT;
-        $addContactResponse = $this->post(
-            $uri,
+        $response = $this->post(
+            sprintf(self::ADD_CONTACT_TO_ADDRESS_BOOK_ENDPOINT, $addressBook->getId()),
             [
                 'json' => [
                     'email' => $contact->getEmail(),
@@ -118,7 +179,29 @@ class DotdigitalClient extends AbstractClient
             ]
         );
 
-        return ContactStruct::createFromResponse($addContactResponse);
+        return ContactStruct::createFromResponse($response);
+    }
+
+    /**
+     * Enroll contact to program
+     *
+     * @throws GuzzleException
+     */
+    public function enrolContactToProgram(
+        ContactStruct $contact,
+        ProgramStruct $program
+    ): ?ProgramEnrolmentStruct {
+        $response = $this->post(
+            self::CONTACT_ENROLMENT_ENDPOINT,
+            [
+                'json' => [
+                    'contacts' => [$contact->getId()],
+                    'programId' => $program->getId(),
+                ],
+            ]
+        );
+
+        return ProgramEnrolmentStruct::createFromResponse($response);
     }
 
     /**
@@ -172,6 +255,31 @@ class DotdigitalClient extends AbstractClient
         }
 
         return $dataFields;
+    }
+
+    /**
+     * Get Collection of Programs.
+     *
+     * @throws GuzzleException
+     */
+    public function getPrograms(int $skipLimit = 0): ProgramCollection
+    {
+        $programsResponse = $this->get(
+            sprintf(
+                '%s?select=%s&skip=%s',
+                self::GET_PROGRAMS_ENDPOINT,
+                self::SELECT_LIMIT,
+                $skipLimit
+            ),
+            []
+        );
+        $programs = new ProgramCollection();
+        foreach ($programsResponse as $program) {
+            $struct = ProgramStruct::createFromResponse($program);
+            $programs->add($struct);
+        }
+
+        return $programs;
     }
 
     /**

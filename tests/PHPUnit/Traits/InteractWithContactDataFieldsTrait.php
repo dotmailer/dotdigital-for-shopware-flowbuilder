@@ -2,6 +2,9 @@
 
 namespace Dotdigital\Tests\Traits;
 
+use Dotdigital\Flow\Core\Framework\DataTypes\ContactDataCollection;
+use Dotdigital\Flow\Core\Framework\DataTypes\ContactDataStruct;
+
 trait InteractWithContactDataFieldsTrait
 {
     use UtilitiesTrait;
@@ -17,5 +20,22 @@ trait InteractWithContactDataFieldsTrait
         }
 
         return $contactDataFields;
+    }
+
+    protected function generateContactDataFieldStruct(): ContactDataStruct
+    {
+        return (new ContactDataStruct())
+            ->setKey($this->generateRandomString())
+            ->setValue($this->generateRandomString());
+    }
+
+    protected function generateContactDataFieldCollection($count = 1): ContactDataCollection
+    {
+        $contactDataFieldCollection = new ContactDataCollection();
+        for ($i = 0; $i < $count; ++$i) {
+            $contactDataFieldCollection->add($this->generateContactDataFieldStruct());
+        }
+
+        return $contactDataFieldCollection;
     }
 }

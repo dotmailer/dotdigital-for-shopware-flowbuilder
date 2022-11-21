@@ -32,10 +32,27 @@
                     "opt-in": {
                         "label": "Verify contacts with double opt-in",
                         "description": "Send a double opt-in confirmation email to new contacts before adding them to Dotdigital."
-                    },
-                    "data-field": {
-                        "label": "Add or update contact data fields",
-                        "description": "Choose a Dotdigital data field and enter a Shopware variable or value."
+                    }
+                }
+            },
+            "program": {
+                "title": "Enroll a contact in a program",
+                "sequence-description": {
+                    "contact": "Contact Context: {recipient}",
+                    "program": "Program: {programId}",
+                    "data-fields": "Contact Data fields: {hasDataFields}"
+                },
+                "subtitle": "Automatically enroll contacts in a Dotdigital automation program.",
+                "help-link": "Dotdigital Help Centre",
+                "buttons": {
+                    "save": "Save Action",
+                    "add": "Add Action"
+                },
+                "fields": {
+                    "program": {
+                        "label": "Program",
+                        "description": "Choose a Dotdigital program to enroll contacts to.",
+                        "placeholder": "Search or choose program"
                     }
                 }
             }
@@ -63,6 +80,8 @@
                 }
             },
             "data-field-selector": {
+                "label": "Add or update contact data fields",
+                "description": "Choose a Dotdigital data field and enter a Shopware variable or value.",
                 "grid": {
                     "columns": {
                         "key": {
@@ -83,7 +102,6 @@
                                 "numeric": "Numeric"
                             }
                         }
-
                     }
                 }
             }

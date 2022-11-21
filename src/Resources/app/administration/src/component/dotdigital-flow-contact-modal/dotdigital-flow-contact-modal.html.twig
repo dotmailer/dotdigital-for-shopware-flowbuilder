@@ -29,11 +29,7 @@
     <small class="dd-description">
         {{ $tc('sw-flow.actions.contact.fields.address-book.description') }}
     </small>
-    <br>
-    <sw-checkbox-field
-        v-model="resubscribe"
-        class="sw-flow-contact-contact-opt-in"
-    >
+    <sw-checkbox-field v-model="resubscribe">
         <template #label>
             <span class="dd-checkbox-label">
                 <label class="dd-label">{{ $tc('sw-flow.actions.contact.fields.resubscribe.label') }}</label>
@@ -44,10 +40,7 @@
         </template>
     </sw-checkbox-field>
 
-    <sw-checkbox-field
-        v-model="contactOptIn"
-        class="sw-flow-contact-contact-opt-in"
-    >
+    <sw-checkbox-field v-model="contactOptIn">
         <template #label>
             <span class="dd-checkbox-label">
                 <label class="dd-label">{{ $tc('sw-flow.actions.contact.fields.opt-in.label') }}</label>
@@ -62,13 +55,10 @@
         <span class="border-separator"></span>
     </div>
 
-    <span class="dd-label-wrapper">
-        <label
-            class="dd-label"
-            for="data-field-selector"
-        >{{ $tc('sw-flow.actions.contact.fields.data-field.label') }}</label>
-        <small class="dd-description">{{ $tc('sw-flow.actions.contact.fields.data-field.description') }}</small>
-    </span>
+    <div class="dd-label-wrapper">
+        <label class="dd-label" for="data-field-selector">{{ $tc('sw-flow.shared.data-field-selector.label') }}</label>
+        <small class="dd-description">{{ $tc('sw-flow.shared.data-field-selector.description') }}</small>
+    </div>
 
     <dotdigital-data-field-selector
         id="data-field-selector"

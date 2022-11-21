@@ -1,9 +1,9 @@
-import template from './dotdigital-flow-contact-modal.html.twig';
+import template from './dotdigital-flow-program-modal.html.twig';
 import '../shared/scss/dd-flow-modal.scss';
 
 const { Component, Mixin } = Shopware;
 
-Component.register('dotdigital-flow-contact-modal', { // eslint-disable-line
+Component.register('dotdigital-flow-program-modal', { // eslint-disable-line
     template,
     inject: ['DotdigitalApiService'],
     mixins: [Mixin.getByName('notification')],
@@ -16,30 +16,26 @@ Component.register('dotdigital-flow-contact-modal', { // eslint-disable-line
     data() {
         return {
             sequenceReady: false,
-            addressBookList: [],
+            programList: [],
             dataFieldList: [],
             contactEmail: null,
-            addressBook: null,
+            programId: null,
             dataFields: [],
-            contactOptIn: false,
-            resubscribe: false,
         };
     },
 
     computed: {
 
         /**
-         * Get and mutate address book list
+         * Get and mutate program list
          * @returns {*[]}
          */
-        availableAddressBooks() {
-            return this.addressBookList.map((addressBook) => {
+        availablePrograms() {
+            return this.programList.map((program) => {
                 return {
-                    value: addressBook.id,
-                    label: `${addressBook.name}`,
+                    value: program.id,
+                    label: `${program.name} (${program.status})`,
                 };
-            }).filter((addressBookOption) => {
-                return addressBookOption.label !== 'Test';
             });
         },
 
@@ -73,7 +69,7 @@ Component.register('dotdigital-flow-contact-modal', { // eslint-disable-line
          * @returns {string}
          */
         helpLink() {
-            return 'https://support.dotdigital.com/hc/en-gb/articles/8472407231762';
+            return '#';
         },
 
         /**
@@ -81,7 +77,7 @@ Component.register('dotdigital-flow-contact-modal', { // eslint-disable-line
          * @returns {*}
          */
         modalTitle() {
-            return this.$tc('sw-flow.actions.contact.title');
+            return this.$tc('sw-flow.actions.program.title');
         },
 
         /**
@@ -89,7 +85,7 @@ Component.register('dotdigital-flow-contact-modal', { // eslint-disable-line
          * @returns {*}
          */
         modalSubTitle() {
-            return this.$tc('sw-flow.actions.contact.subtitle');
+            return this.$tc('sw-flow.actions.program.subtitle');
         },
 
         /**
@@ -133,11 +129,11 @@ Component.register('dotdigital-flow-contact-modal', { // eslint-disable-line
         },
 
         /**
-         * handle update event from address book component
-         * @param addressBookId
+         * handle update event from program component
+         * @param programId
          */
-        handleAddressBookSelection(addressBookId) {
-            this.addressBook = addressBookId;
+        handleProgramSelection(programId) {
+            this.programId = programId;
         },
 
         /**
@@ -155,14 +151,12 @@ Component.register('dotdigital-flow-contact-modal', { // eslint-disable-line
             const { config } = this.sequence;
             if (!this.isNew) {
                 this.contactEmail = config.recipient;
-                this.addressBook = config.addressBook;
+                this.programId = config.programId;
                 this.dataFields = config.dataFields;
-                this.contactOptIn = config.contactOptIn;
-                this.resubscribe = config.resubscribe;
             }
 
             this.dataFieldList = await this.DotdigitalApiService.getDataFields();
-            this.addressBookList = await this.DotdigitalApiService.getAddressBooks();
+            this.programList = await this.DotdigitalApiService.getPrograms();
             return this.sequence;
         },
 
@@ -174,11 +168,9 @@ Component.register('dotdigital-flow-contact-modal', { // eslint-disable-line
                 ...this.sequence,
                 config: {
                     ...this.sequence.config,
-                    addressBook: this.addressBook,
+                    programId: this.programId,
                     dataFields: this.dataFields,
                     recipient: this.contactEmail,
-                    contactOptIn: this.contactOptIn,
-                    resubscribe: this.resubscribe,
                 },
             };
 

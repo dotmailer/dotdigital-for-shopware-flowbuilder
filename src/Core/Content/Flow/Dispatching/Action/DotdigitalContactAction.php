@@ -116,32 +116,46 @@ class DotdigitalContactAction extends FlowAction
 
         /** @var SalesChannelContext $channelContext */
         $channelContext = $context->getSource();
-        $addressBook = new AddressBookStruct((int) $eventConfig['addressBook']);
         $recipients = $recipients->getElements();
         $contactEmail = reset($recipients)->getEmail();
-        $contact = new ContactStruct(
-            null,
-            $contactEmail,
-            'unknown',
-            $eventConfig['contactOptIn'] ? 'unknown' : 'Single',
-            'Html',
-            $renderedDataFields,
-        );
+        $contact = (new ContactStruct())
+            ->setEmail($contactEmail)
+            ->setDataFields($renderedDataFields);
 
-        if ($eventConfig['resubscribe']) {
-            $this->dotdigitalClientFactory
-                ->createClient($channelContext->getSalesChannelId())
-                ->resubscribeContact(
-                    $contact,
-                    $addressBook
-                );
-        } else {
-            $this->dotdigitalClientFactory
-                ->createClient($channelContext->getSalesChannelId())
-                ->addContact(
-                    $contact,
-                    $addressBook
-                );
+        if ($eventConfig['contactOptIn']) {
+            $contact->setOptInType('Double');
+        }
+
+        $addressBook = new AddressBookStruct();
+        if ($eventConfig['addressBook']) {
+            $addressBook->setId((int) $eventConfig['addressBook']);
+        }
+
+        switch (true) {
+            case $eventConfig['resubscribe'] && $addressBook->isApiReady():
+                $this->dotdigitalClientFactory
+                    ->createClient($channelContext->getSalesChannelId())
+                    ->resubscribeContactToAddressBook($contact, $addressBook);
+
+                break;
+            case !$eventConfig['resubscribe'] && $addressBook->isApiReady():
+                $this->dotdigitalClientFactory
+                    ->createClient($channelContext->getSalesChannelId())
+                    ->addContactToAddressBook($contact, $addressBook);
+
+                break;
+            case $eventConfig['resubscribe'] && !$addressBook->isApiReady():
+                $this->dotdigitalClientFactory
+                    ->createClient($channelContext->getSalesChannelId())
+                    ->resubscribeContact($contact);
+
+                break;
+            default:
+                $this->dotdigitalClientFactory
+                    ->createClient($channelContext->getSalesChannelId())
+                    ->createOrUpdateContact($contact);
+
+                break;
         }
     }
 

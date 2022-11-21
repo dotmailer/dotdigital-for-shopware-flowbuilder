@@ -1,0 +1,78 @@
+{% block dotdigital_flow_contact_modal %}
+<sw-modal
+    class="dotdigital-flowbuilder-plugin-modal"
+    :title="modalTitle"
+    :subtitle="modalSubTitle"
+    :variant="'large'"
+    @modal-close="onClose"
+>
+
+        <dotdigital-recipient-selector
+            :recipient="contactEmail"
+            :exclude="['admin']"
+            :limit="1"
+            @selected-recipient="handleRecipientSelection"
+        />
+        <sw-single-select
+            v-model="programId"
+            class="sw-flow-mail-send-modal__select"
+            :is-loading="!sequenceReady"
+            :disabled="!sequenceReady"
+            :options="availablePrograms"
+            :label="$tc('sw-flow.actions.program.fields.program.label')"
+            :placeholder="$tc('sw-flow.actions.program.fields.program.placeholder')"
+            @change="handleProgramSelection"
+        />
+        <small class="dd-description">
+            {{ $tc('sw-flow.actions.program.fields.program.description') }}
+        </small>
+
+        <div class="dd-separator">
+            <span class="border-separator"></span>
+        </div>
+
+        <div class="dd-label-wrapper">
+            <label class="dd-label" for="data-field-selector">{{ $tc('sw-flow.shared.data-field-selector.label') }}</label>
+            <small class="dd-description">{{ $tc('sw-flow.shared.data-field-selector.description') }}</small>
+        </div>
+
+        <dotdigital-data-field-selector
+            id="data-field-selector"
+            :unique="true"
+            :loading="!sequenceReady"
+            :dataFields="dataFields"
+            :dataFieldOptions="availableDataFields"
+            @selected-data-field="handleDataFieldSelection"
+        />
+
+    {% block dotdigital_flowbuilder_plugin_modal_footer %}
+        <template #modal-footer>
+            <a :href="helpLink" class="pull-left" target="_blank">{{ $tc('sw-flow.actions.contact.help-link') }}</a>
+            {% block dotdigital_flowbuilder_plugin_modal_footer_cancel_button %}
+                <sw-button
+                    class="dotdigital-flowbuilder-plugin-modal__cancel-button"
+                    size="small"
+                    @click="onClose"
+                >
+                    {{ $tc('global.default.cancel') }}
+                </sw-button>
+            {% endblock %}
+
+            {% block dotdigital_flowbuilder_plugin_modal_footer_save_button %}
+                <sw-button
+                    :is-loading="!sequenceReady"
+                    class="dotdigital-flowbuilder-plugin-modal__save-button"
+                    variant="primary"
+                    size="small"
+                    @click="onAddAction"
+                >
+                    {{ sequence.id
+                    ? $tc('sw-flow.actions.contact.buttons.save')
+                    : $tc('sw-flow.actions.contact.buttons.add') }}
+                </sw-button>
+            {% endblock %}
+        </template>
+    {% endblock %}
+
+</sw-modal>
+{% endblock %}

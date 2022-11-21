@@ -1,6 +1,5 @@
 import template from './dotdigital-flow-modal.html.twig';
-
-import './dotdigital-flow-modal.scss';
+import '../shared/scss/dd-flow-modal.scss';
 
 const { Component, Utils, Mixin, Classes: { ShopwareError } } = Shopware;
 const { mapState } = Component.getComponentHelper();
@@ -30,20 +29,15 @@ Component.register('dotdigital-flow-modal', { // eslint-disable-line
 
         mailRecipientDescription() {
             let description = '';
-            switch (this.mailRecipient) {
-                case 'custom':
-                    description += this.$tc(`
-                        Shopware variables differ depending on the trigger you use.
-                    `);
-                    description +=
-                        ` <a href="https://support.dotdigital.com/hc/en-gb/articles/7101774577298" target="_blank">
-                                ${this.$tc('Learn more')}
-                          </a>
-                        `;
-                    break;
-                default:
-                    description += '<br>';
-                    break;
+            if (this.mailRecipient === 'custom') {
+                description += this.$tc(`
+                    Shopware variables differ depending on the trigger you use.
+                `);
+                description +=
+                    ` <a href="https://support.dotdigital.com/hc/en-gb/articles/7101774577298" target="_blank">
+                        ${this.$tc('Learn more')}
+                      </a>
+                    `;
             }
             return description;
         },

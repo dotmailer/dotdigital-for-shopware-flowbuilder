@@ -2,6 +2,8 @@
 
 namespace Dotdigital\Flow\Core\Framework\DataTypes;
 
+use Dotdigital\Flow\Setting\Defaults;
+
 class ContactDataStruct extends AbstractStruct
 {
     protected string $key;
@@ -14,8 +16,10 @@ class ContactDataStruct extends AbstractStruct
     /**
      * @param string|int|float|null $value
      */
-    public function __construct(string $key, $value)
-    {
+    public function __construct(
+        string $key = Defaults::DEFAULT_UNDEFINED_VALUE,
+        $value = Defaults::DEFAULT_UNDEFINED_VALUE
+    ) {
         $this->setKey($key);
         $this->setValue($value);
     }
@@ -35,9 +39,11 @@ class ContactDataStruct extends AbstractStruct
         return $this->key;
     }
 
-    public function setKey(string $key): void
+    public function setKey(string $key): self
     {
         $this->key = $key;
+
+        return $this;
     }
 
     /**
@@ -51,8 +57,10 @@ class ContactDataStruct extends AbstractStruct
     /**
      * @param string|int|float|null $value
      */
-    public function setValue($value): void
+    public function setValue($value): self
     {
         $this->value = $value;
+
+        return $this;
     }
 }

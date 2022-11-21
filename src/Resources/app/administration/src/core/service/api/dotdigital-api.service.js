@@ -24,6 +24,16 @@ class DotdigitalApiService extends ApiService {
                 return ApiService.handleResponse(response);
             });
     }
+
+    getPrograms() {
+        const headers = this.getBasicHeaders();
+
+        return this.httpClient
+            .get(`${this.getApiBasePath()}/programs`, { headers })
+            .then((response) => {
+                return ApiService.handleResponse(response);
+            });
+    }
 }
 
 export default DotdigitalApiService;// eslint-disable-line

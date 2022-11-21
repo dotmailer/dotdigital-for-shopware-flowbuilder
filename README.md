@@ -19,6 +19,12 @@ Again, you have two options:
 1. bin/console plugin:install --activate DotdigitalFlow 
 2. Activate the plugin via Extensions > My extensions
 
+Finally, it is necessary to run:
+```
+bash bin/build-administration.sh
+```
+in order to rebuild the JS for Flow Builder.
+
 ## Changelog
 
 ### 1.1.0
