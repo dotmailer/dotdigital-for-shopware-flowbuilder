@@ -2,11 +2,14 @@
 
 namespace Dotdigital\Flow\Core\Framework\DataTypes;
 
+use Dotdigital\Flow\Core\Framework\Traits\HasErrorMessageTrait;
 use Dotdigital\Flow\Setting\Defaults;
 use Shopware\Core\Framework\Struct\Struct;
 
 class AbstractStruct extends Struct
 {
+    use HasErrorMessageTrait;
+
     /**
      * Convert struct to array.
      *

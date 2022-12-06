@@ -6,7 +6,7 @@ use Doctrine\DBAL\Connection;
 use Dotdigital\Flow\Core\Framework\DataTypes\RecipientCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\RecipientStruct;
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Content\ContactForm\Event\ContactFormEvent;
+use Shopware\Core\Content\Flow\Dispatching\Aware\ContactFormDataAware;
 use Shopware\Core\Framework\Adapter\Twig\Exception\StringTemplateRenderingException;
 use Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer;
 use Shopware\Core\Framework\Event\FlowEvent;
@@ -95,7 +95,7 @@ class RecipientResolver
              * On contact form event return the email address from the event.
              */
             case self::RECIPIENT_CONFIG_CONTACT_FORM_MAIL:
-                if (!$mailEvent instanceof ContactFormEvent) {
+                if (!$mailEvent instanceof ContactFormDataAware) {
                     break;
                 }
                 $data = $mailEvent->getContactFormData();

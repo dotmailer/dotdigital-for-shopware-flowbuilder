@@ -1,6 +1,6 @@
-export const ACTION = Object.freeze({// eslint-disable-line
+export const CAMPAIGN_ACTION = Object.freeze({// eslint-disable-line
     HANDLE: 'action.create.dotdigital_mail_sender',
-    COMPONENT_NAME: 'dotdigital-flow-modal',
+    COMPONENT_NAME: 'dotdigital-flow-campaign-modal',
     LABEL: 'Send transactional email',
     ICON: 'regular-envelope',
 });
@@ -20,7 +20,7 @@ export const PROGRAM_ACTION = Object.freeze({// eslint-disable-line
 });
 
 export default {// eslint-disable-line
-    ACTION,
+    CAMPAIGN_ACTION,
     CONTACT_ACTION,
     PROGRAM_ACTION,
 };

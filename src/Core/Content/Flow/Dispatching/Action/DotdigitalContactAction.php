@@ -2,44 +2,37 @@
 
 namespace Dotdigital\Flow\Core\Content\Flow\Dispatching\Action;
 
-use Dotdigital\Flow\Core\Framework\DataTypes\AddressBookStruct;
-use Dotdigital\Flow\Core\Framework\DataTypes\ContactStruct;
 use Dotdigital\Flow\Core\Framework\Event\DotdigitalContactAware;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
-use Dotdigital\Flow\Service\RecipientResolver;
+use Dotdigital\Flow\Service\EventDataResolver\ResolveAddressBookInterface;
+use Dotdigital\Flow\Service\EventDataResolver\ResolveContactDataFieldsInterface;
+use Dotdigital\Flow\Service\EventDataResolver\ResolveContactInterface;
 use GuzzleHttp\Exception\GuzzleException;
-use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Flow\Dispatching\Action\FlowAction;
-use Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer;
 use Shopware\Core\Framework\Event\FlowEvent;
 use Shopware\Core\Framework\Event\MailAware;
-use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class DotdigitalContactAction extends FlowAction
 {
     private DotdigitalClientFactory $dotdigitalClientFactory;
 
-    private BusinessEventEncoder $businessEventEncoder;
+    private ResolveAddressBookInterface $resolveAddressBook;
 
-    private StringTemplateRenderer $stringTemplateRenderer;
+    private ResolveContactInterface $resolveContact;
 
-    private RecipientResolver $recipientResolver;
-
-    private LoggerInterface $logger;
+    private ResolveContactDataFieldsInterface $resolveContactDataFields;
 
     public function __construct(
         DotdigitalClientFactory $dotdigitalClientFactory,
-        BusinessEventEncoder $businessEventEncoder,
-        StringTemplateRenderer $stringTemplateRenderer,
-        RecipientResolver $recipientResolver,
-        LoggerInterface $logger
+        ResolveAddressBookInterface $resolveAddressBook,
+        ResolveContactInterface $resolveContact,
+        ResolveContactDataFieldsInterface $resolveContactDataFields
     ) {
         $this->dotdigitalClientFactory = $dotdigitalClientFactory;
-        $this->businessEventEncoder = $businessEventEncoder;
-        $this->stringTemplateRenderer = $stringTemplateRenderer;
-        $this->recipientResolver = $recipientResolver;
-        $this->logger = $logger;
+        $this->resolveAddressBook = $resolveAddressBook;
+        $this->resolveContact = $resolveContact;
+        $this->resolveContactDataFields = $resolveContactDataFields;
     }
 
     /**
@@ -76,59 +69,16 @@ class DotdigitalContactAction extends FlowAction
         }
 
         $eventConfig = $event->getConfig();
-
-        if (!\array_key_exists('recipient', $eventConfig)) {
-            throw new \InvalidArgumentException('The contactEmail value in the flow action configuration is invalid or missing.', 422);
-        }
-
-        if (!\array_key_exists('addressBook', $eventConfig) && !is_iterable($eventConfig['addressBook'])) {
-            throw new \InvalidArgumentException('The addressBook value in the flow action configuration is invalid or missing.', 422);
-        }
-
-        if (!\array_key_exists('resubscribe', $eventConfig)) {
-            throw new \InvalidArgumentException('The resubscribe value in the flow action configuration is invalid or missing.', 422);
-        }
-
-        $availableData = $this->businessEventEncoder->encode($event->getEvent());
+        $contact = $this->resolveContact->resolve($event)->first();
+        $contactDataFieldsCollection = $this->resolveContactDataFields->resolve($event);
+        $contact->setDataFields($contactDataFieldsCollection->jsonSerialize());
+        $addressBook = $this->resolveAddressBook->resolve($event)->first();
         $context = $event->getContext();
-
-        try {
-            $recipients = $this->recipientResolver->getRecipients($eventConfig['recipient'], $event);
-        } catch (\Exception $exception) {
-            $this->logger->error(
-                'Dotdigital recipients collection error',
-                ['exception' => $exception]
-            );
-
-            return;
-        }
-
-        /**
-         * Template resolver
-         */
-        $renderedDataFields = [];
-        foreach ($eventConfig['dataFields'] as $dataField) {
-            $renderedDataFields[] = [
-                'key' => $dataField['key'],
-                'value' => $this->stringTemplateRenderer->render((string) $dataField['value'], $availableData, $context),
-            ];
-        }
-
         /** @var SalesChannelContext $channelContext */
         $channelContext = $context->getSource();
-        $recipients = $recipients->getElements();
-        $contactEmail = reset($recipients)->getEmail();
-        $contact = (new ContactStruct())
-            ->setEmail($contactEmail)
-            ->setDataFields($renderedDataFields);
 
         if ($eventConfig['contactOptIn']) {
             $contact->setOptInType('Double');
-        }
-
-        $addressBook = new AddressBookStruct();
-        if ($eventConfig['addressBook']) {
-            $addressBook->setId((int) $eventConfig['addressBook']);
         }
 
         switch (true) {

@@ -5,22 +5,26 @@ namespace Dotdigital\Tests;
 use DG\BypassFinals;
 use Doctrine\DBAL\Connection;
 use Dotdigital\Flow\Core\Content\Flow\Dispatching\Action\DotdigitalEmailSenderAction;
-use Dotdigital\Flow\Core\Framework\DataTypes\RecipientCollection;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
+use Dotdigital\Flow\Service\EventDataResolver\EventDataResolverContext;
 use Dotdigital\Flow\Service\RecipientResolver;
+use Dotdigital\Tests\Traits\InteractWithCampaignsTrait;
+use Dotdigital\Tests\Traits\InteractWithContactPersonalisationTrait;
+use Dotdigital\Tests\Traits\InteractWithContactsTrait;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\ContactForm\Event\ContactFormEvent;
-use Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer;
 use Shopware\Core\Framework\Api\Context\ContextSource;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Event\EventData\MailRecipientStruct;
 use Shopware\Core\Framework\Event\FlowEvent;
 use Shopware\Core\Framework\Event\MailAware;
-use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
 
 class DotdigitalEmailSenderActionTest extends TestCase
 {
+    use InteractWithCampaignsTrait;
+    use InteractWithContactPersonalisationTrait;
+    use InteractWithContactsTrait;
+
     /**
      * @var DotdigitalEmailSenderAction
      */
@@ -32,24 +36,9 @@ class DotdigitalEmailSenderActionTest extends TestCase
     private $dotdigitalClientFactoryMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|StringTemplateRenderer
-     */
-    private $rendererMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|BusinessEventEncoder
-     */
-    private $businessEventLoaderMock;
-
-    /**
      * @var Connection|\PHPUnit\Framework\MockObject\MockObject
      */
     private $connectionMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|LoggerInterface
-     */
-    private $loggerMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|MailAware
@@ -85,10 +74,6 @@ class DotdigitalEmailSenderActionTest extends TestCase
     {
         BypassFinals::enable();
         $this->dotdigitalClientFactoryMock = $this->createMock(DotdigitalClientFactory::class);
-        $this->rendererMock = $this->createMock(StringTemplateRenderer::class);
-        $this->businessEventLoaderMock = $this->createMock(BusinessEventEncoder::class);
-        $this->connectionMock = $this->createMock(Connection::class);
-        $this->loggerMock = $this->createMock(LoggerInterface::class);
         $this->mailAwareMock = $this->createMock(MailAware::class);
         $this->mailRecipientStructMock = $this->createMock(MailRecipientStruct::class);
         $this->eventMock = $this->createMock(FlowEvent::class);
@@ -100,26 +85,27 @@ class DotdigitalEmailSenderActionTest extends TestCase
             ->addMethods(['getSalesChannelId'])
             ->disableOriginalConstructor()
             ->getMock();
+        $this->eventContactResolverMock = $this->createMock(EventDataResolverContext::class);
+        $this->eventCampaignResolverMock = $this->createMock(EventDataResolverContext::class);
+        $this->eventPersonalisedValuesResolverMock = $this->createMock(EventDataResolverContext::class);
 
-        $this->recipientCollectionMock = $this->getMockBuilder(RecipientCollection::class)
-            ->addMethods(['getEmail'])
-            ->onlyMethods(['getElements', 'count'])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->eventCampaignResolverMock->expects(static::atLeastOnce())
+            ->method('resolve')
+            ->willReturn($this->generateCampaignCollection());
 
-        $this->recipientResolverMock->expects(static::once())
-            ->method('getRecipients')
-            ->willReturn($this->recipientCollectionMock);
+        $this->eventContactResolverMock->expects(static::atLeastOnce())
+            ->method('resolve')
+            ->willReturn($this->generateContactCollection());
 
-        $this->recipientCollectionMock->expects(static::once())
-            ->method('count')
-            ->willReturn(1);
+        $this->eventPersonalisedValuesResolverMock->expects(static::atLeastOnce())
+            ->method('resolve')
+            ->willReturn($this->generateContactPersonalisationCollection());
 
         $this->dotdigitalSenderAction = new DotdigitalEmailSenderAction(
             $this->dotdigitalClientFactoryMock,
-            $this->businessEventLoaderMock,
-            $this->loggerMock,
-            $this->recipientResolverMock
+            $this->eventContactResolverMock,
+            $this->eventCampaignResolverMock,
+            $this->eventPersonalisedValuesResolverMock
         );
     }
 
@@ -131,20 +117,6 @@ class DotdigitalEmailSenderActionTest extends TestCase
         $this->eventMock->expects(static::atLeastOnce())
             ->method('getEvent')
             ->willReturn($this->mailAwareMock);
-
-        $this->recipientCollectionMock->expects(static::atLeastOnce())
-            ->method('count')
-            ->willReturn(1);
-
-        $this->eventMock->expects(static::once())
-            ->method('getConfig')
-            ->willReturn([
-                'recipient' => [
-                    'type' => 'default',
-                    'data' => [],
-                ],
-                'campaignId' => 100000,
-            ]);
 
         $this->eventMock->expects(static::once())
             ->method('getContext')
@@ -167,16 +139,6 @@ class DotdigitalEmailSenderActionTest extends TestCase
             ->willReturn($this->contactFormEventMock);
 
         $this->eventMock->expects(static::once())
-            ->method('getConfig')
-            ->willReturn([
-                'recipient' => [
-                    'type' => 'contactFormMail',
-                    'data' => [],
-                ],
-                'campaignId' => 100000,
-            ]);
-
-        $this->eventMock->expects(static::once())
             ->method('getContext')
             ->willReturn($this->contextMock);
 
@@ -195,16 +157,6 @@ class DotdigitalEmailSenderActionTest extends TestCase
         $this->eventMock->expects(static::atLeastOnce())
             ->method('getEvent')
             ->willReturn($this->mailAwareMock);
-
-        $this->eventMock->expects(static::once())
-            ->method('getConfig')
-            ->willReturn([
-                'recipient' => [
-                    'type' => 'admin',
-                    'data' => [],
-                ],
-                'campaignId' => 100000,
-            ]);
 
         $this->eventMock->expects(static::once())
             ->method('getContext')

@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="Dotdigital\Flow\Service\EventDataResolver\BuildStrategies\ContactBuildStrategy">
+                <argument type="service" id="Dotdigital\Flow\Service\RecipientResolver"/>
+        </service>
+        <service id="Dotdigital\Flow\Service\EventDataResolver\BuildStrategies\PersonalisedValuesBuildStrategy">
+            <argument type="service" id="Shopware\Core\Framework\Webhook\BusinessEventEncoder"/>
+        </service>
+        <service id="Dotdigital\Flow\Service\EventDataResolver\ValidateStrategies\ContactValidateStrategy"/>
+        <service id="Dotdigital\Flow\Service\EventDataResolver\BuildStrategies\ContactDataFieldsBuildStrategy">
+            <argument type="service" id="Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer"/>
+            <argument type="service" id="Shopware\Core\Framework\Webhook\BusinessEventEncoder"/>
+        </service>
+        <service id="Dotdigital\Flow\Service\EventDataResolver\ValidateStrategies\ContactDataFieldsValidateStrategy"/>
+        <service id="Dotdigital\Flow\Service\EventDataResolver\BuildStrategies\CampaignBuildStrategy"/>
+        <service id="Dotdigital\Flow\Service\EventDataResolver\ValidateStrategies\CampaignValidateStrategy"/>
+        <service id="Dotdigital\Flow\Service\EventDataResolver\BuildStrategies\AddressBookBuildStrategy"/>
+        <service id="Dotdigital\Flow\Service\EventDataResolver\ValidateStrategies\AddressBookValidateStrategy"/>
+        <service id="Dotdigital\Flow\Service\EventDataResolver\BuildStrategies\ProgramBuildStrategy"/>
+        <service id="Dotdigital\Flow\Service\EventDataResolver\ValidateStrategies\ProgramValidateStrategy"/>
+    </services>
+</container>
+

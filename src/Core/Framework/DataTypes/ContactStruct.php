@@ -21,6 +21,8 @@ class ContactStruct extends AbstractStruct
 
     protected ContactDataCollection $dataFields;
 
+    protected ?ContactPersonalisationCollection $personalisation;
+
     /**
      * @param iterable<int, array<string, mixed>> $dataFields
      */
@@ -30,7 +32,8 @@ class ContactStruct extends AbstractStruct
         string $status = Defaults::DEFAULT_UNDEFINED_VALUE,
         string $optInType = Defaults::DEFAULT_UNDEFINED_VALUE,
         string $emailType = Defaults::DEFAULT_UNDEFINED_VALUE,
-        iterable $dataFields = []
+        iterable $dataFields = [],
+        ?ContactPersonalisationCollection $personalisation = null
     ) {
         $this->setId($id);
         $this->setEmail($email);
@@ -38,13 +41,9 @@ class ContactStruct extends AbstractStruct
         $this->setOptInType($optInType);
         $this->setEmailType($emailType);
         $this->setDataFields($dataFields);
+        $this->setPersonalisation($personalisation);
     }
 
-    /**
-     * Get contact email if class is called as a string
-     *
-     * @return string
-     */
     public function __toString()
     {
         return $this->email;
@@ -116,17 +115,34 @@ class ContactStruct extends AbstractStruct
     }
 
     /**
-     * @param iterable<int, array<string, mixed>> $dataFields
+     * @param  iterable<int, mixed> $dataFields
      */
     public function setDataFields(iterable $dataFields): self
     {
         $this->dataFields = new ContactDataCollection();
         foreach ($dataFields as $dataField) {
+            if (is_a($dataField, ContactDataStruct::class)) {
+                $this->dataFields->add($dataField);
+
+                continue;
+            }
             $this->dataFields->add(new ContactDataStruct(
                 (string) $dataField['key'],
                 $dataField['value']
             ));
         }
+
+        return $this;
+    }
+
+    public function getPersonalisation(): ContactPersonalisationCollection
+    {
+        return $this->personalisation ?? new ContactPersonalisationCollection();
+    }
+
+    public function setPersonalisation(?ContactPersonalisationCollection $personalisation): ContactStruct
+    {
+        $this->personalisation = $personalisation;
 
         return $this;
     }

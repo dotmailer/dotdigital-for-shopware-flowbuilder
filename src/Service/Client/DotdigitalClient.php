@@ -6,13 +6,15 @@ use Dotdigital\Flow\Core\Framework\DataTypes\AddressBookCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\AddressBookStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\ApiDataFieldCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\ApiDataFieldStruct;
+use Dotdigital\Flow\Core\Framework\DataTypes\CampaignCollection;
+use Dotdigital\Flow\Core\Framework\DataTypes\CampaignStruct;
+use Dotdigital\Flow\Core\Framework\DataTypes\ContactCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\ContactDataStruct;
+use Dotdigital\Flow\Core\Framework\DataTypes\ContactPersonalisationCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\ContactStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\ProgramCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\ProgramEnrolmentStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\ProgramStruct;
-use Dotdigital\Flow\Core\Framework\DataTypes\RecipientCollection;
-use Dotdigital\Flow\Core\Framework\DataTypes\RecipientStruct;
 use Dotdigital\Flow\Setting\Settings;
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\Exception\GuzzleException;
@@ -30,6 +32,7 @@ class DotdigitalClient extends AbstractClient
     public const EMAIL_TRIGGERED_CAMPAIGN_ENDPOINT = 'v2/email/triggered-campaign';
     public const GET_DATAFIELDS_ENDPOINT = 'v2/data-fields';
     public const GET_PROGRAMS_ENDPOINT = 'v2/programs';
+    public const GET_CAMPAIGNS_ENDPOINT = 'v2/campaigns';
 
     private SystemConfigService $systemConfigService;
 
@@ -285,25 +288,50 @@ class DotdigitalClient extends AbstractClient
     /**
      * Send email triggered campaign
      *
-     * @param int                              $campaignId
-     * @param array<int, array<string, mixed>> $personalisedValues
-     *
      * @throws GuzzleException
      */
-    public function sendEmail(RecipientCollection $recipients, $campaignId, array $personalisedValues): void
-    {
+    public function sendEmail(
+        ContactCollection $contactCollection,
+        CampaignStruct $campaign,
+        ContactPersonalisationCollection $contactPersonalisationCollection
+    ): void {
         $body = [
-            'toAddresses' => $recipients->reduce(function ($list, RecipientStruct $email) {
-                $list[] = $email->getEmail();
+            'toAddresses' => $contactCollection->reduce(function (array $list, ContactStruct $contact) {
+                $list[] = $contact->getEmail();
 
                 return $list;
             }, []),
-            'campaignId' => $campaignId,
-            'personalizationValues' => $personalisedValues,
+            'campaignId' => $campaign->getId(),
+            'personalizationValues' => $contactPersonalisationCollection->jsonSerialize(),
         ];
 
         $payload = json_encode($body);
         $this->post(self::EMAIL_TRIGGERED_CAMPAIGN_ENDPOINT, ['body' => $payload]);
+    }
+
+    /**
+     * Get Collection of Campaigns
+     *
+     * @throws GuzzleException
+     */
+    public function getCampaigns(int $skipLimit = 0): CampaignCollection
+    {
+        $campaignResponse = $this->get(
+            sprintf(
+                '%s?select=%s&skip=%s',
+                self::GET_CAMPAIGNS_ENDPOINT,
+                self::SELECT_LIMIT,
+                $skipLimit
+            ),
+            []
+        );
+        $campaigns = new CampaignCollection();
+        foreach ($campaignResponse as $campaign) {
+            $struct = CampaignStruct::createFromResponse($campaign);
+            $campaigns->add($struct);
+        }
+
+        return $campaigns;
     }
 
     /**

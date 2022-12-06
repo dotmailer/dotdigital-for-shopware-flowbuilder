@@ -55,6 +55,23 @@
                         "placeholder": "Search or choose program"
                     }
                 }
+            },
+            "campaign": {
+                "title": "Send transactional email",
+                "sequence-description": {
+                    "recipient": "Contact Context: {recipient}",
+                    "campaign": "Campaign: {campaignId}"
+                },
+                "subtitle": "Automatically send your Dotdigital triggered campaign content as a transactional email.",
+                "help-link": "Dotdigital Help Centre",
+                "fields": {
+                    "campaign": {
+                        "label": "Triggered campaign",
+                        "placeholder": "Search or choose a triggered campaign to send.",
+                        "description": "Choose a triggered campaign that is only for transactional communications and contains no marketing content.",
+                        "help-link": "Learn more"
+                    }
+                }
             }
         },
         "shared": {

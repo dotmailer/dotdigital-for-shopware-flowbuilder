@@ -1,4 +1,4 @@
-import { ACTION, CONTACT_ACTION, PROGRAM_ACTION } from '../../constant/dotdigital-flow.constant';
+import { CAMPAIGN_ACTION, CONTACT_ACTION, PROGRAM_ACTION } from '../../constant/dotdigital-flow.constant';
 
 const { Component } = Shopware;
 
@@ -12,8 +12,8 @@ Component.override('sw-flow-sequence-action', {
 
         modalName() {
             switch (this.selectedAction) {
-                case ACTION.HANDLE:
-                    return ACTION.COMPONENT_NAME;
+                case CAMPAIGN_ACTION.HANDLE:
+                    return CAMPAIGN_ACTION.COMPONENT_NAME;
                 case CONTACT_ACTION.HANDLE:
                     return CONTACT_ACTION.COMPONENT_NAME;
                 case PROGRAM_ACTION.HANDLE:
@@ -28,7 +28,7 @@ Component.override('sw-flow-sequence-action', {
 
             return {
                 ...actionDescriptionList,
-                [ACTION.HANDLE]: (config) => this.getDotdigitalEmailSenderDescription(config),
+                [CAMPAIGN_ACTION.HANDLE]: (config) => this.getDotdigitalEmailSenderDescription(config),
                 [CONTACT_ACTION.HANDLE]: (config) => this.getDotdigitalContactDescription(config),
                 [PROGRAM_ACTION.HANDLE]: (config) => this.getDotdigitalProgramDescription(config),
             };
@@ -126,22 +126,31 @@ Component.override('sw-flow-sequence-action', {
         },
 
         getDotdigitalEmailSenderDescription(config) {
-            const recipient = config.recipient.type;
-            const campaignId = config.campaignId;
+            const recipientRaw = config.recipient;
+            const recipientType = recipientRaw.type.charAt(0).toUpperCase() + recipientRaw.type.slice(1);
+            const recipientDescription = this.$tc('sw-flow.actions.campaign.sequence-description.recipient', 0, {
+                recipient: `<strong>${recipientType}</strong>`,
+            });
 
-            return this.$tc(`
-                Recipient: ${recipient.charAt(0).toUpperCase() + recipient.slice(1)}, Campaign ID: ${campaignId}
-            `);
+            const campaignId = config.campaignId;
+            const campaignDescription = this.$tc('sw-flow.actions.campaign.sequence-description.campaign', 0, {
+                campaignId: `<strong>${campaignId}</strong>`,
+            });
+
+            return `
+                ${recipientDescription}<br>
+                ${campaignDescription}
+            `;
         },
 
         getActionTitle(actionName) {
             switch (actionName) {
-                case ACTION.HANDLE:
+                case CAMPAIGN_ACTION.HANDLE:
                     return {
                         group: 'Dotdigital',
                         value: actionName,
-                        icon: ACTION.ICON,
-                        label: this.$tc(ACTION.LABEL),
+                        icon: CAMPAIGN_ACTION.ICON,
+                        label: this.$tc(CAMPAIGN_ACTION.LABEL),
                     };
                 case CONTACT_ACTION.HANDLE:
                     return {

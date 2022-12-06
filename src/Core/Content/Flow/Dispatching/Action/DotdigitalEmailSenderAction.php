@@ -2,37 +2,39 @@
 
 namespace Dotdigital\Flow\Core\Content\Flow\Dispatching\Action;
 
+use Dotdigital\Flow\Core\Framework\DataTypes\ContactCollection;
+use Dotdigital\Flow\Core\Framework\DataTypes\ContactPersonalisationCollection;
 use Dotdigital\Flow\Core\Framework\Event\DotdigitalEmailSenderAware;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
-use Dotdigital\Flow\Service\RecipientResolver;
-use Psr\Log\LoggerInterface;
+use Dotdigital\Flow\Service\EventDataResolver\ResolveCampaignInterface;
+use Dotdigital\Flow\Service\EventDataResolver\ResolveContactInterface;
+use Dotdigital\Flow\Service\EventDataResolver\ResolvePersonalisedValuesInterface;
 use Shopware\Core\Content\Flow\Dispatching\Action\FlowAction;
 use Shopware\Core\Content\MailTemplate\Exception\MailEventConfigurationException;
 use Shopware\Core\Framework\Event\FlowEvent;
 use Shopware\Core\Framework\Event\MailAware;
-use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
 class DotdigitalEmailSenderAction extends FlowAction
 {
     private DotdigitalClientFactory $dotdigitalClientFactory;
 
-    private BusinessEventEncoder $businessEventEncoder;
+    private ResolveContactInterface $resolveContact;
 
-    private LoggerInterface $logger;
+    private ResolveCampaignInterface $resolveCampaign;
 
-    private RecipientResolver $recipientResolver;
+    private ResolvePersonalisedValuesInterface $resolvePersonalisedValues;
 
     public function __construct(
         DotdigitalClientFactory $dotdigitalClientFactory,
-        BusinessEventEncoder $businessEventEncoder,
-        LoggerInterface $logger,
-        RecipientResolver $recipientResolver
+        ResolveContactInterface $resolveContact,
+        ResolveCampaignInterface $resolveCampaign,
+        ResolvePersonalisedValuesInterface $resolvePersonalisedValues
     ) {
         $this->dotdigitalClientFactory = $dotdigitalClientFactory;
-        $this->businessEventEncoder = $businessEventEncoder;
-        $this->logger = $logger;
-        $this->recipientResolver = $recipientResolver;
+        $this->resolveContact = $resolveContact;
+        $this->resolveCampaign = $resolveCampaign;
+        $this->resolvePersonalisedValues = $resolvePersonalisedValues;
     }
 
     /**
@@ -68,41 +70,21 @@ class DotdigitalEmailSenderAction extends FlowAction
             throw new MailEventConfigurationException('Not an instance of MailAware', \get_class($event->getEvent()));
         }
 
-        $eventConfig = $event->getConfig();
-
-        if (empty($eventConfig['recipient'])) {
-            throw new MailEventConfigurationException('The recipient value in the flow action configuration is missing.', \get_class($event));
-        }
-
-        try {
-            $recipients = $this->recipientResolver->getRecipients($eventConfig['recipient'], $event);
-        } catch (\Exception $exception) {
-            $this->logger->error(
-                'Dotdigital recipients collection error',
-                ['exception' => $exception]
-            );
-
-            return;
-        }
-
-        if (!\array_key_exists('recipient', $eventConfig) || $recipients->count() === 0) {
-            return;
-        }
-
-        $availableData = $this->businessEventEncoder->encode($event->getEvent());
-        $personalisedValues = [];
-        foreach ($availableData as $key => $data) {
-            $personalisedValues[] = [
-                'name' => $key,
-                'value' => $data,
-            ];
-        }
+        $campaignCollection = $this->resolveCampaign->resolve($event);
+        /** @var ContactCollection $contactCollection */
+        $contactCollection = $this->resolveContact->resolve($event);
+        /** @var ContactPersonalisationCollection $personalisedValues */
+        $personalisedValues = $this->resolvePersonalisedValues->resolve($event);
         $context = $event->getContext();
         /** @var SalesChannelContext $channelContext */
         $channelContext = $context->getSource();
         $this->dotdigitalClientFactory
             ->createClient($channelContext->getSalesChannelId())
-            ->sendEmail($recipients, $eventConfig['campaignId'], $personalisedValues);
+            ->sendEmail(
+                $contactCollection,
+                $campaignCollection->first(),
+                $personalisedValues
+            );
     }
 
     public static function getName(): string

@@ -6,10 +6,14 @@ class RecipientStruct extends AbstractStruct
 {
     protected string $email;
 
+    protected ?int $id;
+
     public function __construct(
-        string $email
+        string $email,
+        ?int $id = null
     ) {
         $this->setEmail($email);
+        $this->setId($id);
     }
 
     /**
@@ -35,5 +39,15 @@ class RecipientStruct extends AbstractStruct
         $this->email = $email;
 
         return $this;
+    }
+
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 }

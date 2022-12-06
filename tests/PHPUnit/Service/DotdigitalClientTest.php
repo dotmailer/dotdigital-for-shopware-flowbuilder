@@ -9,6 +9,8 @@ use Dotdigital\Flow\Service\Client\DotdigitalClient;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
 use Dotdigital\Flow\Setting\Settings;
 use Dotdigital\Tests\Traits\InteractWithAddressBooksTrait;
+use Dotdigital\Tests\Traits\InteractWithCampaignsTrait;
+use Dotdigital\Tests\Traits\InteractWithContactPersonalisationTrait;
 use Dotdigital\Tests\Traits\InteractWithContactsTrait;
 use Dotdigital\Tests\Traits\InteractWithRecipientsTrait;
 use GuzzleHttp\Exception\GuzzleException;
@@ -21,7 +23,9 @@ class DotdigitalClientTest extends TestCase
 {
     use InteractWithRecipientsTrait;
     use InteractWithAddressBooksTrait;
+    use InteractWithContactPersonalisationTrait;
     use InteractWithContactsTrait;
+    use InteractWithCampaignsTrait;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|SalesChannelEntity
@@ -143,17 +147,18 @@ class DotdigitalClientTest extends TestCase
      */
     public function testSendEmailMethod(): void
     {
-        $templateID = 'mock-template-id';
-        $recipients = $this->generateValidRecipientCollection();
+        $contactCollection = $this->generateContactCollection();
+        $campaign = $this->generateCampaign();
+        $contactPersonalisationCollection = $this->generateContactPersonalisationCollection();
 
         $this->mockDotdigitalClient->expects(static::atLeastOnce())
             ->method('sendEmail')
-            ->with($recipients, $templateID);
+            ->with($contactCollection, $campaign, $contactPersonalisationCollection);
 
         $this->mockDotdigitalClient->sendEmail(
-            $recipients,
-            $templateID,
-            []
+            $contactCollection,
+            $campaign,
+            $contactPersonalisationCollection
         );
     }
 

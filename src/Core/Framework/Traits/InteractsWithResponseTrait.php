@@ -7,10 +7,7 @@ use Shopware\Core\Framework\Struct\Collection;
 
 trait InteractsWithResponseTrait
 {
-    /**
-     * @var array<string>
-     */
-    private $_messages = [];
+    use HasErrorMessageTrait;
 
     /**
      * @param array<string, mixed> $response
@@ -25,10 +22,10 @@ trait InteractsWithResponseTrait
             $reflector = new \ReflectionClass(static::class);
             $reflectorInstance = $reflector->newInstanceWithoutConstructor();
             if (empty($response)) {
-                $reflectorInstance->_messages[] = 'Response body is empty';
+                $reflectorInstance->pushErrorMessage('Response body is empty');
             }
             if (\array_key_exists('message', $response)) {
-                $reflectorInstance->_messages[] = $response['message'];
+                $reflectorInstance->pushErrorMessage($response['message']);
             }
             $properties = $reflector->getProperties();
             foreach ($properties as $property) {
@@ -37,7 +34,7 @@ trait InteractsWithResponseTrait
                 }
             }
         } catch (\ReflectionException $exception) {
-            $reflectorInstance->_messages[] = $exception->getMessage();
+            $reflectorInstance->pushErrorMessage($exception->getMessage());
         }
 
         return $reflectorInstance;
@@ -68,13 +65,13 @@ trait InteractsWithResponseTrait
                     $method = 'set' . ucfirst($property->getName());
                     $this->{'set' . ucfirst($property->getName())}($value);
                 } else {
-                    $this->_messages[] = 'The property (' . $property->getName() . ') of class ( ' . static::class . ' ) can not be assigned!';
+                    $this->pushErrorMessage('The property (' . $property->getName() . ') of class ( ' . static::class . ' ) can not be assigned!');
                 }
             } else {
                 $this->{$property} = $value;
             }
         } catch (\ReflectionException $exception) {
-            $this->_messages[] = $exception->getMessage();
+            $this->pushErrorMessage($exception->getMessage());
         }
     }
 }

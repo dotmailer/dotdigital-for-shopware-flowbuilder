@@ -6,8 +6,9 @@
     <services>
         <service id="Dotdigital\Flow\Core\Content\Flow\Dispatching\Action\DotdigitalProgramAction">
             <argument type="service" id="Dotdigital\Flow\Service\Client\DotdigitalClientFactory" />
-            <argument type="service" id="Dotdigital\Flow\Service\RecipientResolver" />
-            <argument type="service" id="Dotdigital\Flow\Util\DotdigitalLogger"/>
+            <argument type="service" id="Dotdigital\Flow\Service\EventDataResolver\ResolveContactInterface" />
+            <argument type="service" id="Dotdigital\Flow\Service\EventDataResolver\ResolveContactDataFieldsInterface" />
+            <argument type="service" id="Dotdigital\Flow\Service\EventDataResolver\ResolveProgramInterface" />
             <tag name="kernel.event_subscriber"/>
             <tag name="flow.action" priority="600"/>
         </service>

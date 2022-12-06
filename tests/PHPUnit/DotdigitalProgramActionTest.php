@@ -4,9 +4,14 @@ namespace Dotdigital\Tests;
 
 use DG\BypassFinals;
 use Dotdigital\Flow\Core\Content\Flow\Dispatching\Action\DotdigitalProgramAction;
-use Dotdigital\Flow\Core\Framework\DataTypes\RecipientCollection;
-use Dotdigital\Flow\Core\Framework\DataTypes\RecipientStruct;
+use Dotdigital\Flow\Core\Framework\DataTypes\ContactCollection;
+use Dotdigital\Flow\Core\Framework\DataTypes\ContactStruct;
+use Dotdigital\Flow\Core\Framework\DataTypes\ProgramCollection;
+use Dotdigital\Flow\Core\Framework\DataTypes\ProgramStruct;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
+use Dotdigital\Flow\Service\EventDataResolver\ResolveContactDataFieldsInterface;
+use Dotdigital\Flow\Service\EventDataResolver\ResolveContactInterface;
+use Dotdigital\Flow\Service\EventDataResolver\ResolveProgramInterface;
 use Dotdigital\Flow\Service\RecipientResolver;
 use Dotdigital\Tests\Traits\InteractWithContactDataFieldsTrait;
 use Dotdigital\Tests\Traits\InteractWithContactsTrait;
@@ -58,14 +63,44 @@ class DotdigitalProgramActionTest extends TestCase
     private $contextSourceMock;
 
     /**
-     * @var RecipientResolver|\PHPUnit\Framework\MockObject\MockObject|\PHPUnit\Framework\MockObject\MockObject
+     * @var RecipientResolver|\PHPUnit\Framework\MockObject\MockObject
      */
     private $recipientResolverMock;
 
     /**
-     * @var RecipientCollection|\PHPUnit\Framework\MockObject\MockObject|\PHPUnit\Framework\MockObject\MockObject
+     * @var ContactCollection|\PHPUnit\Framework\MockObject\MockObject
      */
-    private $recipientCollectionMock;
+    private $contactCollectionMock;
+
+    /**
+     * @var ContactStruct|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $contactStructMock;
+
+    /**
+     * @var ProgramCollection|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $programCollectionMock;
+
+    /**
+     * @var ProgramStruct|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $programStructMock;
+
+    /**
+     * @var ResolveContactInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $resolveContactMock;
+
+    /**
+     * @var ResolveContactDataFieldsInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $resolveContactDataFields;
+
+    /**
+     * @var ResolveProgramInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $resolveProgramMock;
 
     protected function setUp(): void
     {
@@ -77,17 +112,30 @@ class DotdigitalProgramActionTest extends TestCase
         $this->businessEventLoaderMock = $this->createMock(BusinessEventEncoder::class);
         $this->stringTemplateRendereMock = $this->createMock(StringTemplateRenderer::class);
         $this->loggerMock = $this->createMock(LoggerInterface::class);
-        $this->recipientCollectionMock = $this->createMock(RecipientCollection::class);
+        $this->contactCollectionMock = $this->createMock(ContactCollection::class);
+        $this->contactStructMock = $this->createMock(ContactStruct::class);
+        $this->programCollectionMock = $this->createMock(ProgramCollection::class);
+        $this->programStructMock = $this->createMock(ProgramStruct::class);
         $this->recipientResolverMock = $this->createMock(RecipientResolver::class);
-        $this->recipientStructMock = $this->createMock(RecipientStruct::class);
+        $this->resolveContactMock = $this->createMock(ResolveContactInterface::class);
+        $this->resolveContactDataFieldsMock = $this->createMock(ResolveContactDataFieldsInterface::class);
+        $this->resolveProgramMock = $this->createMock(ResolveProgramInterface::class);
 
-        $this->recipientStructMock
-            ->method('getEmail')
-            ->willReturn('test@test.test');
+        $this->resolveContactMock->expects(static::once())
+            ->method('resolve')
+            ->willReturn($this->contactCollectionMock);
 
-        $this->recipientCollectionMock
+        $this->resolveProgramMock->expects(static::once())
+            ->method('resolve')
+            ->willReturn($this->programCollectionMock);
+
+        $this->contactCollectionMock
             ->method('first')
-            ->willReturn($this->recipientStructMock);
+            ->willReturn($this->contactStructMock);
+
+        $this->programCollectionMock
+            ->method('first')
+            ->willReturn($this->programStructMock);
 
         /* @phpstan-ignore-next-line */
         $this->contactFormEventMock = $this->createMock(ContactFormEvent::class);
@@ -96,15 +144,11 @@ class DotdigitalProgramActionTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->recipientResolverMock = $this->createMock(RecipientResolver::class);
-        $this->recipientResolverMock
-            ->method('getRecipients')
-            ->willReturn($this->recipientCollectionMock);
-
         $this->dotdigitalProgramAction = new DotdigitalProgramAction(
             $dotdigitalClientFactoryMock,
-            $this->recipientResolverMock,
-            $this->loggerMock
+            $this->resolveContactMock,
+            $this->resolveContactDataFieldsMock,
+            $this->resolveProgramMock
         );
     }
 
@@ -116,17 +160,6 @@ class DotdigitalProgramActionTest extends TestCase
         $this->eventMock->expects(static::atLeastOnce())
             ->method('getEvent')
             ->willReturn($this->mailAwareMock);
-
-        $this->eventMock->expects(static::atLeast(3))
-            ->method('getConfig')
-            ->willReturn([
-                'recipient' => [
-                    'type' => 'default',
-                    'data' => [],
-                ],
-                'dataFields' => $this->generateContactDataFieldArray(),
-                'programId' => 100000,
-            ]);
 
         $this->eventMock->expects(static::once())
             ->method('getContext')
@@ -147,19 +180,6 @@ class DotdigitalProgramActionTest extends TestCase
         $this->eventMock->expects(static::atLeastOnce())
             ->method('getEvent')
             ->willReturn($this->mailAwareMock);
-
-        $this->eventMock->expects(static::atLeast(3))
-            ->method('getConfig')
-            ->willReturn([
-                'recipient' => [
-                    'type' => 'custom',
-                    'data' => [
-                        'test@test.test',
-                    ],
-                ],
-                'dataFields' => $this->generateContactDataFieldArray(),
-                'programId' => 100000,
-            ]);
 
         $this->eventMock->expects(static::once())
             ->method('getContext')

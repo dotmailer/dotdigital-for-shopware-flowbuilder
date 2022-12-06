@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="Dotdigital\Flow\Service\EventDataResolver\ResolveContactInterface" class="Dotdigital\Flow\Service\EventDataResolver\EventDataResolverContext">
+            <factory service="Dotdigital\Flow\Service\EventDataResolver\EventDataResolverContextFactory" method="createContactResolver"/>
+        </service>
+        <service id="Dotdigital\Flow\Service\EventDataResolver\ResolveCampaignInterface" class="Dotdigital\Flow\Service\EventDataResolver\EventDataResolverContext">
+            <factory service="Dotdigital\Flow\Service\EventDataResolver\EventDataResolverContextFactory" method="createCampaignResolver"/>
+        </service>
+        <service id="Dotdigital\Flow\Service\EventDataResolver\ResolvePersonalisedValuesInterface" class="Dotdigital\Flow\Service\EventDataResolver\EventDataResolverContext">
+            <factory service="Dotdigital\Flow\Service\EventDataResolver\EventDataResolverContextFactory" method="createPersonalisedValuesResolver"/>
+        </service>
+        <service id="Dotdigital\Flow\Service\EventDataResolver\ResolveAddressBookInterface" class="Dotdigital\Flow\Service\EventDataResolver\EventDataResolverContext">
+            <factory service="Dotdigital\Flow\Service\EventDataResolver\EventDataResolverContextFactory" method="createAddressBookResolver"/>
+        </service>
+        <service id="Dotdigital\Flow\Service\EventDataResolver\ResolveContactDataFieldsInterface">
+            <factory service="Dotdigital\Flow\Service\EventDataResolver\EventDataResolverContextFactory" method="createContactDataFieldsResolver"/>
+        </service>
+        <service id="Dotdigital\Flow\Service\EventDataResolver\ResolveProgramInterface">
+            <factory service="Dotdigital\Flow\Service\EventDataResolver\EventDataResolverContextFactory" method="createProgramResolver"/>
+        </service>
+    </services>
+</container>
+
