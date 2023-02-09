@@ -31,6 +31,7 @@ class DataFieldsController extends AbstractController
      *     name="api.action.dotdigital.data.fields",
      *     methods={"GET"}
      * )
+     *
      * @Acl({"sales_channel.editor"})
      */
     public function showDataFields(): JsonResponse

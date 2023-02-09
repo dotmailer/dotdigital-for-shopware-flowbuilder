@@ -33,6 +33,7 @@ class CampaignsController extends AbstractController
      *     name="api.action.dotdigital.campaigns",
      *     methods={"GET"}
      * )
+     *
      * @Acl({"sales_channel.editor"})
      *
      * @throws GuzzleException

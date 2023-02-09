@@ -40,7 +40,7 @@ class RecipientResolver
     }
 
     /**
-     * @param array<string,mixed> $recipients
+     * @param array<string, mixed> $recipients
      *
      * @throws \Doctrine\DBAL\Exception
      */
@@ -78,9 +78,9 @@ class RecipientResolver
 
                 break;
 
-            /*
-             * On admin return the admin email address.
-             */
+                /*
+                 * On admin return the admin email address.
+                 */
             case self::RECIPIENT_CONFIG_ADMIN:
                 $admins = $this->connection->fetchAllAssociative(
                     'SELECT first_name, last_name, email FROM user WHERE admin = true'
@@ -91,9 +91,9 @@ class RecipientResolver
 
                 break;
 
-            /*
-             * On contact form event return the email address from the event.
-             */
+                /*
+                 * On contact form event return the email address from the event.
+                 */
             case self::RECIPIENT_CONFIG_CONTACT_FORM_MAIL:
                 if (!$mailEvent instanceof ContactFormDataAware) {
                     break;
@@ -106,9 +106,9 @@ class RecipientResolver
 
                 break;
 
-            /*
-             * By default pull keys(email) from MailRecipientStruct::class
-             */
+                /*
+                 * By default pull keys(email) from MailRecipientStruct::class
+                 */
             default:
                 foreach (array_keys($mailEvent->getMailStruct()->getRecipients()) as $recipient) {
                     $collection->add(new RecipientStruct($recipient));

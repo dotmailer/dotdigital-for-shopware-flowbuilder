@@ -37,7 +37,7 @@ class CampaignStruct extends AbstractStruct
     protected ?string $plainTextContent;
 
     /**
-     * @param array<string,mixed>|null $fromAddress
+     * @param array<string, mixed>|null $fromAddress
      */
     public function __construct(
         int $id,
@@ -170,7 +170,7 @@ class CampaignStruct extends AbstractStruct
     }
 
     /**
-     * @param array<string,mixed>|null $fromAddress
+     * @param array<string, mixed>|null $fromAddress
      */
     public function setFromAddress(?array $fromAddress): void
     {

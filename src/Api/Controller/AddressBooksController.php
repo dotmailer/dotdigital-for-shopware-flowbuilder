@@ -32,6 +32,7 @@ class AddressBooksController extends AbstractController
      *     name="api.action.dotdigital.address.books",
      *     methods={"GET"}
      * )
+     *
      * @Acl({"sales_channel.editor"})
      */
     public function showAddressBooks(): JsonResponse

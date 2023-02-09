@@ -14,8 +14,10 @@ class AbstractClient
 
     private ClientInterface $client;
 
-    public function __construct(ClientInterface $client, LoggerInterface $logger)
-    {
+    public function __construct(
+        ClientInterface $client,
+        LoggerInterface $logger
+    ) {
         $this->client = $client;
         $this->logger = $logger;
     }
@@ -23,11 +25,11 @@ class AbstractClient
     /**
      * Call Post
      *
-     * @param array<string,mixed> $options
+     * @param array<string, mixed> $options
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      *
-     * @return array<string,mixed>
+     * @return array<string, mixed>
      */
     protected function post(string $uri, array $options): array
     {
@@ -37,11 +39,11 @@ class AbstractClient
     /**
      * Call Get
      *
-     * @param array<string,mixed> $options
+     * @param array<string, mixed> $options
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      *
-     * @return array<string,mixed>
+     * @return array<string, mixed>
      */
     protected function get(string $uri, array $options): array
     {
@@ -51,11 +53,11 @@ class AbstractClient
     /**
      * Make new guzzle async request
      *
-     * @param array<string,mixed> $options
+     * @param array<string, mixed> $options
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      *
-     * @return array<string,mixed>
+     * @return array<string, mixed>
      */
     private function request(string $method, string $uri, array $options = []): array
     {

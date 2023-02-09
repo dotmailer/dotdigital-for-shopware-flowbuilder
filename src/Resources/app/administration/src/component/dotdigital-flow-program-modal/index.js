@@ -69,7 +69,7 @@ Component.register('dotdigital-flow-program-modal', { // eslint-disable-line
          * @returns {string}
          */
         helpLink() {
-            return '#';
+            return 'https://support.dotdigital.com/hc/en-gb/articles/9682026340498';
         },
 
         /**

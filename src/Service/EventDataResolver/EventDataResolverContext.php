@@ -8,11 +8,11 @@ use Shopware\Core\Framework\Event\FlowEvent;
 use Shopware\Core\Framework\Struct\Collection;
 
 class EventDataResolverContext implements ResolveContactInterface,
-        ResolveContactDataFieldsInterface,
-        ResolveCampaignInterface,
-        ResolvePersonalisedValuesInterface,
-        ResolveAddressBookInterface,
-        ResolveProgramInterface
+    ResolveContactDataFieldsInterface,
+    ResolveCampaignInterface,
+    ResolvePersonalisedValuesInterface,
+    ResolveAddressBookInterface,
+    ResolveProgramInterface
 {
     private BuildStrategyInterface $buildStrategy;
 

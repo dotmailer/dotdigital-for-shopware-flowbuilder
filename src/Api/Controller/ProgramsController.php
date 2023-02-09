@@ -32,6 +32,7 @@ class ProgramsController extends AbstractController
      *     name="api.action.dotdigital.",
      *     methods={"GET"}
      * )
+     *
      * @Acl({"sales_channel.editor"})
      */
     public function showPrograms(): JsonResponse
