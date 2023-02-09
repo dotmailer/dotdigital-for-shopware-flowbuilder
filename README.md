@@ -27,15 +27,14 @@ in order to rebuild the JS for Flow Builder.
 
 ## Changelog
 
-### 1.1.0-RC2
-
-#### What's new
-- We've added a new flow action to enroll contacts to marketing programs in Dotdigital.
-
-### 1.1.0-RC1
+### 1.1.0
 
 #### What's new
 - We've added a new flow action to add or update contacts in Dotdigital. Email addresses can be added to address books, with data fields, and options for resubscribe and double opt-in.
+- We've added a new flow action to enroll contacts to marketing programs in Dotdigital.
+
+#### Improvements
+- Merchants using our transactional email flow action can now choose from a list of triggered campaigns to send from Dotdigital.
 
 ### 1.0.0
 
