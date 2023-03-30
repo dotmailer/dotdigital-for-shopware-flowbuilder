@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "shopware/core": "6.4.*",
+    "shopware/core": "6.5.*",
     "php": "^7.4||^8.0"
   },
   "extra": {
