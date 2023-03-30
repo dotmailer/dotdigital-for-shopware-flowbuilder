@@ -2,26 +2,26 @@
 
 namespace Dotdigital\Flow\Service\EventDataResolver\ValidateStrategies;
 
-use Shopware\Core\Framework\Event\FlowEvent;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 
 class ContactValidateStrategy implements ValidateStrategyInterface
 {
     /**
      * @inheritDoc
      */
-    public function validate(FlowEvent $flowEvent): bool
+    public function validate(StorableFlow $flow): bool
     {
-        $eventData = $flowEvent->getConfig();
+		$flowData = $flow->getConfig();
 
-        if (!\array_key_exists('recipient', $eventData)) {
+        if (!\array_key_exists('recipient', $flowData)) {
             throw new \InvalidArgumentException('The contactEmail value in the flow action configuration is invalid or missing.', 422);
         }
 
-        if (!\array_key_exists('data', $eventData['recipient'])) {
+        if (!\array_key_exists('data', $flowData['recipient'])) {
             throw new \InvalidArgumentException('The contactEmail value in the flow action configuration is invalid or missing.', 422);
         }
 
-        if (!\array_key_exists('type', $eventData['recipient'])) {
+        if (!\array_key_exists('type', $flowData['recipient'])) {
             throw new \InvalidArgumentException('The contactEmail value in the flow action configuration is invalid or missing.', 422);
         }
 

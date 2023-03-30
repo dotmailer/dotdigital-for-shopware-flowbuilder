@@ -2,17 +2,17 @@
 
 namespace Dotdigital\Flow\Service\EventDataResolver\ValidateStrategies;
 
-use Shopware\Core\Framework\Event\FlowEvent;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 
 class AddressBookValidateStrategy implements ValidateStrategyInterface
 {
     /**
      * @inheritDoc
      */
-    public function validate(FlowEvent $flowEvent): bool
+    public function validate(StorableFlow $flow): bool
     {
-        $eventData = $flowEvent->getConfig();
-        if (!\array_key_exists('addressBook', $eventData)) {
+		$flowData = $flow->getConfig();
+        if (!\array_key_exists('addressBook', $flowData)) {
             throw new \InvalidArgumentException('The addressBook value in the flow action configuration is invalid or missing.', 422);
         }
 
