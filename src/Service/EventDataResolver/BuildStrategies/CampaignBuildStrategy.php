@@ -4,18 +4,18 @@ namespace Dotdigital\Flow\Service\EventDataResolver\BuildStrategies;
 
 use Dotdigital\Flow\Core\Framework\DataTypes\CampaignCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\CampaignStruct;
-use Shopware\Core\Framework\Event\FlowEvent;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 
 class CampaignBuildStrategy implements BuildStrategyInterface
 {
     /**
      * @inheritDoc
      */
-    public function build(FlowEvent $flowEvent): CampaignCollection
+    public function build(StorableFlow $flow): CampaignCollection
     {
-        $eventData = $flowEvent->getConfig();
+        $flowData = $flow->getConfig();
         $campaignCollection = new CampaignCollection();
-        $campaignCollection->add(new CampaignStruct((int) $eventData['campaignId']));
+        $campaignCollection->add(new CampaignStruct((int) $flowData['campaignId']));
 
         return $campaignCollection;
     }

@@ -4,18 +4,18 @@ namespace Dotdigital\Flow\Service\EventDataResolver\BuildStrategies;
 
 use Dotdigital\Flow\Core\Framework\DataTypes\AddressBookCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\AddressBookStruct;
-use Shopware\Core\Framework\Event\FlowEvent;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 
 class AddressBookBuildStrategy implements BuildStrategyInterface
 {
     /**
      * @inheritDoc
      */
-    public function build(FlowEvent $flowEvent): AddressBookCollection
+    public function build(StorableFlow $flow): AddressBookCollection
     {
-        $eventData = $flowEvent->getConfig();
+        $flowData = $flow->getConfig();
         $addressBookCollection = new AddressBookCollection();
-        $addressBookCollection->add(new AddressBookStruct($eventData['addressBook']));
+        $addressBookCollection->add(new AddressBookStruct($flowData['addressBook']));
 
         return $addressBookCollection;
     }
