@@ -10,12 +10,13 @@ use Dotdigital\Flow\Service\EventDataResolver\ResolveCampaignInterface;
 use Dotdigital\Flow\Service\EventDataResolver\ResolveContactInterface;
 use Dotdigital\Flow\Service\EventDataResolver\ResolvePersonalisedValuesInterface;
 use Shopware\Core\Content\Flow\Dispatching\Action\FlowAction;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Content\MailTemplate\Exception\MailEventConfigurationException;
-use Shopware\Core\Framework\Event\FlowEvent;
 use Shopware\Core\Framework\Event\MailAware;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class DotdigitalEmailSenderAction extends FlowAction
+class DotdigitalEmailSenderAction extends FlowAction implements EventSubscriberInterface
 {
     private DotdigitalClientFactory $dotdigitalClientFactory;
 
@@ -64,18 +65,18 @@ class DotdigitalEmailSenderAction extends FlowAction
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function handle(FlowEvent $event): void
+    public function handleFlow(StorableFlow $flow): void
     {
-        if (!$event->getEvent() instanceof MailAware) {
             throw new MailEventConfigurationException('Not an instance of MailAware', \get_class($event->getEvent()));
+		if (!$flow->hasStore('mailStruct')) {
         }
 
-        $campaignCollection = $this->resolveCampaign->resolve($event);
+        $campaignCollection = $this->resolveCampaign->resolve($flow);
         /** @var ContactCollection $contactCollection */
-        $contactCollection = $this->resolveContact->resolve($event);
+        $contactCollection = $this->resolveContact->resolve($flow);
         /** @var ContactPersonalisationCollection $personalisedValues */
-        $personalisedValues = $this->resolvePersonalisedValues->resolve($event);
-        $context = $event->getContext();
+        $personalisedValues = $this->resolvePersonalisedValues->resolve($flow);
+        $context = $flow->getContext();
         /** @var SalesChannelContext $channelContext */
         $channelContext = $context->getSource();
         $this->dotdigitalClientFactory
