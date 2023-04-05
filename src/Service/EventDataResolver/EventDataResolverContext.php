@@ -4,7 +4,7 @@ namespace Dotdigital\Flow\Service\EventDataResolver;
 
 use Dotdigital\Flow\Service\EventDataResolver\BuildStrategies\BuildStrategyInterface;
 use Dotdigital\Flow\Service\EventDataResolver\ValidateStrategies\ValidateStrategyInterface;
-use Shopware\Core\Framework\Event\FlowEvent;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Struct\Collection;
 
 class EventDataResolverContext implements ResolveContactInterface,
@@ -62,14 +62,14 @@ class EventDataResolverContext implements ResolveContactInterface,
      *
      * @throws \Exception
      */
-    public function resolve(FlowEvent $flowEvent): Collection
+    public function resolve(StorableFlow $flow): Collection
     {
         try {
             if ($this->validateStrategy !== null) {
-                $this->validateStrategy->validate($flowEvent);
+                $this->validateStrategy->validate($flow);
             }
 
-            return $this->buildStrategy->build($flowEvent);
+            return $this->buildStrategy->build($flow);
         } catch (\Exception $exception) {
             $this->exceptionHandler->handle($exception);
 

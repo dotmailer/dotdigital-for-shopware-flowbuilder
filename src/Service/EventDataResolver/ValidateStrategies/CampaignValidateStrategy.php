@@ -2,18 +2,18 @@
 
 namespace Dotdigital\Flow\Service\EventDataResolver\ValidateStrategies;
 
-use Shopware\Core\Framework\Event\FlowEvent;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 
 class CampaignValidateStrategy implements ValidateStrategyInterface
 {
     /**
      * @inheritDoc
      */
-    public function validate(FlowEvent $flowEvent): bool
+    public function validate(StorableFlow $flow): bool
     {
-        $eventData = $flowEvent->getConfig();
+		$flowData = $flow->getConfig();
 
-        if (!\array_key_exists('campaignId', $eventData)) {
+        if (!\array_key_exists('campaignId', $flowData)) {
             throw new \InvalidArgumentException('The campaignId value in the flow action configuration is invalid or missing.', 422);
         }
 

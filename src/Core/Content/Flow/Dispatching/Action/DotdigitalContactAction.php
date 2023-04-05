@@ -8,12 +8,13 @@ use Dotdigital\Flow\Service\EventDataResolver\ResolveAddressBookInterface;
 use Dotdigital\Flow\Service\EventDataResolver\ResolveContactDataFieldsInterface;
 use Dotdigital\Flow\Service\EventDataResolver\ResolveContactInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Shopware\Core\Content\Flow\Dispatching\Action\FlowAction;
-use Shopware\Core\Framework\Event\FlowEvent;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Event\MailAware;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 
-class DotdigitalContactAction extends FlowAction
+class DotdigitalContactAction extends FlowAction implements EventSubscriberInterface
 {
     private DotdigitalClientFactory $dotdigitalClientFactory;
 
@@ -35,17 +36,19 @@ class DotdigitalContactAction extends FlowAction
         $this->resolveContactDataFields = $resolveContactDataFields;
     }
 
-    /**
-     * Get subscribed events.
-     *
-     * @return string[]
-     */
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            self::getName() => 'handle',
-        ];
-    }
+	/**
+	 * Get subscribed events.
+	 *
+	 * @deprecated since Shopware 6.5
+	 *
+	 * @return string[]
+	 */
+	public static function getSubscribedEvents(): array
+	{
+		return [
+			self::getName() => 'handle',
+		];
+	}
 
     /**
      * Requirements.
@@ -57,57 +60,59 @@ class DotdigitalContactAction extends FlowAction
         return [DotdigitalContactAware::class, MailAware::class];
     }
 
-    /**
-     * Handle Dotdigital action.
-     *
-     * @throws GuzzleException|\InvalidArgumentException
-     */
-    public function handle(FlowEvent $event): void
-    {
-        if (!$event->getEvent() instanceof MailAware) {
-            throw new \Exception('Not an instance of MailAware', 422);
-        }
+	/**
+	 * Handle Dotdigital action.
+	 *
+	 * @param StorableFlow $flow
+	 *
+	 * @throws GuzzleException|\InvalidArgumentException
+	 */
+	public function handleFlow(StorableFlow $flow): void
+	{
+		if (!$flow->hasData('mailStruct')) {
+			throw new \Exception('Not an instance of MailAware', 422);
+		}
 
-        $eventConfig = $event->getConfig();
-        $contact = $this->resolveContact->resolve($event)->first();
-        $contactDataFieldsCollection = $this->resolveContactDataFields->resolve($event);
-        $contact->setDataFields($contactDataFieldsCollection->jsonSerialize());
-        $addressBook = $this->resolveAddressBook->resolve($event)->first();
-        $context = $event->getContext();
-        /** @var SalesChannelContext $channelContext */
-        $channelContext = $context->getSource();
+		$flowConfig = $flow->getConfig();
+		$contact = $this->resolveContact->resolve($flow)->first();
+		$contactDataFieldsCollection = $this->resolveContactDataFields->resolve($flow);
+		$contact->setDataFields($contactDataFieldsCollection->jsonSerialize());
+		$addressBook = $this->resolveAddressBook->resolve($flow)->first();
+		$context = $flow->getContext();
+		/** @var SalesChannelContext $channelContext */
+		$channelContext = $context->getSource();
 
-        if ($eventConfig['contactOptIn']) {
-            $contact->setOptInType('Double');
-        }
+		if ($flowConfig['contactOptIn']) {
+			$contact->setOptInType('Double');
+		}
 
-        switch (true) {
-            case $eventConfig['resubscribe'] && $addressBook->isApiReady():
-                $this->dotdigitalClientFactory
-                    ->createClient($channelContext->getSalesChannelId())
-                    ->resubscribeContactToAddressBook($contact, $addressBook);
+		switch (true) {
+			case $flowConfig['resubscribe'] && $addressBook->isApiReady():
+				$this->dotdigitalClientFactory
+					->createClient($channelContext->getSalesChannelId())
+					->resubscribeContactToAddressBook($contact, $addressBook);
 
-                break;
-            case !$eventConfig['resubscribe'] && $addressBook->isApiReady():
-                $this->dotdigitalClientFactory
-                    ->createClient($channelContext->getSalesChannelId())
-                    ->addContactToAddressBook($contact, $addressBook);
+				break;
+			case !$flowConfig['resubscribe'] && $addressBook->isApiReady():
+				$this->dotdigitalClientFactory
+					->createClient($channelContext->getSalesChannelId())
+					->addContactToAddressBook($contact, $addressBook);
 
-                break;
-            case $eventConfig['resubscribe'] && !$addressBook->isApiReady():
-                $this->dotdigitalClientFactory
-                    ->createClient($channelContext->getSalesChannelId())
-                    ->resubscribeContact($contact);
+				break;
+			case $flowConfig['resubscribe'] && !$addressBook->isApiReady():
+				$this->dotdigitalClientFactory
+					->createClient($channelContext->getSalesChannelId())
+					->resubscribeContact($contact);
 
-                break;
-            default:
-                $this->dotdigitalClientFactory
-                    ->createClient($channelContext->getSalesChannelId())
-                    ->createOrUpdateContact($contact);
+				break;
+			default:
+				$this->dotdigitalClientFactory
+					->createClient($channelContext->getSalesChannelId())
+					->createOrUpdateContact($contact);
 
-                break;
-        }
-    }
+				break;
+		}
+	}
 
     public static function getName(): string
     {

@@ -9,11 +9,12 @@ use Dotdigital\Flow\Service\EventDataResolver\ResolveContactInterface;
 use Dotdigital\Flow\Service\EventDataResolver\ResolveProgramInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Shopware\Core\Content\Flow\Dispatching\Action\FlowAction;
-use Shopware\Core\Framework\Event\FlowEvent;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Event\MailAware;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class DotdigitalProgramAction extends FlowAction
+class DotdigitalProgramAction extends FlowAction implements EventSubscriberInterface
 {
     private DotdigitalClientFactory $dotdigitalClientFactory;
 
@@ -62,16 +63,16 @@ class DotdigitalProgramAction extends FlowAction
      *
      * @throws GuzzleException|\InvalidArgumentException|\ReflectionException|\Exception
      */
-    public function handle(FlowEvent $event): void
+    public function handleFlow(StorableFlow $flow): void
     {
-        if (!$event->getEvent() instanceof MailAware) {
+		if (!$flow->hasData('mailStruct')) {
             throw new \Exception('Not an instance of MailAware', 422);
         }
-        $contactCollection = $this->resolveContact->resolve($event);
-        $dataFieldCollection = $this->resolveContactDataFields->resolve($event);
-        $programCollection = $this->resolveProgram->resolve($event);
+        $contactCollection = $this->resolveContact->resolve($flow);
+        $dataFieldCollection = $this->resolveContactDataFields->resolve($flow);
+        $programCollection = $this->resolveProgram->resolve($flow);
         $contactCollection->first()->setDataFields($dataFieldCollection->jsonSerialize());
-        $context = $event->getContext();
+        $context = $flow->getContext();
         /** @var SalesChannelContext $channelContext */
         $channelContext = $context->getSource();
 

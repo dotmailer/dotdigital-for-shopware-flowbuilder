@@ -5,7 +5,7 @@ namespace Dotdigital\Flow\Service\EventDataResolver\BuildStrategies;
 use Dotdigital\Flow\Core\Framework\DataTypes\ContactCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\ContactStruct;
 use Dotdigital\Flow\Service\RecipientResolver;
-use Shopware\Core\Framework\Event\FlowEvent;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 
 class ContactBuildStrategy implements BuildStrategyInterface
 {
@@ -20,14 +20,14 @@ class ContactBuildStrategy implements BuildStrategyInterface
     /**
      * @inheritDoc
      */
-    public function build(FlowEvent $flowEvent): ContactCollection
+    public function build(StorableFlow $flow): ContactCollection
     {
-        $eventData = $flowEvent->getConfig();
+		$flowData = $flow->getConfig();
         $contactCollection = new ContactCollection();
 
         $recipients = $this
             ->recipientResolver
-            ->getRecipients($eventData['recipient'], $flowEvent);
+            ->getRecipients($flowData['recipient'], $flow);
 
         foreach ($recipients as $recipient) {
             $contactCollection->add(

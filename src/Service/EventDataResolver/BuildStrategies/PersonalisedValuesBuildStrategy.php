@@ -4,7 +4,7 @@ namespace Dotdigital\Flow\Service\EventDataResolver\BuildStrategies;
 
 use Dotdigital\Flow\Core\Framework\DataTypes\ContactPersonalisationCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\ContactPersonalisationStruct;
-use Shopware\Core\Framework\Event\FlowEvent;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
 
 class PersonalisedValuesBuildStrategy implements BuildStrategyInterface
@@ -20,11 +20,11 @@ class PersonalisedValuesBuildStrategy implements BuildStrategyInterface
     /**
      * @inheritDoc
      */
-    public function build(FlowEvent $flowEvent): ContactPersonalisationCollection
+    public function build(StorableFlow $flow): ContactPersonalisationCollection
     {
-        $businessEvent = $this->businessEventEncoder->encode($flowEvent->getEvent());
+		$availableData = $this->businessEventEncoder->encodeData($flow->data(), $flow->stored());
         $personalisedValues = new ContactPersonalisationCollection();
-        foreach ($businessEvent as $key => $value) {
+        foreach ($availableData as $key => $value) {
             $personalisedValues->add(new ContactPersonalisationStruct($key, $value));
         }
 

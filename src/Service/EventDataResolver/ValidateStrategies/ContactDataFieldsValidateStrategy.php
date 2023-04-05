@@ -2,26 +2,26 @@
 
 namespace Dotdigital\Flow\Service\EventDataResolver\ValidateStrategies;
 
-use Shopware\Core\Framework\Event\FlowEvent;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 
 class ContactDataFieldsValidateStrategy implements ValidateStrategyInterface
 {
     /**
      * @inheritDoc
      */
-    public function validate(FlowEvent $flowEvent): bool
+    public function validate(StorableFlow $flow): bool
     {
-        $eventData = $flowEvent->getConfig();
+        $flowData = $flow->getConfig();
 
-        if (!\array_key_exists('dataFields', $eventData)) {
+        if (!\array_key_exists('dataFields', $flowData)) {
             throw new \InvalidArgumentException('Data fields are not set');
         }
 
-        if (!\is_array($eventData['dataFields'])) {
+        if (!\is_array($flowData['dataFields'])) {
             throw new \InvalidArgumentException('Data fields are not an array');
         }
 
-        foreach ($eventData['dataFields'] as $dataField) {
+        foreach ($flowData['dataFields'] as $dataField) {
             if (!\array_key_exists('key', $dataField)) {
                 throw new \InvalidArgumentException('Data field key is not set');
             }

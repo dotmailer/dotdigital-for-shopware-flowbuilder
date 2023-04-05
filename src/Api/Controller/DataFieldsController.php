@@ -4,14 +4,12 @@ namespace Dotdigital\Flow\Api\Controller;
 
 use Dotdigital\Flow\Core\Framework\Traits\InteractsWithResponseTrait;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
-use Shopware\Core\Framework\Routing\Annotation\Acl;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @RouteScope(scopes={"api"})
+ * @Route(defaults={"_routeScope"={"api"}})
  */
 class DataFieldsController extends AbstractController
 {
@@ -31,8 +29,6 @@ class DataFieldsController extends AbstractController
      *     name="api.action.dotdigital.data.fields",
      *     methods={"GET"}
      * )
-     *
-     * @Acl({"sales_channel.editor"})
      */
     public function showDataFields(): JsonResponse
     {

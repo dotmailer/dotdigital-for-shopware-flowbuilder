@@ -4,7 +4,7 @@ namespace Dotdigital\Flow\Service\EventDataResolver;
 
 use Dotdigital\Flow\Service\EventDataResolver\BuildStrategies\BuildStrategyInterface;
 use Dotdigital\Flow\Service\EventDataResolver\ValidateStrategies\ValidateStrategyInterface;
-use Shopware\Core\Framework\Event\FlowEvent;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Struct\Collection;
 
 interface EventDataResolverContextInterface
@@ -12,7 +12,7 @@ interface EventDataResolverContextInterface
     /**
      * Resolve the event data
      */
-    public function resolve(FlowEvent $flowEvent): Collection;
+    public function resolve(StorableFlow $flow): Collection;
 
     /**
      * Set the build strategy

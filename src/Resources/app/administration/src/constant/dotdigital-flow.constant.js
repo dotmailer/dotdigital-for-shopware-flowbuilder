@@ -16,7 +16,7 @@ export const PROGRAM_ACTION = Object.freeze({// eslint-disable-line
     HANDLE: 'action.create.dotdigital_program',
     COMPONENT_NAME: 'dotdigital-flow-program-modal',
     LABEL: 'Enroll a contact in a program',
-    ICON: 'default-symbol-flow',
+    ICON: 'regular-flow',
 });
 
 export default {// eslint-disable-line

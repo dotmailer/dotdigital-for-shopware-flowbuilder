@@ -6,7 +6,7 @@ use Dotdigital\Flow\Core\Framework\DataTypes\ContactDataCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\ContactDataStruct;
 use Shopware\Core\Framework\Adapter\Twig\Exception\StringTemplateRenderingException;
 use Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer;
-use Shopware\Core\Framework\Event\FlowEvent;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
 
 class ContactDataFieldsBuildStrategy implements BuildStrategyInterface
@@ -26,13 +26,13 @@ class ContactDataFieldsBuildStrategy implements BuildStrategyInterface
     /**
      * @inheritDoc
      */
-    public function build(FlowEvent $flowEvent): ContactDataCollection
+    public function build(StorableFlow $flow): ContactDataCollection
     {
         $dataFieldCollection = new ContactDataCollection();
-        $context = $flowEvent->getContext();
-        $eventData = $flowEvent->getConfig();
-        $availableData = $this->businessEventEncoder->encode($flowEvent->getEvent());
-        foreach ($eventData['dataFields'] as $dataField) {
+        $context = $flow->getContext();
+        $flowData = $flow->getConfig();
+        $availableData = $this->businessEventEncoder->encodeData($flow->data(), $flow->stored());
+        foreach ($flowData['dataFields'] as $dataField) {
             try {
                 $value = $this->stringTemplateRenderer->render(
                     $dataField['value'],
