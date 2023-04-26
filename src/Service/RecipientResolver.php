@@ -106,7 +106,7 @@ class RecipientResolver
                  */
             default:
                 foreach (array_keys($flow->getData('mailStruct')->getRecipients()) as $recipient) {
-                    $collection->add(new RecipientStruct($recipient));
+                    $collection->add(new RecipientStruct((string) $recipient));
                 }
 
                 break;
