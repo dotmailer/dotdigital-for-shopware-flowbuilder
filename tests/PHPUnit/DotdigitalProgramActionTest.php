@@ -18,12 +18,10 @@ use Dotdigital\Tests\Traits\InteractWithContactsTrait;
 use Dotdigital\Tests\Traits\InteractWithProgramsTrait;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Content\ContactForm\Event\ContactFormEvent;
 use Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer;
 use Shopware\Core\Framework\Api\Context\ContextSource;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Event\FlowEvent;
-use Shopware\Core\Framework\Event\MailAware;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
 
 class DotdigitalProgramActionTest extends TestCase
@@ -38,24 +36,14 @@ class DotdigitalProgramActionTest extends TestCase
     private $dotdigitalProgramAction;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|MailAware
+     * @var \PHPUnit\Framework\MockObject\MockObject|StorableFlow
      */
-    private $mailAwareMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|FlowEvent
-     */
-    private $eventMock;
+    private $flowMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|Context
      */
     private $contextMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|ContactFormEvent
-     */
-    private $contactFormEventMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|ContextSource
@@ -102,15 +90,34 @@ class DotdigitalProgramActionTest extends TestCase
      */
     private $resolveProgramMock;
 
+	/**
+	 * @var \PHPUnit\Framework\MockObject\MockObject|BusinessEventEncoder
+	 */
+	private $businessEventLoaderMock;
+
+	/**
+	 * @var \PHPUnit\Framework\MockObject\MockObject|StringTemplateRenderer
+	 */
+	private $stringTemplateRendererMock;
+
+	/**
+	 * @var \PHPUnit\Framework\MockObject\MockObject|LoggerInterface
+	 */
+	private $loggerMock;
+
+	/**
+	 * @var ResolveContactDataFieldsInterface|\PHPUnit\Framework\MockObject\MockObject
+	 */
+	private $resolveContactDataFieldsMock;
+
     protected function setUp(): void
     {
         BypassFinals::enable();
         $dotdigitalClientFactoryMock = $this->createMock(DotdigitalClientFactory::class);
-        $this->mailAwareMock = $this->createMock(MailAware::class);
-        $this->eventMock = $this->createMock(FlowEvent::class);
-        $this->contextMock = $this->createMock(Context::class);
+		$this->flowMock = $this->createMock(StorableFlow::class);
+		$this->contextMock = $this->createMock(Context::class);
         $this->businessEventLoaderMock = $this->createMock(BusinessEventEncoder::class);
-        $this->stringTemplateRendereMock = $this->createMock(StringTemplateRenderer::class);
+        $this->stringTemplateRendererMock = $this->createMock(StringTemplateRenderer::class);
         $this->loggerMock = $this->createMock(LoggerInterface::class);
         $this->contactCollectionMock = $this->createMock(ContactCollection::class);
         $this->contactStructMock = $this->createMock(ContactStruct::class);
@@ -137,8 +144,6 @@ class DotdigitalProgramActionTest extends TestCase
             ->method('first')
             ->willReturn($this->programStructMock);
 
-        /* @phpstan-ignore-next-line */
-        $this->contactFormEventMock = $this->createMock(ContactFormEvent::class);
         $this->contextSourceMock = $this->getMockBuilder(ContextSource::class)
             ->addMethods(['getSalesChannelId'])
             ->disableOriginalConstructor()
@@ -157,11 +162,7 @@ class DotdigitalProgramActionTest extends TestCase
      */
     public function testDotdigitalProgramEnrolmentDefault(): void
     {
-        $this->eventMock->expects(static::atLeastOnce())
-            ->method('getEvent')
-            ->willReturn($this->mailAwareMock);
-
-        $this->eventMock->expects(static::once())
+        $this->flowMock->expects(static::once())
             ->method('getContext')
             ->willReturn($this->contextMock);
 
@@ -169,7 +170,7 @@ class DotdigitalProgramActionTest extends TestCase
             ->method('getSource')
             ->willReturn($this->contextSourceMock);
 
-        $this->dotdigitalProgramAction->handle($this->eventMock);
+        $this->dotdigitalProgramAction->handleFlow($this->flowMock);
     }
 
     /**
@@ -177,11 +178,7 @@ class DotdigitalProgramActionTest extends TestCase
      */
     public function testDotdigitalProgramEnrolmentFromCustom(): void
     {
-        $this->eventMock->expects(static::atLeastOnce())
-            ->method('getEvent')
-            ->willReturn($this->mailAwareMock);
-
-        $this->eventMock->expects(static::once())
+        $this->flowMock->expects(static::once())
             ->method('getContext')
             ->willReturn($this->contextMock);
 
@@ -189,6 +186,6 @@ class DotdigitalProgramActionTest extends TestCase
             ->method('getSource')
             ->willReturn($this->contextSourceMock);
 
-        $this->dotdigitalProgramAction->handle($this->eventMock);
+        $this->dotdigitalProgramAction->handleFlow($this->flowMock);
     }
 }

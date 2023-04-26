@@ -69,10 +69,6 @@ class DotdigitalContactAction extends FlowAction implements EventSubscriberInter
 	 */
 	public function handleFlow(StorableFlow $flow): void
 	{
-		if (!$flow->hasData('mailStruct')) {
-			throw new \Exception('Not an instance of MailAware', 422);
-		}
-
 		$flowConfig = $flow->getConfig();
 		$contact = $this->resolveContact->resolve($flow)->first();
 		$contactDataFieldsCollection = $this->resolveContactDataFields->resolve($flow);

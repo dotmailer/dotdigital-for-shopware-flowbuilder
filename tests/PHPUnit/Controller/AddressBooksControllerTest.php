@@ -17,9 +17,20 @@ class AddressBooksControllerTest extends TestCase
     private const LIMIT_NOT_EXCEEDED = 900;
     private const LIMIT_EXCEEDED = 2500;
 
+	/**
+	 * @var DotdigitalClient|\PHPUnit\Framework\MockObject\MockObject
+	 */
     private $dotdigitalClientMock;
 
+	/**
+	 * @var DotdigitalClientFactory|\PHPUnit\Framework\MockObject\MockObject
+	 */
     private $dotdigitalClientFactoryMock;
+
+	/**
+	 * @var AddressBooksController
+	 */
+	private $addressBooksController;
 
     protected function setUp(): void
     {

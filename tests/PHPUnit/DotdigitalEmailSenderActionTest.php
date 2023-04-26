@@ -12,12 +12,10 @@ use Dotdigital\Tests\Traits\InteractWithCampaignsTrait;
 use Dotdigital\Tests\Traits\InteractWithContactPersonalisationTrait;
 use Dotdigital\Tests\Traits\InteractWithContactsTrait;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Content\ContactForm\Event\ContactFormEvent;
 use Shopware\Core\Framework\Api\Context\ContextSource;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Event\EventData\MailRecipientStruct;
-use Shopware\Core\Framework\Event\FlowEvent;
-use Shopware\Core\Framework\Event\MailAware;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 
 class DotdigitalEmailSenderActionTest extends TestCase
 {
@@ -41,19 +39,14 @@ class DotdigitalEmailSenderActionTest extends TestCase
     private $connectionMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|MailAware
-     */
-    private $mailAwareMock;
-
-    /**
      * @var \PHPUnit\Framework\MockObject\MockObject|MailRecipientStruct
      */
     private $mailRecipientStructMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|FlowEvent
+     * @var \PHPUnit\Framework\MockObject\MockObject|StorableFlow
      */
-    private $eventMock;
+    private $flowMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|Context
@@ -61,26 +54,39 @@ class DotdigitalEmailSenderActionTest extends TestCase
     private $contextMock;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|ContactFormEvent
-     */
-    private $contactFormEventMock;
-
-    /**
      * @var \PHPUnit\Framework\MockObject\MockObject|ContextSource
      */
     private $contextSourceMock;
+
+	/**
+	 * @var RecipientResolver|\PHPUnit\Framework\MockObject\MockObject
+	 */
+	private $recipientResolverMock;
+
+	/**
+	 * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
+	 */
+	private $eventContactResolverMock;
+
+	/**
+	 * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
+	 */
+	private $eventCampaignResolverMock;
+
+	/**
+	 * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
+	 */
+	private $eventPersonalisedValuesResolverMock;
 
     protected function setUp(): void
     {
         BypassFinals::enable();
         $this->dotdigitalClientFactoryMock = $this->createMock(DotdigitalClientFactory::class);
-        $this->mailAwareMock = $this->createMock(MailAware::class);
         $this->mailRecipientStructMock = $this->createMock(MailRecipientStruct::class);
-        $this->eventMock = $this->createMock(FlowEvent::class);
+        $this->flowMock = $this->createMock(StorableFlow::class);
         $this->contextMock = $this->createMock(Context::class);
         $this->recipientResolverMock = $this->createMock(RecipientResolver::class);
         /* @phpstan-ignore-next-line */
-        $this->contactFormEventMock = $this->createMock(ContactFormEvent::class);
         $this->contextSourceMock = $this->getMockBuilder(ContextSource::class)
             ->addMethods(['getSalesChannelId'])
             ->disableOriginalConstructor()
@@ -114,11 +120,7 @@ class DotdigitalEmailSenderActionTest extends TestCase
      */
     public function testDotdigitalEmailSenderCustomerEmail(): void
     {
-        $this->eventMock->expects(static::atLeastOnce())
-            ->method('getEvent')
-            ->willReturn($this->mailAwareMock);
-
-        $this->eventMock->expects(static::once())
+        $this->flowMock->expects(static::once())
             ->method('getContext')
             ->willReturn($this->contextMock);
 
@@ -126,7 +128,7 @@ class DotdigitalEmailSenderActionTest extends TestCase
             ->method('getSource')
             ->willReturn($this->contextSourceMock);
 
-        $this->dotdigitalSenderAction->handle($this->eventMock);
+        $this->dotdigitalSenderAction->handleFlow($this->flowMock);
     }
 
     /**
@@ -134,11 +136,7 @@ class DotdigitalEmailSenderActionTest extends TestCase
      */
     public function testDotdigitalEmailSenderContactFormEmail(): void
     {
-        $this->eventMock->expects(static::atLeastOnce())
-            ->method('getEvent')
-            ->willReturn($this->contactFormEventMock);
-
-        $this->eventMock->expects(static::once())
+        $this->flowMock->expects(static::once())
             ->method('getContext')
             ->willReturn($this->contextMock);
 
@@ -146,7 +144,7 @@ class DotdigitalEmailSenderActionTest extends TestCase
             ->method('getSource')
             ->willReturn($this->contextSourceMock);
 
-        $this->dotdigitalSenderAction->handle($this->eventMock);
+        $this->dotdigitalSenderAction->handleFlow($this->flowMock);
     }
 
     /**
@@ -154,11 +152,7 @@ class DotdigitalEmailSenderActionTest extends TestCase
      */
     public function testDotdigitalEmailSenderAdminEmail(): void
     {
-        $this->eventMock->expects(static::atLeastOnce())
-            ->method('getEvent')
-            ->willReturn($this->mailAwareMock);
-
-        $this->eventMock->expects(static::once())
+        $this->flowMock->expects(static::once())
             ->method('getContext')
             ->willReturn($this->contextMock);
 
@@ -166,6 +160,6 @@ class DotdigitalEmailSenderActionTest extends TestCase
             ->method('getSource')
             ->willReturn($this->contextSourceMock);
 
-        $this->dotdigitalSenderAction->handle($this->eventMock);
+        $this->dotdigitalSenderAction->handleFlow($this->flowMock);
     }
 }
