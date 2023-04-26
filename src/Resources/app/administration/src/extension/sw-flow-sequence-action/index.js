@@ -37,6 +37,20 @@ Component.override('sw-flow-sequence-action', {
 
     methods: {
 
+        getActionDescriptions(sequence) {
+            const actionDescriptionList = this.$super('getActionDescriptions', sequence);
+            switch (sequence.actionName) {
+                case CAMPAIGN_ACTION.HANDLE:
+                    return this.getDotdigitalEmailSenderDescription(sequence.config);
+                case CONTACT_ACTION.HANDLE:
+                    return this.getDotdigitalContactDescription(sequence.config);
+                case PROGRAM_ACTION.HANDLE:
+                    return this.getDotdigitalProgramDescription(sequence.config);
+                default:
+                    return actionDescriptionList;
+            }
+        },
+
         getDotdigitalContactDescription(config) {
             let description = '';
 
