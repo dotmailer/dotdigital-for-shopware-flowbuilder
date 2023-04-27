@@ -27,6 +27,11 @@ in order to rebuild the JS for Flow Builder.
 
 ## Changelog
 
+### 1.1.1
+
+#### Bug fixes
+- We fixed an error in validation-directive.js relating to unsupported 'classProperties'.
+
 ### 1.1.0
 
 #### What's new
