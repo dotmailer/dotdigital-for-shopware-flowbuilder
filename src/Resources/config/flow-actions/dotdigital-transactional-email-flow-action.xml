@@ -11,7 +11,7 @@
             <argument type="service" id="Dotdigital\Flow\Service\EventDataResolver\ResolveCampaignInterface"/>
             <argument type="service" id="Dotdigital\Flow\Service\EventDataResolver\ResolvePersonalisedValuesInterface"/>
             <tag name="kernel.event_subscriber"/>
-            <tag name="flow.action" priority="600"/>
+            <tag name="flow.action" key="action.create.dotdigital_mail_sender" priority="600"/>
         </service>
 
     </services>

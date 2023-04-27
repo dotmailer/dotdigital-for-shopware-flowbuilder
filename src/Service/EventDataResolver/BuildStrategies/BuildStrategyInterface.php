@@ -2,10 +2,10 @@
 
 namespace Dotdigital\Flow\Service\EventDataResolver\BuildStrategies;
 
-use Shopware\Core\Framework\Event\FlowEvent;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Struct\Collection;
 
 interface BuildStrategyInterface
 {
-    public function build(FlowEvent $flowEvent): Collection;
+    public function build(StorableFlow $flowEvent): Collection;
 }

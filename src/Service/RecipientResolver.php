@@ -9,7 +9,7 @@ use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Flow\Dispatching\Aware\ContactFormDataAware;
 use Shopware\Core\Framework\Adapter\Twig\Exception\StringTemplateRenderingException;
 use Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer;
-use Shopware\Core\Framework\Event\FlowEvent;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Event\MailAware;
 use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
 
@@ -44,12 +44,8 @@ class RecipientResolver
      *
      * @throws \Doctrine\DBAL\Exception
      */
-    public function getRecipients(array $recipients, FlowEvent $event): RecipientCollection
+    public function getRecipients(array $recipients, StorableFlow $flow): RecipientCollection
     {
-        /**
-         * @var MailAware $mailEvent
-         */
-        $mailEvent = $event->getEvent();
         $collection = new RecipientCollection();
 
         switch ($recipients['type']) {
@@ -58,14 +54,14 @@ class RecipientResolver
              */
             case self::RECIPIENT_CONFIG_CUSTOM:
                 foreach (array_values($recipients['data']) as $recipient) {
-                    $data = $this->businessEventEncoder->encode($event->getEvent());
+                    $data = $this->businessEventEncoder->encodeData($flow->data(), $flow->stored());
 
                     try {
                         $collection->add(new RecipientStruct(
                             $this->stringTemplateRenderer->render(
                                 $recipient,
                                 $data,
-                                $event->getContext()
+								$flow->getContext()
                             )
                         ));
                     } catch (StringTemplateRenderingException $exception) {
@@ -95,10 +91,9 @@ class RecipientResolver
                  * On contact form event return the email address from the event.
                  */
             case self::RECIPIENT_CONFIG_CONTACT_FORM_MAIL:
-                if (!$mailEvent instanceof ContactFormDataAware) {
+                if (!$data = $flow->getData('contactFormData')) {
                     break;
                 }
-                $data = $mailEvent->getContactFormData();
                 if (!\array_key_exists('email', $data)) {
                     break;
                 }
@@ -110,8 +105,8 @@ class RecipientResolver
                  * By default pull keys(email) from MailRecipientStruct::class
                  */
             default:
-                foreach (array_keys($mailEvent->getMailStruct()->getRecipients()) as $recipient) {
-                    $collection->add(new RecipientStruct($recipient));
+                foreach (array_keys($flow->getData('mailStruct')->getRecipients()) as $recipient) {
+                    $collection->add(new RecipientStruct((string) $recipient));
                 }
 
                 break;

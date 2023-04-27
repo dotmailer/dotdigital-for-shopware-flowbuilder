@@ -2,12 +2,12 @@
 
 namespace Dotdigital\Flow\Service\EventDataResolver\ValidateStrategies;
 
-use Shopware\Core\Framework\Event\FlowEvent;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 
 interface ValidateStrategyInterface
 {
     /**
      * @throws \InvalidArgumentException
      */
-    public function validate(FlowEvent $flowEvent): ?bool;
+    public function validate(StorableFlow $flowEvent): ?bool;
 }

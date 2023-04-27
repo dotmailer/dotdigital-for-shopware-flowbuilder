@@ -6,14 +6,12 @@ use Dotdigital\Flow\Core\Framework\Traits\InteractsWithResponseTrait;
 use Dotdigital\Flow\Service\Client\AbstractClient;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
 use GuzzleHttp\Exception\GuzzleException;
-use Shopware\Core\Framework\Routing\Annotation\Acl;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @RouteScope(scopes={"api"})
+ * @Route(defaults={"_routeScope"={"api"}})
  */
 class CampaignsController extends AbstractController
 {
@@ -33,8 +31,6 @@ class CampaignsController extends AbstractController
      *     name="api.action.dotdigital.campaigns",
      *     methods={"GET"}
      * )
-     *
-     * @Acl({"sales_channel.editor"})
      *
      * @throws GuzzleException
      */

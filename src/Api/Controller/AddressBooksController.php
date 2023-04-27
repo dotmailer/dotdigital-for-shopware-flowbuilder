@@ -5,14 +5,12 @@ namespace Dotdigital\Flow\Api\Controller;
 use Dotdigital\Flow\Core\Framework\Traits\InteractsWithResponseTrait;
 use Dotdigital\Flow\Service\Client\AbstractClient;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
-use Shopware\Core\Framework\Routing\Annotation\Acl;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @RouteScope(scopes={"api"})
+ * @Route(defaults={"_routeScope"={"api"}})
  */
 class AddressBooksController extends AbstractController
 {
@@ -32,8 +30,6 @@ class AddressBooksController extends AbstractController
      *     name="api.action.dotdigital.address.books",
      *     methods={"GET"}
      * )
-     *
-     * @Acl({"sales_channel.editor"})
      */
     public function showAddressBooks(): JsonResponse
     {

@@ -14,8 +14,7 @@ use Dotdigital\Tests\Traits\UtilitiesTrait;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Api\Context\ContextSource;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Event\FlowEvent;
-use Shopware\Core\Framework\Event\MailAware;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 
 class DotdigitalContactActionTest extends TestCase
 {
@@ -30,31 +29,40 @@ class DotdigitalContactActionTest extends TestCase
     private $dotdigitalContactAction;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|MailAware
+     * @var \PHPUnit\Framework\MockObject\MockObject|StorableFlow
      */
-    private $mailAwareMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|FlowEvent
-     */
-    private $eventMock;
+    private $flowMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|Context
      */
     private $contextMock;
 
+	/**
+	 * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
+	 */
+	private $eventContactResolverMock;
+
+	/**
+	 * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
+	 */
+	private $eventAddressBookResolverMock;
+
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|ContextSource
      */
     private $contextSourceMock;
 
+	/**
+	 * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
+	 */
+	private $resolveContactDataFieldsMock;
+
     protected function setUp(): void
     {
         BypassFinals::enable();
         $dotdigitalClientFactoryMock = $this->createMock(DotdigitalClientFactory::class);
-        $this->mailAwareMock = $this->createMock(MailAware::class);
-        $this->eventMock = $this->createMock(FlowEvent::class);
+        $this->flowMock = $this->createMock(StorableFlow::class);
         $this->contextMock = $this->createMock(Context::class);
         $this->contextSourceMock = $this->getMockBuilder(ContextSource::class)
             ->addMethods(['getSalesChannelId'])
@@ -88,11 +96,7 @@ class DotdigitalContactActionTest extends TestCase
             ->method('resolve')
             ->willReturn($this->generateContactDataFieldCollection());
 
-        $this->eventMock->expects(static::atLeastOnce())
-            ->method('getEvent')
-            ->willReturn($this->mailAwareMock);
-
-        $this->eventMock->expects(static::atLeastOnce())
+        $this->flowMock->expects(static::atLeastOnce())
             ->method('getContext')
             ->willReturn($this->contextMock);
 
@@ -104,7 +108,7 @@ class DotdigitalContactActionTest extends TestCase
             ->method('getSalesChannelId')
             ->willReturn('salesChannelId');
 
-        $this->eventMock->expects(static::once())
+        $this->flowMock->expects(static::once())
             ->method('getConfig')
             ->willReturn([
                 'recipient' => [
@@ -117,6 +121,6 @@ class DotdigitalContactActionTest extends TestCase
                 'dataFields' => $this->generateContactDataFieldArray(10),
             ]);
 
-        $this->dotdigitalContactAction->handle($this->eventMock);
+        $this->dotdigitalContactAction->handleFlow($this->flowMock);
     }
 }

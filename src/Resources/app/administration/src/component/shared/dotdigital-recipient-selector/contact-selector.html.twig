@@ -21,7 +21,7 @@
         v-if="showRecipientEmails"
         ref="recipientsGrid"
         class="sw-flow-mail-send-modal__recipient-grid"
-        :class="recipientGridError ? 'has--error' : ''"
+        :class="recipientGridError ? 'has--error sw-field' : 'sw-field'"
         :data-source="recipients"
         :columns="recipientColumns"
         :show-selection="false"

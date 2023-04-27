@@ -9,8 +9,7 @@ use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Flow\Dispatching\Aware\ContactFormDataAware;
 use Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer;
 use Shopware\Core\Framework\Event\EventData\MailRecipientStruct;
-use Shopware\Core\Framework\Event\FlowEvent;
-use Shopware\Core\Framework\Event\MailAware;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
 
 class RecipientResolverTest extends TestCase
@@ -36,14 +35,9 @@ class RecipientResolverTest extends TestCase
     private $loggerMock;
 
     /**
-     * @var FlowEvent|\PHPUnit\Framework\MockObject\MockObject
+     * @var StorableFlow|\PHPUnit\Framework\MockObject\MockObject
      */
-    private $flowEventMock;
-
-    /**
-     * @var MailAware|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $mailAwareMock;
+    private $flowMock;
 
     /**
      * @var ContactFormDataAware|\PHPUnit\Framework\MockObject\MockObject
@@ -61,8 +55,7 @@ class RecipientResolverTest extends TestCase
         $this->businessEventEncoderMock = $this->createMock(BusinessEventEncoder::class);
         $this->connectionMock = $this->createMock(Connection::class);
         $this->loggerMock = $this->createMock(LoggerInterface::class);
-        $this->flowEventMock = $this->createMock(FlowEvent::class);
-        $this->mailAwareMock = $this->createMock(MailAware::class);
+        $this->flowMock = $this->createMock(StorableFlow::class);
         $this->contactFormDataAwareMock = $this->createMock(ContactFormDataAware::class);
 
         $this->recipientResolver = new RecipientResolver(
@@ -81,7 +74,7 @@ class RecipientResolverTest extends TestCase
         ];
 
         $this->businessEventEncoderMock->expects(static::exactly(2))
-            ->method('encode')
+            ->method('encodeData')
             ->willReturn([]);
 
         $this->rendererMock->expects(static::exactly(2))
@@ -91,7 +84,7 @@ class RecipientResolverTest extends TestCase
                 $recipients['data'][1]
             );
 
-        $this->recipientResolver->getRecipients($recipients, $this->flowEventMock);
+        $this->recipientResolver->getRecipients($recipients, $this->flowMock);
     }
 
     public function testRecipientsForAdmin(): void
@@ -109,7 +102,7 @@ class RecipientResolverTest extends TestCase
             ->method('fetchAllAssociative')
             ->willReturn($admins);
 
-        $this->recipientResolver->getRecipients($recipients, $this->flowEventMock);
+        $this->recipientResolver->getRecipients($recipients, $this->flowMock);
     }
 
     public function testRecipientsForContactFormMail(): void
@@ -118,17 +111,14 @@ class RecipientResolverTest extends TestCase
             'type' => 'contactFormMail',
         ];
 
-        $this->flowEventMock->expects(static::once())
-            ->method('getEvent')
-            ->willReturn($this->contactFormDataAwareMock);
+        $this->flowMock->expects(static::once())
+            ->method('getData')
+			->with('contactFormData')
+			->willReturn([
+				'email' => 'chaz@emailsim.io',
+			]);
 
-        $this->contactFormDataAwareMock->expects(static::once())
-            ->method('getContactFormData')
-            ->willReturn([
-                'email' => 'chaz@emailsim.io',
-            ]);
-
-        $this->recipientResolver->getRecipients($recipients, $this->flowEventMock);
+        $this->recipientResolver->getRecipients($recipients, $this->flowMock);
     }
 
     public function testRecipientsForDefault(): void
@@ -137,20 +127,17 @@ class RecipientResolverTest extends TestCase
             'type' => 'default',
         ];
 
-        $this->flowEventMock->expects(static::once())
-            ->method('getEvent')
-            ->willReturn($this->mailAwareMock);
+		$mailRecipientStructMock = $this->createMock(MailRecipientStruct::class);
 
-        $mailRecipientStructMock = $this->createMock(MailRecipientStruct::class);
-
-        $this->mailAwareMock->expects(static::once())
-            ->method('getMailStruct')
+        $this->flowMock->expects(static::once())
+            ->method('getData')
+			->with('mailStruct')
             ->willReturn($mailRecipientStructMock);
 
         $mailRecipientStructMock->expects(static::once())
             ->method('getRecipients')
             ->willReturn(['chaz@emailsim.io' => []]);
 
-        $this->recipientResolver->getRecipients($recipients, $this->flowEventMock);
+        $this->recipientResolver->getRecipients($recipients, $this->flowMock);
     }
 }

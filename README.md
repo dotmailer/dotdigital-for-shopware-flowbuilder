@@ -3,29 +3,58 @@
 [![Packagist Version (including pre-releases)](https://img.shields.io/packagist/v/dotdigital/dotdigital-for-shopware-flowbuilder?color=blue&include_prereleases&label=feature)](https://github.com/dotmailer/dotdigital-for-shopware-flowbuilder/releases)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE.md)
 
-Shopware merchants can now integrate with Dotdigital using Flow Builder actions.
+Shopware's merchants can now integrate with Dotdigital using Flow Builder actions. Merchants can define flows with a new Dotdigital action to send triggered non-marketing email campaigns in Dotdigital to nominated recipients (regular email addresses and variables are supported).
+
+[Read the documentation](https://support.dotdigital.com/hc/en-gb/sections/7614571932178-Shopware-Flows)
+
+## Requirements
+- PHP 8.1+
+- Shopware 6.5+
+  - Shopware 6.4.x is compatible with version 1.x
 
 ## Installation
-To install this plugin you can either:
-1. Clone the code into your Shopware installation in custom/plugins
-2. Download the code from Github and upload it via Extensions > My extensions > Upload extension
-3. Install using composer:
+
+### Step 1 - get the files
+To install this plugin you have two options:
+
+#### Platform installation
+- Download the code from Github and upload it via Extensions > My extensions > Upload extension
+- Activate the plugin via Extensions > My extensions
+
+OR: 
+
+#### Manual installation via git or composer
+Git install
+```
+git clone git@github.com:dotmailer/dotdigital-for-shopware-flowbuilder.git custom/plugins/DotdigitalFlow
+```
+Composer install
 ```
 composer require dotdigital/dotdigital-for-shopware-flowbuilder
 ```
 
-## Activation
-Again, you have two options:
-1. bin/console plugin:install --activate DotdigitalFlow 
-2. Activate the plugin via Extensions > My extensions
+### Step 2 - Install the plugin
+Refresh the plugin list:
+```
+bin/console plugin:refresh
+```
+Install the plugin:
+```
+bin/console plugin:install --activate DotdigitalFlow
+```
 
-Finally, it is necessary to run:
+### Step 3 - Build extension assets
 ```
 bash bin/build-administration.sh
 ```
-in order to rebuild the JS for Flow Builder.
 
 ## Changelog
+
+### 2.0.0
+
+#### What's new
+- The plugin is now compatible with Shopware 6.5+
+[NOTE: Shopware 6.4.x will not be able to run this version of the plugin.]
 
 ### 1.1.1
 

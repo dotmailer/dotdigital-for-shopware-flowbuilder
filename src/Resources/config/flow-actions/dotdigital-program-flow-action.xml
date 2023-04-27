@@ -10,7 +10,7 @@
             <argument type="service" id="Dotdigital\Flow\Service\EventDataResolver\ResolveContactDataFieldsInterface" />
             <argument type="service" id="Dotdigital\Flow\Service\EventDataResolver\ResolveProgramInterface" />
             <tag name="kernel.event_subscriber"/>
-            <tag name="flow.action" priority="600"/>
+            <tag name="flow.action" key="action.create.dotdigital_program" priority="600"/>
         </service>
     </services>
 </container>
