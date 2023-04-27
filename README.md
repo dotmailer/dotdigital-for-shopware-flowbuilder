@@ -54,8 +54,12 @@ bash bin/build-administration.sh
 
 #### What's new
 - The plugin is now compatible with Shopware 6.5+
-
 [NOTE: Shopware 6.4.x will not be able to run this version of the plugin.]
+
+### 1.1.1
+
+#### Bug fixes
+- We fixed an error in validation-directive.js relating to unsupported 'classProperties'.
 
 ### 1.1.0
 
