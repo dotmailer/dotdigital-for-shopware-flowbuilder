@@ -9,7 +9,7 @@
       "name": "Dotdigital"
     }
   ],
-  "minimum-stability": "RC",
+  "minimum-stability": "stable",
   "require": {
     "shopware/core": "6.5.*",
     "php": "^8.1"
