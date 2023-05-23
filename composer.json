@@ -1,7 +1,7 @@
 {
   "name": "dotdigital/dotdigital-for-shopware-flowbuilder",
   "description": "Integrate with Dotdigital using Flow Builder actions.",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "type": "shopware-platform-plugin",
   "license": "MIT",
   "authors": [
