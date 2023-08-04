@@ -42,4 +42,30 @@
             <helpText lang="en-GB">Please fill in your Dotdigital API password</helpText>
         </input-field>
     </card>
+
+    <card>
+        <title>SMS Marketing Consent</title>
+        <input-field type="checkbox">
+            <name>consentCaptureRegistration</name>
+            <label>Show consent checkbox at customer sign up</label>
+        </input-field>
+        <input-field type="checkbox">
+            <name>consentCaptureCheckout</name>
+            <label>Show consent checkbox at checkout</label>
+        </input-field>
+        <input-field type="checkbox">
+            <name>consentCaptureAccount</name>
+            <label>Show consent checkbox in customer account</label>
+            <helpText lang="en-GB">The checkbox will de displayed under 'Newsletter subscriptions'</helpText>
+            <helpText lang="de-DE">complete me please</helpText>
+        </input-field>
+        <input-field type="text">
+            <name>consentCheckboxLabel</name>
+            <label>Consent checkbox label</label>
+        </input-field>
+        <input-field type="text-editor">
+            <name>consentCheckboxText</name>
+            <label>Consent text</label>
+        </input-field>
+    </card>
 </config>
