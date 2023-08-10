@@ -56,7 +56,7 @@
         <input-field type="checkbox">
             <name>consentCaptureAccount</name>
             <label>Show consent checkbox in customer account</label>
-            <helpText lang="en-GB">The checkbox will de displayed under 'Newsletter subscriptions'</helpText>
+            <helpText lang="en-GB">The checkbox will be displayed under 'Newsletter subscriptions'</helpText>
             <helpText lang="de-DE">complete me please</helpText>
         </input-field>
         <input-field type="text">
