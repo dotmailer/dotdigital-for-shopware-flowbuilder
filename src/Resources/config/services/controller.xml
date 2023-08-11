@@ -27,5 +27,12 @@
             </call>
             <argument type="service" id="Dotdigital\Flow\Service\Client\DotdigitalClientFactory" />
         </service>
+        <service id="Dotdigital\Flow\Storefront\Controller\ContextController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <argument type="service" id="country.repository"/>
+            <argument type="service" id="sales_channel.repository"/>
+        </service>
     </services>
 </container>

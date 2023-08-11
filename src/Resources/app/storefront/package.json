@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "intl-tel-input": "^18.2.1"
+  },
+  "devDependencies": {
+    "css-loader": "^6.8.1"
+  }
+}
