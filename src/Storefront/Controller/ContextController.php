@@ -31,7 +31,7 @@ class ContextController extends StorefrontController
     }
 
     /**
-     * @Route("/context", name="dotdigial.flow.context", methods={"GET"}, defaults={"XmlHttpRequest"=true})
+     * @Route("/context", name="dotdigital.flow.context", methods={"GET"}, defaults={"XmlHttpRequest"=true})
      */
     public function getContext(Request $request, SalesChannelContext $context): Response
     {
