@@ -25,12 +25,13 @@ export default class FormPhoneConsentTogglePlugin extends Plugin {
 		if (this.$consentCheckobox.checked) {
 			this.$phoneField.required = true;
 			this.$consent.classList.remove('d-none');
+			this.$phoneField.setAttribute('data-form-validation-phone-valid', true);
+			this.$phoneField.dispatchEvent(new Event('change'));
 		} else {
 			this.$phoneField.required = false;
-			this.$phoneField.value = '';
-			let event = new Event('change');
-			this.$phoneField.dispatchEvent(event);
 			this.$consent.classList.add('d-none');
+			this.$phoneField.setAttribute('data-form-validation-phone-valid', false);
+			this.$phoneField.dispatchEvent(new Event('change'));
 		}
 	}
 

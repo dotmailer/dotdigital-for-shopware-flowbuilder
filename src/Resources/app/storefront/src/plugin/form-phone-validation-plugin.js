@@ -1,5 +1,4 @@
 import FormValidation from "src/plugin/forms/form-validation.plugin";
-import intlTelInput from "@intl-tel-input";
 import DomAccess from "src/helper/dom-access.helper";
 
 export default class FormPhoneValidationPlugin extends FormValidation {
@@ -20,19 +19,39 @@ export default class FormPhoneValidationPlugin extends FormValidation {
 
 	_registerEvents() {
 		super._registerEvents();
+
 		this.$checkBox = DomAccess.querySelector(document, this.options.checkboxSelector);
 		this._registerValidationListener(this.options.phoneAttr, this._onValidatePhone.bind(this), ['change']);
 	}
 
+	_getIntlField(field) {
+		try {
+			return window.intlTelInputGlobals.getInstance(field);
+		} catch (e) {
+			console.warn(e)
+		}
+	}
+
 	_onValidatePhone(event) {
-		const field = event.target;
-		const element = intlTelInput(event.target);
-		if (field.value.trim() && !element.isValidNumber() && this.$checkBox.checked) {
+		const intlField = this._getIntlField(event.target);
+		const field = intlField.telInput;
+		const value = field.value.trim();
+
+		if(value){
+			intlField.setNumber(value);
+		}
+
+		if (value && !intlField.isValidNumber() && this.$checkBox.checked) {
+			field.setAttribute(
+				'value',
+				intlField.getNumber()
+			)
 			field.setAttribute(
 				'data-form-validation-phone-valid-message',
-				this.errorMap[element.getValidationError()]
+				this.errorMap[intlField.getValidationError()]
 			);
 			this._setFieldToInvalid(field, this.options.phoneAttr);
+
 		} else {
 		 	this._setFieldToValid(field, this.options.phoneAttr);
 		 }

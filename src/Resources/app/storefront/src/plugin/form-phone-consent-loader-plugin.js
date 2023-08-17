@@ -23,6 +23,8 @@ export default class FormPhoneConsentLoaderPlugin extends Plugin {
 			.then((response) => {
 				const context = JSON.parse(response);
 				this.$phoneFormInput = intlTelInput(this.$phoneFormInput,{
+					autoInsertDialCode: true,
+
 					utilsScript: this.options.phoneUtilityScript,
 					onlyCountries: context.allowed,
 					preferredCountries: context.default,
