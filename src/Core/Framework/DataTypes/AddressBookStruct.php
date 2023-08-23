@@ -39,6 +39,11 @@ class AddressBookStruct extends AbstractStruct
         return (string) $this->id;
     }
 
+	public function getUniqueIdentifier(): string
+	{
+		return (string) $this->id;
+	}
+
     public function getId(): int
     {
         return $this->id;

@@ -212,30 +212,30 @@ class DotdigitalClient extends AbstractClient
      *
      * @throws GuzzleException
      */
-    public function getAddressBooks(int $skipLimit = 0): AddressBookCollection
+    public function getAddressBooks(int $skip = 0, int $take = 1000): AddressBookCollection
     {
-        $addressBooksResponse = $this->get(
-            sprintf(
-                '%s?select=%s&skip=%s',
-                self::GET_ADDRESS_BOOKS_ENDPOINT,
-                self::SELECT_LIMIT,
-                $skipLimit
-            ),
-            []
-        );
-        $addressBooks = new AddressBookCollection();
-        foreach ($addressBooksResponse as $addressBook) {
-            $struct = new AddressBookStruct(
-                $addressBook['id'],
-                $addressBook['name'],
-                $addressBook['visibility'],
-                $addressBook['contacts']
-            );
+	    $addressBooksResponse = $this->get(
+		    sprintf(
+			    '%s?select=%s&skip=%s',
+			    self::GET_ADDRESS_BOOKS_ENDPOINT,
+			    $take,
+			    $skip
+		    ),
+		    []
+	    );
+	    $addressBooks = new AddressBookCollection();
+	    foreach ($addressBooksResponse as $addressBook) {
+		    $struct = new AddressBookStruct(
+			    $addressBook['id'],
+			    $addressBook['name'],
+			    $addressBook['visibility'],
+			    $addressBook['contacts']
+		    );
 
-            $addressBooks->add($struct);
-        }
+		    $addressBooks->add($struct);
+	    }
 
-        return $addressBooks;
+	    return $addressBooks;
     }
 
     /**
