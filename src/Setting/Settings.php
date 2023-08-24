@@ -25,4 +25,10 @@ class Settings
      * Date time formatting
      */
     public const DATE_TIME_FORMAT = 'Y-m-d H:i:s.v';
+
+    /**
+     * Consent settings
+     */
+    public const CONSENT_TEXT = self::DOTDIGITAL_CONFIG_DOMAIN . 'consentCheckboxText';
+    public const LIST = self::DOTDIGITAL_CONFIG_DOMAIN . 'dotdigitalLists';
 }

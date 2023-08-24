@@ -15,6 +15,7 @@ use Dotdigital\Flow\Core\Framework\DataTypes\ContactStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\ProgramCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\ProgramEnrolmentStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\ProgramStruct;
+use Dotdigital\Flow\Service\SystemConfigurationTrait;
 use Dotdigital\Flow\Setting\Settings;
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\Exception\GuzzleException;
@@ -23,6 +24,7 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class DotdigitalClient extends AbstractClient
 {
+    use SystemConfigurationTrait;
     public const CONTACT_ENROLMENT_ENDPOINT = 'v2/programs/enrolments';
     public const RESUBSCRIBE_CONTACT_ENDPOINT = 'v2/contacts/resubscribe';
     public const RESUBSCRIBE_CONTACT_TO_ADDRESS_BOOK_ENDPOINT = 'v2/address-books/%s/contacts/resubscribe';
@@ -50,7 +52,7 @@ class DotdigitalClient extends AbstractClient
         $this->salesChannelId = $salesChannelId;
 
         $client = new Guzzle([
-            'base_uri' => $this->getBaseUrl(),
+            'base_uri' => $this->getApiEndpoint(),
             'headers' => [
                 'Accept' => 'text/plain',
                 'Authorization' => 'Basic ' . $this->generateScopedAuthorizationToken(),
@@ -335,32 +337,12 @@ class DotdigitalClient extends AbstractClient
     }
 
     /**
-     * Get base url.
-     */
-    public function getBaseUrl(): string
-    {
-        $region = $this->systemConfigService->getString(
-            Settings::HOST_REGION_CONFIG_KEY,
-            $this->salesChannelId
-        );
-        $host = Settings::HOST;
-
-        return "https://{$region}-{$host}";
-    }
-
-    /**
      * Generate Authorization token.
      */
     public function generateScopedAuthorizationToken(): string
     {
-        $usernameConfigurationValue = $this->systemConfigService->getString(
-            Settings::AUTHENTICATION_USERNAME_CONFIG_KEY,
-            $this->salesChannelId
-        );
-        $passwordConfigurationValue = $this->systemConfigService->getString(
-            Settings::AUTHENTICATION_PASSWORD_CONFIG_KEY,
-            $this->salesChannelId
-        );
+        $usernameConfigurationValue = $this->getApiUserName();
+        $passwordConfigurationValue = $this->getApiPassword();
 
         return base64_encode(
             "{$usernameConfigurationValue}:{$passwordConfigurationValue}"

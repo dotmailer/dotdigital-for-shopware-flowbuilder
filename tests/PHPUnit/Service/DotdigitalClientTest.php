@@ -106,7 +106,7 @@ class DotdigitalClientTest extends TestCase
 
         static::assertEquals(
             'https://mock-region-api.dotdigital.com',
-            $client->getBaseUrl()
+            $client->getApiEndpoint()
         );
     }
 

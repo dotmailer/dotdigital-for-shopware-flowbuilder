@@ -19,9 +19,9 @@ export default class FormPhoneValidationPlugin extends FormValidation {
 
 	_registerEvents() {
 		super._registerEvents();
-
 		this.$checkBox = DomAccess.querySelector(document, this.options.checkboxSelector);
-		this._registerValidationListener(this.options.phoneAttr, this._onValidatePhone.bind(this), ['change']);
+		this._registerValidationListener(this.options.phoneAttr, this._onValidatePhone.bind(this), ['change','countrychange', 'input' ]);
+
 	}
 
 	_getIntlField(field) {
@@ -32,30 +32,24 @@ export default class FormPhoneValidationPlugin extends FormValidation {
 		}
 	}
 
+	_getError(errorCode){
+		return this.errorMap[errorCode] ?? this.errorMap[0];
+	}
+
 	_onValidatePhone(event) {
 		const intlField = this._getIntlField(event.target);
 		const field = intlField.telInput;
 		const value = field.value.trim();
-
-		if(value){
-			intlField.setNumber(value);
-		}
+		const target = event.target
 
 		if (value && !intlField.isValidNumber() && this.$checkBox.checked) {
-			field.setAttribute(
-				'value',
-				intlField.getNumber()
-			)
-			field.setAttribute(
-				'data-form-validation-phone-valid-message',
-				this.errorMap[intlField.getValidationError()]
-			);
+			field.setAttribute('data-form-validation-phone-valid-message', this._getError(intlField.getValidationError()));
 			this._setFieldToInvalid(field, this.options.phoneAttr);
-
 		} else {
-		 	this._setFieldToValid(field, this.options.phoneAttr);
-		 }
-
+			target.value = intlField.getNumber()
+			field.setAttribute('value', intlField.getNumber())
+			this._setFieldToValid(field, this.options.phoneAttr);
+		}
 		this.$emitter.publish('onValidatePhone');
 	}
 }

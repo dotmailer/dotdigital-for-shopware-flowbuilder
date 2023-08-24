@@ -3,7 +3,33 @@
 namespace Dotdigital\Flow;
 
 use Shopware\Core\Framework\Plugin;
+use Shopware\Core\Framework\Parameter\AdditionalBundleParameters;
+use Composer\Autoload\ClassLoader;
 
 class DotdigitalFlow extends Plugin
 {
+    public function getAdditionalBundles(AdditionalBundleParameters $parameters): array
+    {
+        self::classLoader();
+
+        return parent::getAdditionalBundles($parameters);
+    }
+
+    public static function classLoader(): void
+    {
+        $file = __DIR__ . '/../vendor/autoload.php';
+        if (!is_file($file)) {
+            return;
+        }
+
+        /** @noinspection UsingInclusionOnceReturnValueInspection */
+        $classLoader = require_once $file;
+
+        if (!$classLoader instanceof ClassLoader) {
+            return;
+        }
+
+        $classLoader->unregister();
+        $classLoader->register(false);
+    }
 }

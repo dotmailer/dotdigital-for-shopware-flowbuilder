@@ -68,7 +68,7 @@
             <label>Consent text</label>
         </input-field>
         <component name="sw-entity-single-select">
-            <name>Lists</name>
+            <name>dotdigitalLists</name>
             <entity>dotdigital_list</entity>
             <label>Dotdigital Lists </label>
         </component>
