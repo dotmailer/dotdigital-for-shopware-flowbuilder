@@ -10,11 +10,11 @@ export default class FormPhoneValidationPlugin extends FormValidation {
 	}
 
 	errorMap = [
-		"Invalid number",
-		"Invalid country code",
-		"Too short",
-		"Too long",
-		"Invalid number"
+		"Phone number is invalid",
+		"Phone number country code is invalid",
+		"Phone number is too short",
+		"Phone number is too long",
+		"Phone number is invalid"
 	]
 
 	_registerEvents() {
