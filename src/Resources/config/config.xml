@@ -70,7 +70,7 @@
         <component name="sw-entity-single-select">
             <name>dotdigitalLists</name>
             <entity>dotdigital_list</entity>
-            <label>Dotdigital Lists </label>
+            <label>Add SMS subscribers to</label>
         </component>
     </card>
 </config>
