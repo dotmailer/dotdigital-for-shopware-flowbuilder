@@ -12,7 +12,7 @@
   "minimum-stability": "stable",
   "require": {
     "php": "^8.1",
-    "dotdigital/dotdigital-php": "*"
+    "dotdigital/dotdigital-php": "~2.0.0"
   },
   "extra": {
     "shopware-plugin-class": "Dotdigital\\Flow\\DotdigitalFlow",
