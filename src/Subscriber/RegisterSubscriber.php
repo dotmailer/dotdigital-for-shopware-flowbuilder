@@ -24,7 +24,7 @@ class RegisterSubscriber implements EventSubscriberInterface
         private LoggerInterface $logger,
         private SystemConfigService $systemConfigService
     ) {}
-    
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -61,7 +61,7 @@ class RegisterSubscriber implements EventSubscriberInterface
         $contact->setConsentRecords(
             array (
                 array(
-                    'text' => $this->getConsentText(),
+                    'text' => strip_tags($this->getConsentText()),
                     'dateTimeConsented' => Carbon::now()->toDateString(),
                     'url' => $_SERVER['HTTP_REFERER'] ?? '', // phpcs:ignore WordPress.Security
                     'ipAddress' => $_SERVER['REMOTE_ADDR'] ?? '', // phpcs:ignore WordPress.Security
