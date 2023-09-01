@@ -1,15 +1,17 @@
 <?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow\Service\Client\V3;
 
 use Dotdigital\Flow\Service\SystemConfigurationTrait;
+use Dotdigital\V3\Client as V3Client;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
-use Dotdigital\V3\Client as V3Client;
 
 class DotdigitalClient
 {
     use SystemConfigurationTrait;
+
     private V3Client $client;
 
     /**
@@ -24,22 +26,23 @@ class DotdigitalClient
         $this->setupClient();
     }
 
-    /**
-     * @return V3Client
-     */
     public function getClient(): V3Client
     {
         return $this->client;
     }
 
+    public function getLogger(): LoggerInterface
+    {
+        return $this->logger;
+    }
+
     /**
      * Set up client.
-     *
-     * @return void
      */
-    private function setupClient() {
-        $this->client::setApiUser( $this->getApiUserName() );
-        $this->client::setApiPassword( $this->getApiPassword() );
-        $this->client::setApiEndpoint( $this->getApiEndpoint() );
+    private function setupClient(): void
+    {
+        $this->client::setApiUser($this->getApiUserName());
+        $this->client::setApiPassword($this->getApiPassword());
+        $this->client::setApiEndpoint($this->getApiEndpoint());
     }
 }

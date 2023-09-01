@@ -1,10 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow\Service\Client;
 
+use Dotdigital\Flow\Service\Client\V3\DotdigitalClient as V3DotdigitalClient;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
-use Dotdigital\Flow\Service\Client\V3\DotdigitalClient as V3DotdigitalClient;
 
 class DotdigitalClientFactory
 {
@@ -14,7 +15,8 @@ class DotdigitalClientFactory
     public function __construct(
         private LoggerInterface $logger,
         private SystemConfigService $systemConfigService
-    ) {}
+    ) {
+    }
 
     public function createClient(?string $salesChannelId = null): DotdigitalClient
     {
@@ -33,5 +35,4 @@ class DotdigitalClientFactory
             $salesChannelId
         );
     }
-
 }

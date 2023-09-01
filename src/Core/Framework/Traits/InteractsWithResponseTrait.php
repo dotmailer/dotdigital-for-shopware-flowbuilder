@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow\Core\Framework\Traits;
 
@@ -60,7 +61,7 @@ trait InteractsWithResponseTrait
     private function assignProperty(\ReflectionProperty $property, $value): void
     {
         try {
-            if ($property->isProtected() or $property->isPrivate()) {
+            if ($property->isProtected() || $property->isPrivate()) {
                 if (method_exists($this, 'set' . ucfirst($property->getName()))) {
                     $method = 'set' . ucfirst($property->getName());
                     $this->{'set' . ucfirst($property->getName())}($value);

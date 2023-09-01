@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Tests;
 
@@ -7,9 +8,9 @@ use Dotdigital\Flow\Service\RecipientResolver;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Flow\Dispatching\Aware\ContactFormDataAware;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer;
 use Shopware\Core\Framework\Event\EventData\MailRecipientStruct;
-use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
 
 class RecipientResolverTest extends TestCase
@@ -113,10 +114,10 @@ class RecipientResolverTest extends TestCase
 
         $this->flowMock->expects(static::once())
             ->method('getData')
-			->with('contactFormData')
-			->willReturn([
-				'email' => 'chaz@emailsim.io',
-			]);
+            ->with('contactFormData')
+            ->willReturn([
+                'email' => 'chaz@emailsim.io',
+            ]);
 
         $this->recipientResolver->getRecipients($recipients, $this->flowMock);
     }
@@ -127,11 +128,11 @@ class RecipientResolverTest extends TestCase
             'type' => 'default',
         ];
 
-		$mailRecipientStructMock = $this->createMock(MailRecipientStruct::class);
+        $mailRecipientStructMock = $this->createMock(MailRecipientStruct::class);
 
         $this->flowMock->expects(static::once())
             ->method('getData')
-			->with('mailStruct')
+            ->with('mailStruct')
             ->willReturn($mailRecipientStructMock);
 
         $mailRecipientStructMock->expects(static::once())

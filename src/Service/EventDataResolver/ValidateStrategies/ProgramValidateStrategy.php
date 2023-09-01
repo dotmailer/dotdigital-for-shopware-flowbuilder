@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow\Service\EventDataResolver\ValidateStrategies;
 
@@ -7,11 +8,11 @@ use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 class ProgramValidateStrategy implements ValidateStrategyInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function validate(StorableFlow $flow): bool
     {
-		$flowData = $flow->getConfig();
+        $flowData = $flow->getConfig();
         if (!\array_key_exists('programId', $flowData)) {
             throw new \InvalidArgumentException('The program value in the flow action configuration is invalid or missing.', 422);
         }

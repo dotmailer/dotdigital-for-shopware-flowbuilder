@@ -1,12 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow\Service\EventDataResolver\BuildStrategies;
 
 use Dotdigital\Flow\Core\Framework\DataTypes\ContactDataCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\ContactDataStruct;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Adapter\Twig\Exception\StringTemplateRenderingException;
 use Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer;
-use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
 
 class ContactDataFieldsBuildStrategy implements BuildStrategyInterface
@@ -24,7 +25,7 @@ class ContactDataFieldsBuildStrategy implements BuildStrategyInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function build(StorableFlow $flow): ContactDataCollection
     {

@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Tests;
 
@@ -12,16 +13,16 @@ use Dotdigital\Tests\Traits\InteractWithContactDataFieldsTrait;
 use Dotdigital\Tests\Traits\InteractWithContactsTrait;
 use Dotdigital\Tests\Traits\UtilitiesTrait;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Api\Context\ContextSource;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 
 class DotdigitalContactActionTest extends TestCase
 {
-    use UtilitiesTrait;
+    use InteractWithAddressBooksTrait;
     use InteractWithContactDataFieldsTrait;
     use InteractWithContactsTrait;
-    use InteractWithAddressBooksTrait;
+    use UtilitiesTrait;
 
     /**
      * @var DotdigitalEmailSenderAction
@@ -38,25 +39,25 @@ class DotdigitalContactActionTest extends TestCase
      */
     private $contextMock;
 
-	/**
-	 * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
-	 */
-	private $eventContactResolverMock;
+    /**
+     * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $eventContactResolverMock;
 
-	/**
-	 * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
-	 */
-	private $eventAddressBookResolverMock;
+    /**
+     * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $eventAddressBookResolverMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|ContextSource
      */
     private $contextSourceMock;
 
-	/**
-	 * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
-	 */
-	private $resolveContactDataFieldsMock;
+    /**
+     * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $resolveContactDataFieldsMock;
 
     protected function setUp(): void
     {

@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow\Core\Content\List;
 
@@ -15,13 +16,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
  */
 class ListCollection extends EntityCollection
 {
-	public function getApiAlias(): string
-	{
-		return 'dotdigital_list_collection';
-	}
+    public function getApiAlias(): string
+    {
+        return 'dotdigital_list_collection';
+    }
 
-	protected function getExpectedClass(): string
-	{
-		return ListEntity::class;
-	}
+    protected function getExpectedClass(): string
+    {
+        return ListEntity::class;
+    }
 }

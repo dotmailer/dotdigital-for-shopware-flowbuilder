@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow\Service\Client;
 
@@ -16,7 +17,6 @@ use Dotdigital\Flow\Core\Framework\DataTypes\ProgramCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\ProgramEnrolmentStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\ProgramStruct;
 use Dotdigital\Flow\Service\SystemConfigurationTrait;
-use Dotdigital\Flow\Setting\Settings;
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
@@ -216,28 +216,28 @@ class DotdigitalClient extends AbstractClient
      */
     public function getAddressBooks(int $skip = 0, int $take = 1000): AddressBookCollection
     {
-	    $addressBooksResponse = $this->get(
-		    sprintf(
-			    '%s?select=%s&skip=%s',
-			    self::GET_ADDRESS_BOOKS_ENDPOINT,
-			    $take,
-			    $skip
-		    ),
-		    []
-	    );
-	    $addressBooks = new AddressBookCollection();
-	    foreach ($addressBooksResponse as $addressBook) {
-		    $struct = new AddressBookStruct(
-			    $addressBook['id'],
-			    $addressBook['name'],
-			    $addressBook['visibility'],
-			    $addressBook['contacts']
-		    );
+        $addressBooksResponse = $this->get(
+            sprintf(
+                '%s?select=%s&skip=%s',
+                self::GET_ADDRESS_BOOKS_ENDPOINT,
+                $take,
+                $skip
+            ),
+            []
+        );
+        $addressBooks = new AddressBookCollection();
+        foreach ($addressBooksResponse as $addressBook) {
+            $struct = new AddressBookStruct(
+                $addressBook['id'],
+                $addressBook['name'],
+                $addressBook['visibility'],
+                $addressBook['contacts']
+            );
+            /** @phpstan-ignore-next-line-pattern expects *Entity, *AddressBookStruct given. */
+            $addressBooks->add($struct);
+        }
 
-		    $addressBooks->add($struct);
-	    }
-
-	    return $addressBooks;
+        return $addressBooks;
     }
 
     /**

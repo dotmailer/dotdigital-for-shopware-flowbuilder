@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Tests;
 
@@ -12,10 +13,10 @@ use Dotdigital\Tests\Traits\InteractWithCampaignsTrait;
 use Dotdigital\Tests\Traits\InteractWithContactPersonalisationTrait;
 use Dotdigital\Tests\Traits\InteractWithContactsTrait;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Api\Context\ContextSource;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Event\EventData\MailRecipientStruct;
-use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 
 class DotdigitalEmailSenderActionTest extends TestCase
 {
@@ -58,25 +59,25 @@ class DotdigitalEmailSenderActionTest extends TestCase
      */
     private $contextSourceMock;
 
-	/**
-	 * @var RecipientResolver|\PHPUnit\Framework\MockObject\MockObject
-	 */
-	private $recipientResolverMock;
+    /**
+     * @var RecipientResolver|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $recipientResolverMock;
 
-	/**
-	 * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
-	 */
-	private $eventContactResolverMock;
+    /**
+     * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $eventContactResolverMock;
 
-	/**
-	 * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
-	 */
-	private $eventCampaignResolverMock;
+    /**
+     * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $eventCampaignResolverMock;
 
-	/**
-	 * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
-	 */
-	private $eventPersonalisedValuesResolverMock;
+    /**
+     * @var EventDataResolverContext|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $eventPersonalisedValuesResolverMock;
 
     protected function setUp(): void
     {

@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Tests;
 
@@ -18,10 +19,10 @@ use Dotdigital\Tests\Traits\InteractWithContactsTrait;
 use Dotdigital\Tests\Traits\InteractWithProgramsTrait;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer;
 use Shopware\Core\Framework\Api\Context\ContextSource;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
 
 class DotdigitalProgramActionTest extends TestCase
@@ -90,32 +91,32 @@ class DotdigitalProgramActionTest extends TestCase
      */
     private $resolveProgramMock;
 
-	/**
-	 * @var \PHPUnit\Framework\MockObject\MockObject|BusinessEventEncoder
-	 */
-	private $businessEventLoaderMock;
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|BusinessEventEncoder
+     */
+    private $businessEventLoaderMock;
 
-	/**
-	 * @var \PHPUnit\Framework\MockObject\MockObject|StringTemplateRenderer
-	 */
-	private $stringTemplateRendererMock;
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|StringTemplateRenderer
+     */
+    private $stringTemplateRendererMock;
 
-	/**
-	 * @var \PHPUnit\Framework\MockObject\MockObject|LoggerInterface
-	 */
-	private $loggerMock;
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|LoggerInterface
+     */
+    private $loggerMock;
 
-	/**
-	 * @var ResolveContactDataFieldsInterface|\PHPUnit\Framework\MockObject\MockObject
-	 */
-	private $resolveContactDataFieldsMock;
+    /**
+     * @var ResolveContactDataFieldsInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $resolveContactDataFieldsMock;
 
     protected function setUp(): void
     {
         BypassFinals::enable();
         $dotdigitalClientFactoryMock = $this->createMock(DotdigitalClientFactory::class);
-		$this->flowMock = $this->createMock(StorableFlow::class);
-		$this->contextMock = $this->createMock(Context::class);
+        $this->flowMock = $this->createMock(StorableFlow::class);
+        $this->contextMock = $this->createMock(Context::class);
         $this->businessEventLoaderMock = $this->createMock(BusinessEventEncoder::class);
         $this->stringTemplateRendererMock = $this->createMock(StringTemplateRenderer::class);
         $this->loggerMock = $this->createMock(LoggerInterface::class);

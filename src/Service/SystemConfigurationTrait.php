@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow\Service;
 
@@ -6,9 +7,6 @@ use Dotdigital\Flow\Setting\Settings;
 
 trait SystemConfigurationTrait
 {
-    /**
-     * @return string
-     */
     protected function getApiUserName(): string
     {
         return $this->systemConfigService->getString(
@@ -17,9 +15,6 @@ trait SystemConfigurationTrait
         );
     }
 
-    /**
-     * @return string
-     */
     protected function getApiPassword(): string
     {
         return $this->systemConfigService->getString(
@@ -28,9 +23,6 @@ trait SystemConfigurationTrait
         );
     }
 
-    /**
-     * @return string
-     */
     protected function getApiEndpoint(): string
     {
         $region = $this->systemConfigService->getString(
@@ -42,9 +34,6 @@ trait SystemConfigurationTrait
         return "https://{$region}-{$host}";
     }
 
-    /**
-     * @return string
-     */
     protected function getConsentText(): string
     {
         return $this->systemConfigService->getString(
@@ -53,12 +42,9 @@ trait SystemConfigurationTrait
         );
     }
 
-    /**
-     * @return string
-     */
-    protected function getList()
+    protected function getList(): int
     {
-        return $this->systemConfigService->getString(
+        return $this->systemConfigService->getInt(
             Settings::LIST,
             $this->salesChannelId
         );

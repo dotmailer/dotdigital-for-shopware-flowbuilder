@@ -1,10 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow;
 
-use Shopware\Core\Framework\Plugin;
-use Shopware\Core\Framework\Parameter\AdditionalBundleParameters;
 use Composer\Autoload\ClassLoader;
+use Shopware\Core\Framework\Parameter\AdditionalBundleParameters;
+use Shopware\Core\Framework\Plugin;
 
 class DotdigitalFlow extends Plugin
 {
