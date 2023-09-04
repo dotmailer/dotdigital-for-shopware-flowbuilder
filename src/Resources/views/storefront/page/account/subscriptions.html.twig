@@ -1,0 +1,54 @@
+{% sw_extends '@Storefront/storefront/page/account/_page.html.twig' %}
+
+{% block page_account_main_content %}
+    {% block page_dotdigital_subscription_overview %}
+        <div class="dotdigital-subscription-overview">
+
+            {% block page_dotdigital_subscription_request_group_info %}
+                {% if page.customer.requestedGroup %}
+                    {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+                        type: 'info',
+                        content: 'account.overviewCustomerGroupRequest'|trans({
+                            '%group%': page.customer.requestedGroup.translated.name
+                        })
+                    } %}
+                {% endif %}
+            {% endblock %}
+
+            {% block page_dotdigital_subscription_welcome %}
+                <div class="dotdigital-subscription-welcome ">
+                    <h1>Subscriptions</h1>
+                    {% block page_dotdigital_subscription_welcome_intro %}
+                        <p>You can manage your other subscriptions here.</p>
+                    {% endblock %}
+                </div>
+            {% endblock %}
+
+
+            <div class="row g-2">
+            {% block page_dotdigital_sms_consent %}
+
+                <div class="mt-5 card-col account-overview-card account-overview-sms-consent">
+                    <div class="card">
+                        {% block page_dotdigita_sms_consent_title %}
+                            <h2 class="card-title">
+                                Subscriptions
+                            </h2>
+                        {% endblock %}
+                        <div class="card-body">
+                            {% block page_account_overview_sms_consent_form %}
+                                {% include "@DotdigitalFlow/storefront/partials/sms-consent-capture-form.html.twig" with {
+                                    formWrapperCLass: 'col-12',
+                                } %}
+                            {% endblock %}
+                        </div>
+                    </div>
+                </div>
+
+            {% endblock %}
+
+            </div>
+
+        </div>
+    {% endblock %}
+{% endblock %}

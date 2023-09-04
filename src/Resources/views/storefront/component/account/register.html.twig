@@ -1,35 +1,6 @@
 {% sw_extends "@Storefront/storefront/component/account/register.html.twig" %}
 
-{% set consentLabelText = config('DotdigitalFlow.config.consentCheckboxLabel') %}
-{% set consentText = config('DotdigitalFlow.config.consentCheckboxText') %}
-{% set isConsentEnabled = config('DotdigitalFlow.config.consentCaptureRegistration') %}
-
 {% block component_account_register_address %}
     {{ parent() }}
-    <div class="{{ formRowClass }}">
-        <div
-            class="form-group col-md-6"
-            data-form-phone-consent="true"
-        >
-            {% if isConsentEnabled %}
-                <div class="ddg_checkbox form-check">
-                    <input class="form-check-input" type="checkbox" id="sms_subscribed" name="ddg_sms_subscribed_name" data-consent-checkbox/>
-                    <label class="form-label" for="dotdigital-consent-field">{{ consentLabelText|trans }}</label>
-                </div>
-                <div id="dotdigital-consent-field" class="d-none" data-consent-container>
-                    <input type="text"
-                           id="dotdigital-phone-input"
-                           class="form-control {% if violationPath %} is-invalid {% endif %}"
-                           data-form-validation-phone-valid="true"
-                           data-form-validation-phone-valid-message=""
-                           name="phone"
-                           value="{{ address.phone }}"
-                    />
-                    <small class="form-text">
-                        {{ consentText|trans|sw_sanitize }}
-                    </small>
-                </div>
-            {% endif %}
-        </div>
-    </div>
+    {% include "@DotdigitalFlow/storefront/partials/sms-consent-capture.html.twig" %}
 {% endblock %}

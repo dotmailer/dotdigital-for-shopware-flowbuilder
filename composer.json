@@ -12,7 +12,7 @@
   "minimum-stability": "stable",
   "require": {
     "php": "^8.1",
-    "dotdigital/dotdigital-php": "~2.0.0"
+    "dotdigital/dotdigital-php": "dev-develop"
   },
   "require-dev": {
     "shopware/core": "^6.5.0.0",

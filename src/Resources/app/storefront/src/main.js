@@ -4,6 +4,7 @@ import FormPhoneConsentTogglePlugin from "./plugin/form-phone-consent-toggle-plu
 // Register your plugin via the existing PluginManager
 
 const PluginManager = window.PluginManager;
+PluginManager.register('FormPhoneConsentLoader', FormPhoneConsentLoaderPlugin, '.register-form');
+PluginManager.register('FormPhoneConsentLoader', FormPhoneConsentLoaderPlugin, '.sms-consent-capture');
 PluginManager.register('FormPhoneConsentHandlerPlugin',FormPhoneConsentTogglePlugin,'[data-form-phone-consent]');
-PluginManager.register('FormPhoneValidationLoaderPlugin', FormPhoneConsentLoaderPlugin, '.register-form');
 PluginManager.override('FormValidation', FormPhoneValidationPlugin, '[data-form-validation]');

@@ -1,0 +1,33 @@
+{% block dotdigital_sms_consent_capture_form %}
+
+    {% set formSmsConsentAutoSubmitOptions = {
+        redirectTo: false,
+        submitOnChange: false,
+        phoneNumber: (page.contact) ? page.getContactPhoneNumber() : '',
+        checked: (page.contact) ? page.getContactIsSubscribed() : false,
+        loaderWrapper: '.sms-consent-capture',
+        alwaysShowInput: true,
+    } %}
+
+    <form name="smsConsent" method="post"
+          class="sms-consent-capture"
+          action="{{ path("dotdigital.account.sms-consent") }}"
+          data-form-ajax-submit="true"
+          data-form-validation="true"
+          data-form-phone-consent-loader-options='{{ formSmsConsentAutoSubmitOptions|json_encode }}'
+          data-form-ajax-submit-options='{{ formSmsConsentAutoSubmitOptions|json_encode }}'>
+        {% block dotdigital_account_overview_sms_consent_content %}
+            <div class="js-sms-consent-wrapper"></div>
+            {% include "@DotdigitalFlow/storefront/partials/sms-consent-capture.html.twig" %}
+        {% endblock %}
+        {% block dotdigital_account_overview_sms_consent_content_submit %}
+            <div class="register-submit">
+                <button type="submit"
+                        class="btn btn-primary btn-lg">
+                    Submit
+                </button>
+            </div>
+        {% endblock %}
+    </form>
+{% endblock %}
+

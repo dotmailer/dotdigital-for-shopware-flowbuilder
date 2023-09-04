@@ -34,5 +34,14 @@
             <argument type="service" id="country.repository"/>
             <argument type="service" id="sales_channel.repository"/>
         </service>
+        <service id="Dotdigital\Flow\Storefront\Controller\SmsConsentCaptureController" public="true">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
+            </call>
+            <argument type="service" id="Dotdigital\Flow\Storefront\Page\SmsConsent\SmsConsentPageLoader" />
+        </service>
     </services>
 </container>

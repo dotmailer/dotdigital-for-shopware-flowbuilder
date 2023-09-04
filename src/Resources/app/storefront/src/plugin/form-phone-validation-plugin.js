@@ -6,7 +6,7 @@ export default class FormPhoneValidationPlugin extends FormValidation {
 	static options = {
 		...FormValidation.options,
 		phoneAttr: 'data-form-validation-phone-valid',
-		checkboxSelector: '#sms_subscribed'
+		checkboxSelector: '[data-consent-checkbox]',
 	}
 
 	errorMap = [
@@ -21,7 +21,6 @@ export default class FormPhoneValidationPlugin extends FormValidation {
 		super._registerEvents();
 		this.$checkBox = DomAccess.querySelector(document, this.options.checkboxSelector);
 		this._registerValidationListener(this.options.phoneAttr, this._onValidatePhone.bind(this), ['change','countrychange', 'input' ]);
-
 	}
 
 	_getIntlField(field) {

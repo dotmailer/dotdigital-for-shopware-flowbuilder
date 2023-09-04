@@ -31,5 +31,5 @@ class Settings
      * Consent settings
      */
     public const CONSENT_TEXT = self::DOTDIGITAL_CONFIG_DOMAIN . 'consentCheckboxText';
-    public const LIST = self::DOTDIGITAL_CONFIG_DOMAIN . 'dotdigitalLists';
+    public const LIST = self::DOTDIGITAL_CONFIG_DOMAIN . 'dotdigitalList';
 }

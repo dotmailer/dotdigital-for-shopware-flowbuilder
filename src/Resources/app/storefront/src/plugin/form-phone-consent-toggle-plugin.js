@@ -8,10 +8,11 @@ export default class FormPhoneConsentTogglePlugin extends Plugin {
 		consentContainer: '[data-form-phone-consent]',
 		checkboxIdentifier: '[data-consent-checkbox]',
 		containerIdentifier: '[data-consent-container]',
-		phoneInputAttr: '[data-form-validation-phone-valid="true"]',
+		phoneInputAttr: '[data-form-validation-phone-valid="true"]'
 	};
 
 	init() {
+		console.log(this)
 		this.$phoneField = DomAccess.querySelector(this.el, this.options.phoneInputAttr);
 		this.$consentCheckobox =  DomAccess.querySelector(this.el, this.options.checkboxIdentifier);
 		this.$consent =   DomAccess.querySelector(this.el, this.options.containerIdentifier);
@@ -21,16 +22,17 @@ export default class FormPhoneConsentTogglePlugin extends Plugin {
 	_registerEvents() {
 		this.$consentCheckobox.addEventListener('change', this._onConsentCheckboxChange.bind(this));
 	}
-	_onConsentCheckboxChange() {
+	_onConsentCheckboxChange(event) {
+		event.preventDefault();
 		if (this.$consentCheckobox.checked) {
-			this.$phoneField.required = true;
 			this.$consent.classList.remove('d-none');
+			this.$phoneField.setAttribute('required', true);
 			this.$phoneField.setAttribute('data-form-validation-phone-valid', true);
 			this.$phoneField.dispatchEvent(new Event('change'));
 		} else {
-			this.$phoneField.required = false;
 			this.$consent.classList.add('d-none');
-			this.$phoneField.setAttribute('data-form-validation-phone-valid', false);
+			this.$phoneField.removeAttribute('required');
+			this.$phoneField.removeAttribute('data-form-validation-phone-valid');
 			this.$phoneField.dispatchEvent(new Event('change'));
 		}
 	}
