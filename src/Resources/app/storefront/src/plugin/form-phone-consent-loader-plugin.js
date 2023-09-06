@@ -80,6 +80,7 @@ export default class FormPhoneConsentLoaderPlugin extends Plugin {
 				this.$phoneFormInput.setNumber(this.options.phoneNumber)
 				this.$phoneFormInput.telInput.value = this.options.phoneNumber
 				this.$phoneInput.value = this.options.phoneNumber
+                this.$checkbox.checked = this.options.checked;
 
 				if(this.options.alwaysShowInput) {
 					this.$consent.classList.remove('d-none');

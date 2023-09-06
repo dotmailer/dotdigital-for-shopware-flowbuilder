@@ -7,6 +7,7 @@ export default class FormPhoneValidationPlugin extends FormValidation {
 		...FormValidation.options,
 		phoneAttr: 'data-form-validation-phone-valid',
 		checkboxSelector: '[data-consent-checkbox]',
+		phoneRequiredMessage: false
 	}
 
 	errorMap = [
@@ -40,6 +41,13 @@ export default class FormPhoneValidationPlugin extends FormValidation {
 		const field = intlField.telInput;
 		const value = field.value.trim();
 		const target = event.target
+
+		if(this.options.phoneRequiredMessage && !value && this.$checkBox.checked){
+			field.setAttribute('data-form-validation-phone-valid-message', this.options.phoneRequiredMessage);
+			this._setFieldToInvalid(field, this.options.phoneAttr);
+			this.$emitter.publish('onValidatePhone');
+			return;
+		}
 
 		if (value && !intlField.isValidNumber() && this.$checkBox.checked) {
 			field.setAttribute('data-form-validation-phone-valid-message', this._getError(intlField.getValidationError()));

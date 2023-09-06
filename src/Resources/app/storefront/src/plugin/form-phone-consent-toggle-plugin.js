@@ -8,7 +8,7 @@ export default class FormPhoneConsentTogglePlugin extends Plugin {
 		consentContainer: '[data-form-phone-consent]',
 		checkboxIdentifier: '[data-consent-checkbox]',
 		containerIdentifier: '[data-consent-container]',
-		phoneInputAttr: '[data-form-validation-phone-valid="true"]'
+		phoneInputAttr: '[data-form-validation-phone-valid]'
 	};
 
 	init() {
