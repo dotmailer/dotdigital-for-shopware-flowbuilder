@@ -46,6 +46,7 @@ bin/console plugin:install --activate DotdigitalFlow
 ### Step 3 - Build extension assets
 ```
 bash bin/build-administration.sh
+bash bin/build-storefront.sh
 ```
 
 ## Changelog

@@ -2,5 +2,6 @@
 /vendor
 .reports
 .DS_Store
-node_modules
-/src/Resources/app/storefront/node_modules/
+
+src/Resources/app/storefront/dist/
+src/Resources/app/storefront/node_modules
