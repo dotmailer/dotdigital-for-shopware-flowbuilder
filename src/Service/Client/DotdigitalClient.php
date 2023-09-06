@@ -28,7 +28,7 @@ class DotdigitalClient extends AbstractClient
     public const CONTACT_ENROLMENT_ENDPOINT = 'v2/programs/enrolments';
     public const RESUBSCRIBE_CONTACT_ENDPOINT = 'v2/contacts/resubscribe';
     public const RESUBSCRIBE_CONTACT_TO_ADDRESS_BOOK_ENDPOINT = 'v2/address-books/%s/contacts/resubscribe';
-    public const ADD_CONTACT_ENDPOINT = '/v2/contacts/';
+    public const CONTACT_ENDPOINT = '/v2/contacts/';
     public const ADD_CONTACT_TO_ADDRESS_BOOK_ENDPOINT = 'v2/address-books/%s/contacts';
     public const GET_ADDRESS_BOOKS_ENDPOINT = 'v2/address-books';
     public const EMAIL_TRIGGERED_CAMPAIGN_ENDPOINT = 'v2/email/triggered-campaign';
@@ -61,6 +61,25 @@ class DotdigitalClient extends AbstractClient
         ]);
 
         parent::__construct($client, $logger);
+    }
+
+    /**
+     * Get contact by email
+     *
+     * @throws GuzzleException
+     */
+    public function getContactByEmail(string $email): ?ContactStruct
+    {
+        $response = $this->get(
+            sprintf(
+                '%s/%s',
+                self::CONTACT_ENDPOINT,
+                $email
+            ),
+            []
+        );
+
+        return ContactStruct::createFromResponse($response);
     }
 
     /**
@@ -132,7 +151,7 @@ class DotdigitalClient extends AbstractClient
     public function createOrUpdateContact(ContactStruct $contact): ContactStruct
     {
         $response = $this->post(
-            self::ADD_CONTACT_ENDPOINT,
+            self::CONTACT_ENDPOINT,
             [
                 'json' => [
                     'email' => $contact->getEmail(),
@@ -334,6 +353,30 @@ class DotdigitalClient extends AbstractClient
         }
 
         return $campaigns;
+    }
+
+    /**
+     * Remove contact from list
+     *
+     * @throws GuzzleException
+     *
+     * @return array<string, mixed>
+     */
+    public function detachContactFromList(
+        ContactStruct $contact,
+        AddressBookStruct $list
+    ): array {
+        $contactRemovalResponse = $this->delete(
+            sprintf(
+                '%s/%s/contacts/%s',
+                self::GET_ADDRESS_BOOKS_ENDPOINT,
+                $list->getId(),
+                $contact->getId()
+            ),
+            []
+        );
+
+        return $contactRemovalResponse;
     }
 
     /**

@@ -5,6 +5,8 @@ import HttpClient from "src/service/http-client.service";
 import ElementLoadingIndicatorUtil from "src/utility/loading-indicator/element-loading-indicator.util";
 export default class FormPhoneConsentLoaderPlugin extends Plugin {
 	static options = {
+		...Plugin.options,
+		reloadWindow: false,
 		autoSubmit: false,
 		phoneNumber: '',
 		checked: false,
@@ -14,6 +16,8 @@ export default class FormPhoneConsentLoaderPlugin extends Plugin {
 		phoneIdentifier: '[data-form-validation-phone-valid]',
 		phoneUtilityScript: "/bundles/dotdigitalflow/static/js/intl-tel-input/utils.js",
 		alwaysShowInput: false,
+		showFormLoader:false
+
 	};
 
 	init() {
@@ -25,13 +29,34 @@ export default class FormPhoneConsentLoaderPlugin extends Plugin {
 		this.$phoneFormParent = this.$phoneFormInput.parentNode;
 		this._client = new HttpClient();
 		this._registerDependencies(this.$phoneFormInput);
+		this._registerEvents();
+	}
 
+	_registerEvents() {
 		if(this.options.autoSubmit){
-			this.$emitter.subscribe('change', this._submitForm.bind(this))
+			this.el.$emitter.subscribe('change', this._validateForm.bind(this))
+		}
+		this.$emitter.subscribe('beforeSubmit', this._beforeSubmit.bind(this));
+		this.$emitter.subscribe('onAfterAjaxSubmit', this._afterSubmit.bind(this));
+	}
+
+	_afterSubmit(event) {
+		if (this.options.reloadWindow) {
+			window.location.reload()
+		}
+
+		if (!this.options.reloadWindow) {
+			ElementLoadingIndicatorUtil.remove(this.el);
 		}
 	}
 
-	_submitForm(event) {
+	_beforeSubmit(event) {
+		if(this.el.checkValidity() && this.options.showFormLoader){
+			ElementLoadingIndicatorUtil.create(this.el);
+		}
+	}
+
+	_validateForm(event) {
 		this.el.checkValidity();
 	}
 

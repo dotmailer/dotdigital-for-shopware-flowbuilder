@@ -1,12 +1,13 @@
 {% block dotdigital_sms_consent_capture_form %}
 
     {% set formSmsConsentAutoSubmitOptions = {
-        redirectTo: false,
+        reloadWindow: true,
         submitOnChange: false,
         phoneNumber: (page.contact) ? page.getContactPhoneNumber() : '',
         checked: (page.contact) ? page.getContactIsSubscribed() : false,
         loaderWrapper: '.sms-consent-capture',
         alwaysShowInput: true,
+        showFormLoader: true,
     } %}
 
     <form name="smsConsent" method="post"
@@ -16,10 +17,12 @@
           data-form-validation="true"
           data-form-phone-consent-loader-options='{{ formSmsConsentAutoSubmitOptions|json_encode }}'
           data-form-ajax-submit-options='{{ formSmsConsentAutoSubmitOptions|json_encode }}'>
+
         {% block dotdigital_account_overview_sms_consent_content %}
             <div class="js-sms-consent-wrapper"></div>
             {% include "@DotdigitalFlow/storefront/partials/sms-consent-capture.html.twig" %}
         {% endblock %}
+
         {% block dotdigital_account_overview_sms_consent_content_submit %}
             <div class="register-submit">
                 <button type="submit"
@@ -28,6 +31,7 @@
                 </button>
             </div>
         {% endblock %}
+
     </form>
 {% endblock %}
 

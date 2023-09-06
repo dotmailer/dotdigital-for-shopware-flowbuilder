@@ -19,7 +19,7 @@ export default class FormPhoneValidationPlugin extends FormValidation {
 
 	_registerEvents() {
 		super._registerEvents();
-		this.$checkBox = DomAccess.querySelector(document, this.options.checkboxSelector);
+		this.$checkBox = document.querySelectorAll(`${this.options.checkboxSelector}`).item(0);
 		this._registerValidationListener(this.options.phoneAttr, this._onValidatePhone.bind(this), ['change','countrychange', 'input' ]);
 	}
 

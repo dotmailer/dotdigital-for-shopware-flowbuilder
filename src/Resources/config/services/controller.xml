@@ -42,6 +42,7 @@
                 <argument type="service" id="twig"/>
             </call>
             <argument type="service" id="Dotdigital\Flow\Storefront\Page\SmsConsent\SmsConsentPageLoader" />
+            <argument type="service" id="Dotdigital\Flow\Service\Client\SmsConsentService" />
         </service>
     </services>
 </container>

@@ -10,19 +10,18 @@
                         Sms Subscriptions
                     </h2>
                 {% endblock %}
-
                 {% block page_account_overview_sms_consent_text %}
                         <p class="card-text">
-                            {% if page.extensions.dotdigital.sms_consent.isSubscribed %}
-                                You have given consent to receive SMS messages from us.
+                            {% if page.extensions.dotdigital_sms_consent.isSubscribed %}
+                                You have agreed to receive SMS messages from us.
                             {% else %}
-                                You have not given consent to receive SMS messages from us.
+                                You have not agreed to receive SMS messages from us.
                             {% endif %}
                         </p>
-                        {% if page.extensions.dotdigital.sms_consent.isSubscribed %}
+                        {% if page.extensions.dotdigital_sms_consent.isSubscribed %}
                             <p class="card-text">
                                 <strong>Subscription Number</strong><br>
-                                {{  page.extensions.dotdigital.sms_consent.number }}
+                                {{  page.extensions.dotdigital_sms_consent.number }}
                             </p>
                         {% endif %}
 

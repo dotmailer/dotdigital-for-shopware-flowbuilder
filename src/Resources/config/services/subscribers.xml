@@ -4,11 +4,9 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="Dotdigital\Flow\Subscriber\RegisterSubscriber">
+        <service id="Dotdigital\Flow\Subscriber\SmsConsentSubscriber">
             <tag name="kernel.event_subscriber"/>
-            <argument type="service" id="Dotdigital\Flow\Service\Client\DotdigitalClientFactory" />
-            <argument type="service" id="Dotdigital\Flow\Util\DotdigitalLogger"/>
-            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="Dotdigital\Flow\Service\Client\SmsConsentService" />
         </service>
     </services>
 </container>

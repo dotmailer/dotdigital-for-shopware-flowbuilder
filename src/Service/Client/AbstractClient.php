@@ -52,6 +52,20 @@ class AbstractClient
     }
 
     /**
+     * Call Delete
+     *
+     * @param array<string, mixed> $options
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return array<string, mixed>
+     */
+    protected function delete(string $uri, array $options): array
+    {
+        return $this->request(Request::METHOD_DELETE, $uri, $options);
+    }
+
+    /**
      * Make new guzzle async request
      *
      * @param array<string, mixed> $options

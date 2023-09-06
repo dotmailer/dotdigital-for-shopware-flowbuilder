@@ -75,7 +75,9 @@ class SmsConsentPage extends Page
         }
 
         $channels = $this->contact->getChannelProperties();
-        $smsSubscriptionStatus = $channels?->getSms()->getStatus();
+        $smsSubscriptionStatus = $channels?->getSms()
+            ? $channels->getSms()->getStatus()
+            : null;
         $contactLists = $this->contact->getLists() ?? [];
         $contactLists = array_column($contactLists, 'id');
 
