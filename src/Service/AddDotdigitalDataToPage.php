@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Dotdigital\Flow\Service;
 
-use Dotdigital\Flow\Core\Framework\DataTypes\SmsConsentStruct;
+use Dotdigital\Flow\Core\Framework\DataTypes\SmsConsent\SmsConsentPageStruct;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
 use Dotdigital\Flow\Setting\Settings;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
@@ -42,7 +42,7 @@ class AddDotdigitalDataToPage implements EventSubscriberInterface
                 ->getByIdentifier($event->getSalesChannelContext()->getCustomer()->getEmail());
         } catch (\Dotdigital\Exception\ResponseValidationException $e) {
             $event->getPage()->setExtensions([
-                'dotdigital_sms_consent' => new SmsConsentStruct(
+                'dotdigital_sms_consent' => new SmsConsentPageStruct(
                     '',
                     false,
                 ),
@@ -59,7 +59,7 @@ class AddDotdigitalDataToPage implements EventSubscriberInterface
         if (\in_array($systemList, $contactLists, true) && $smsSubscriptionStatus === 'subscribed') {
             $phoneNumber = $contact->getIdentifiers()->getMobileNumber();
             $event->getPage()->setExtensions([
-                'dotdigital_sms_consent' => new SmsConsentStruct(
+                'dotdigital_sms_consent' => new SmsConsentPageStruct(
                     $phoneNumber ? '+' . $phoneNumber : '',
                     true,
                 ),

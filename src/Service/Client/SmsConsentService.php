@@ -6,11 +6,11 @@ namespace Dotdigital\Flow\Service\Client;
 use Carbon\Carbon;
 use Dotdigital\Flow\Core\Framework\DataTypes\AddressBookStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\ContactStruct;
+use Dotdigital\Flow\Core\Framework\DataTypes\SmsConsent\SmsConsentDataBag;
 use Dotdigital\Flow\Service\SystemConfigurationTrait;
 use Dotdigital\V3\Models\Contact;
 use Http\Client\Exception;
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class SmsConsentService
@@ -31,18 +31,18 @@ class SmsConsentService
      *
      * @throws Exception
      */
-    public function subscribe(DataBag $data, string $salesChannelIdentifier): void
+    public function subscribe(SmsConsentDataBag $data, string $salesChannelIdentifier): void
     {
         $this->salesChannelId = $salesChannelIdentifier;
         $contact = new Contact(
             [
                 'identifiers' => [
-                    'email' => $data->get('email'),
-                    'mobileNumber' => $data->get('phone'),
+                    'email' => $data->getEmail(),
+                    'mobileNumber' => $data->getPhone(),
                 ],
                 'dataFields' => [
-                    'firstName' => $data->get('firstName'),
-                    'lastName' => $data->get('lastName'),
+                    'firstName' => $data->getFirstName(),
+                    'lastName' => $data->getLastName(),
                 ],
             ]
         );
@@ -60,12 +60,12 @@ class SmsConsentService
      *
      * @throws Exception
      */
-    public function unSubscribe(DataBag $data, string $salesChannelIdentifier): void
+    public function unSubscribe(SmsConsentDataBag $data, string $salesChannelIdentifier): void
     {
         $this->salesChannelId = $salesChannelIdentifier;
         $list = new AddressBookStruct();
         $list->setId((int) $this->getList());
-        $contact = $this->getV2Contact($data->get('email'), $salesChannelIdentifier);
+        $contact = $this->getV2Contact($data->getEmail(), $salesChannelIdentifier);
 
         if (empty($contact)) {
             return;

@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace Dotdigital\Flow\Storefront\Controller;
 
+use Dotdigital\Flow\Core\Framework\DataTypes\SmsConsent\SmsConsentDataBag;
 use Dotdigital\Flow\Service\Client\SmsConsentService;
 use Dotdigital\Flow\Storefront\Page\SmsConsent\SmsConsentPageLoader;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
-use Shopware\Core\Framework\Validation\DataBag\DataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +37,7 @@ class SmsConsentCaptureController extends StorefrontController
     )]
     public function save(Request $request, SalesChannelContext $context): Response
     {
-        $data = new DataBag($request->request->all());
+        $data = new SmsConsentDataBag($request->request->all());
 
         /**
          * @var CustomerEntity $customer

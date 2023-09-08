@@ -1,9 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Dotdigital\Flow\Core\Framework\DataTypes;
+namespace Dotdigital\Flow\Core\Framework\DataTypes\SmsConsent;
 
-class SmsConsentStruct extends AbstractStruct
+use Dotdigital\Flow\Core\Framework\DataTypes\AbstractStruct;
+
+class SmsConsentPageStruct extends AbstractStruct
 {
     /**
      * @var string
