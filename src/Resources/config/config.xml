@@ -67,10 +67,6 @@
             <name>consentCheckboxText</name>
             <label>Consent text</label>
         </input-field>
-        <input-field type="text">
-            <name>dotdigitalList</name>
-            <label>test</label>
-        </input-field>
         <component name="sw-entity-single-select">
             <name>dotdigitalList</name>
             <entity>dotdigital_list</entity>
