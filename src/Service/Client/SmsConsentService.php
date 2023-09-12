@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Dotdigital\Flow\Service\Client;
 
-use Carbon\Carbon;
 use Dotdigital\Flow\Core\Framework\DataTypes\AddressBookStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\ContactStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\SmsConsent\SmsConsentDataBag;
@@ -154,7 +153,7 @@ class SmsConsentService
         return [
             [
                 'text' => $this->getEscapedConsentText(),
-                'dateTimeConsented' => Carbon::now()->toDateString(),
+                'dateTimeConsented' => date(\DateTimeInterface::ATOM),
                 'url' => $_SERVER['HTTP_REFERER'] ?? '',
                 'ipAddress' => $_SERVER['REMOTE_ADDR'] ?? '',
                 'userAgent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
