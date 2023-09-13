@@ -30,6 +30,8 @@ class Settings
     /**
      * Consent settings
      */
+    public const SHOW_ACCOUNT_SMS_CONSENT = self::DOTDIGITAL_CONFIG_DOMAIN . 'consentCaptureAccount';
+    public const SHOW_CHECKOUT_SMS_CONSENT = self::DOTDIGITAL_CONFIG_DOMAIN . 'consentCaptureCheckout';
     public const CONSENT_TEXT = self::DOTDIGITAL_CONFIG_DOMAIN . 'consentCheckboxText';
     public const LIST = self::DOTDIGITAL_CONFIG_DOMAIN . 'dotdigitalList';
 }

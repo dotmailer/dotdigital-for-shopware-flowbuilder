@@ -5,7 +5,7 @@
     {% set isConsentEnabled = config('DotdigitalFlow.config.consentCaptureRegistration') %}
 
     <div class="{{ formRowClass }}" data-form-phone-consent="true">
-        <div class="form-group {% if formWrapperCLass %} {{ formWrapperCLass }} {% else %} col-md-6" {% endif %}>
+        <div class="form-group {% if formWrapperClass %} {{ formWrapperClass }} {% else %} col-md-6" {% endif %}>
             {% if isConsentEnabled %}
                 {% block dotdigital_sms_consent_checkbox %}
                     <div class="form-check">

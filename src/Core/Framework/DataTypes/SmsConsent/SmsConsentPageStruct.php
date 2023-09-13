@@ -17,11 +17,38 @@ class SmsConsentPageStruct extends AbstractStruct
      */
     public $isSubscribed;
 
+    /**
+     * @var bool
+     */
+    public $consentEnabled;
+
+    /**
+     * @var bool
+     */
+    public $isAuthedGuest;
+
     public function __construct(
         string $number,
-        bool $isSubscribed
+        bool $isSubscribed,
+        bool $consentEnabled = false,
+        bool $isAuthedGuest = false
     ) {
         $this->number = $number;
         $this->isSubscribed = $isSubscribed;
+        $this->consentEnabled = $consentEnabled;
+        $this->isAuthedGuest = $isAuthedGuest;
+    }
+
+    public function showSmsConsent(): bool
+    {
+        if (!$this->consentEnabled) {
+            return false;
+        }
+
+        if ($this->isAuthedGuest && $this->isSubscribed) {
+            return false;
+        }
+
+        return true;
     }
 }
