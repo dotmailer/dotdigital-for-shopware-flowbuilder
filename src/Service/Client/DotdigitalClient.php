@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow\Service\Client;
 
@@ -15,7 +16,7 @@ use Dotdigital\Flow\Core\Framework\DataTypes\ContactStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\ProgramCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\ProgramEnrolmentStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\ProgramStruct;
-use Dotdigital\Flow\Setting\Settings;
+use Dotdigital\Flow\Service\SystemConfigurationTrait;
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
@@ -23,10 +24,11 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class DotdigitalClient extends AbstractClient
 {
+    use SystemConfigurationTrait;
     public const CONTACT_ENROLMENT_ENDPOINT = 'v2/programs/enrolments';
     public const RESUBSCRIBE_CONTACT_ENDPOINT = 'v2/contacts/resubscribe';
     public const RESUBSCRIBE_CONTACT_TO_ADDRESS_BOOK_ENDPOINT = 'v2/address-books/%s/contacts/resubscribe';
-    public const ADD_CONTACT_ENDPOINT = '/v2/contacts/';
+    public const CONTACT_ENDPOINT = '/v2/contacts/';
     public const ADD_CONTACT_TO_ADDRESS_BOOK_ENDPOINT = 'v2/address-books/%s/contacts';
     public const GET_ADDRESS_BOOKS_ENDPOINT = 'v2/address-books';
     public const EMAIL_TRIGGERED_CAMPAIGN_ENDPOINT = 'v2/email/triggered-campaign';
@@ -50,7 +52,7 @@ class DotdigitalClient extends AbstractClient
         $this->salesChannelId = $salesChannelId;
 
         $client = new Guzzle([
-            'base_uri' => $this->getBaseUrl(),
+            'base_uri' => $this->getApiEndpoint(),
             'headers' => [
                 'Accept' => 'text/plain',
                 'Authorization' => 'Basic ' . $this->generateScopedAuthorizationToken(),
@@ -59,6 +61,25 @@ class DotdigitalClient extends AbstractClient
         ]);
 
         parent::__construct($client, $logger);
+    }
+
+    /**
+     * Get contact by email
+     *
+     * @throws GuzzleException
+     */
+    public function getContactByEmail(string $email): ?ContactStruct
+    {
+        $response = $this->get(
+            sprintf(
+                '%s/%s',
+                self::CONTACT_ENDPOINT,
+                $email
+            ),
+            []
+        );
+
+        return ContactStruct::createFromResponse($response);
     }
 
     /**
@@ -130,7 +151,7 @@ class DotdigitalClient extends AbstractClient
     public function createOrUpdateContact(ContactStruct $contact): ContactStruct
     {
         $response = $this->post(
-            self::ADD_CONTACT_ENDPOINT,
+            self::CONTACT_ENDPOINT,
             [
                 'json' => [
                     'email' => $contact->getEmail(),
@@ -212,14 +233,14 @@ class DotdigitalClient extends AbstractClient
      *
      * @throws GuzzleException
      */
-    public function getAddressBooks(int $skipLimit = 0): AddressBookCollection
+    public function getAddressBooks(int $skip = 0, int $take = 1000): AddressBookCollection
     {
         $addressBooksResponse = $this->get(
             sprintf(
                 '%s?select=%s&skip=%s',
                 self::GET_ADDRESS_BOOKS_ENDPOINT,
-                self::SELECT_LIMIT,
-                $skipLimit
+                $take,
+                $skip
             ),
             []
         );
@@ -231,7 +252,7 @@ class DotdigitalClient extends AbstractClient
                 $addressBook['visibility'],
                 $addressBook['contacts']
             );
-
+            /** @phpstan-ignore-next-line-pattern expects *Entity, *AddressBookStruct given. */
             $addressBooks->add($struct);
         }
 
@@ -335,17 +356,27 @@ class DotdigitalClient extends AbstractClient
     }
 
     /**
-     * Get base url.
+     * Remove contact from list
+     *
+     * @throws GuzzleException
+     *
+     * @return array<string, mixed>
      */
-    public function getBaseUrl(): string
-    {
-        $region = $this->systemConfigService->getString(
-            Settings::HOST_REGION_CONFIG_KEY,
-            $this->salesChannelId
+    public function detachContactFromList(
+        ContactStruct $contact,
+        AddressBookStruct $list
+    ): array {
+        $contactRemovalResponse = $this->delete(
+            sprintf(
+                '%s/%s/contacts/%s',
+                self::GET_ADDRESS_BOOKS_ENDPOINT,
+                $list->getId(),
+                $contact->getId()
+            ),
+            []
         );
-        $host = Settings::HOST;
 
-        return "https://{$region}-{$host}";
+        return $contactRemovalResponse;
     }
 
     /**
@@ -353,14 +384,8 @@ class DotdigitalClient extends AbstractClient
      */
     public function generateScopedAuthorizationToken(): string
     {
-        $usernameConfigurationValue = $this->systemConfigService->getString(
-            Settings::AUTHENTICATION_USERNAME_CONFIG_KEY,
-            $this->salesChannelId
-        );
-        $passwordConfigurationValue = $this->systemConfigService->getString(
-            Settings::AUTHENTICATION_PASSWORD_CONFIG_KEY,
-            $this->salesChannelId
-        );
+        $usernameConfigurationValue = $this->getApiUserName();
+        $passwordConfigurationValue = $this->getApiPassword();
 
         return base64_encode(
             "{$usernameConfigurationValue}:{$passwordConfigurationValue}"

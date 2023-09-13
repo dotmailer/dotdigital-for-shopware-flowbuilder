@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow\Service;
 
@@ -6,11 +7,9 @@ use Doctrine\DBAL\Connection;
 use Dotdigital\Flow\Core\Framework\DataTypes\RecipientCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\RecipientStruct;
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Content\Flow\Dispatching\Aware\ContactFormDataAware;
+use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Adapter\Twig\Exception\StringTemplateRenderingException;
 use Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer;
-use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
-use Shopware\Core\Framework\Event\MailAware;
 use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
 
 class RecipientResolver
@@ -61,7 +60,7 @@ class RecipientResolver
                             $this->stringTemplateRenderer->render(
                                 $recipient,
                                 $data,
-								$flow->getContext()
+                                $flow->getContext()
                             )
                         ));
                     } catch (StringTemplateRenderingException $exception) {

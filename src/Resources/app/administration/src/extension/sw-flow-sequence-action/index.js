@@ -56,10 +56,13 @@ Component.override('sw-flow-sequence-action', {
 
             const recipientRaw = config.recipient;
             const recipientType = recipientRaw.type.charAt(0).toUpperCase() + recipientRaw.type.slice(1);
-            const contactDescription = this.$tc('sw-flow.actions.contact.sequence-description.contact',
-                recipientRaw.data.length, {
+            const contactDescription = this.$tc(
+                'sw-flow.actions.contact.sequence-description.contact',
+                recipientRaw.data.length,
+                {
                     recipient: `<strong>${recipientType}</strong>`,
-                });
+                },
+            );
 
             if (recipientType) {
                 description += `${contactDescription}`;
@@ -109,10 +112,13 @@ Component.override('sw-flow-sequence-action', {
 
             const recipientRaw = config.recipient;
             const recipientType = recipientRaw.type.charAt(0).toUpperCase() + recipientRaw.type.slice(1);
-            const contactDescription = this.$tc('sw-flow.actions.contact.sequence-description.contact',
-                recipientRaw.data.length, {
+            const contactDescription = this.$tc(
+                'sw-flow.actions.contact.sequence-description.contact',
+                recipientRaw.data.length,
+                {
                     recipient: `<strong>${recipientType}</strong>`,
-                });
+                },
+            );
 
             if (recipientType) {
                 description += `${contactDescription}`;

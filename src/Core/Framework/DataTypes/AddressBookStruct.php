@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow\Core\Framework\DataTypes;
 
@@ -39,9 +40,14 @@ class AddressBookStruct extends AbstractStruct
         return (string) $this->id;
     }
 
-    public function getId(): int
+    public function getUniqueIdentifier(): string
     {
-        return $this->id;
+        return (string) $this->id;
+    }
+
+    public function getId(): string
+    {
+        return (string) $this->id;
     }
 
     public function setId(int $id): self

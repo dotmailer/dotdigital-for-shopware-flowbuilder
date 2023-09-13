@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow\Service\EventDataResolver\BuildStrategies;
 
@@ -18,11 +19,11 @@ class PersonalisedValuesBuildStrategy implements BuildStrategyInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function build(StorableFlow $flow): ContactPersonalisationCollection
     {
-		$availableData = $this->businessEventEncoder->encodeData($flow->data(), $flow->stored());
+        $availableData = $this->businessEventEncoder->encodeData($flow->data(), $flow->stored());
         $personalisedValues = new ContactPersonalisationCollection();
         foreach ($availableData as $key => $value) {
             $personalisedValues->add(new ContactPersonalisationStruct($key, $value));

@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Tests\Traits;
 
@@ -7,8 +8,8 @@ use Dotdigital\Flow\Core\Framework\DataTypes\CampaignStruct;
 
 trait InteractWithCampaignsTrait
 {
-    use UtilitiesTrait;
     use InteractWithContactDataFieldsTrait;
+    use UtilitiesTrait;
 
     /**
      * @throws \Exception

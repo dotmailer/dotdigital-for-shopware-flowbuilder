@@ -1,0 +1,39 @@
+{% block dotdigital_sms_consent_capture %}
+
+    {% set consentLabelText = config('DotdigitalFlow.config.consentCheckboxLabel') %}
+    {% set consentText = config('DotdigitalFlow.config.consentCheckboxText') %}
+
+    <div class="{{ formRowClass }}" data-form-phone-consent="true">
+        <div class="form-group {% if formWrapperClass %} {{ formWrapperClass }} {% else %} col-md-6" {% endif %}>
+                {% block dotdigital_sms_consent_checkbox %}
+                    <div class="form-check">
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="sms_subscribed"
+                            name="ddg_sms_subscribed_name"
+                            data-consent-checkbox
+                            {% if attachTo %} form="{{ attachTo }}" {% endif %}
+                        />
+                        <label class="form-label" for="sms_subscribed">{{ consentLabelText|trans }}</label>
+                    </div>
+                {% endblock %}
+                {% block dotdigital_sms_consent_input %}
+                    <div id="dotdigital-consent-field" class="d-none" data-consent-container>
+                        <input type="text"
+                               id="dotdigital-phone-input"
+                               class="form-control {% if violationPath %} is-invalid {% endif %}"
+                               data-form-validation-phone-valid="true"
+                               data-form-validation-phone-valid-message=""
+                               name="phone"
+                            {% if attachTo %} form="{{ attachTo }}" {% endif %}
+                               value="{{ address.phone }}"
+                        />
+                        <small class="form-text">
+                            {{ consentText|trans|sw_sanitize }}
+                        </small>
+                    </div>
+                {% endblock %}
+        </div>
+    </div>
+{% endblock %}

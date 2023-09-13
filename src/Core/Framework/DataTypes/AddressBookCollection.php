@@ -1,15 +1,21 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow\Core\Framework\DataTypes;
 
-use Shopware\Core\Framework\Struct\Collection;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
-final class AddressBookCollection extends Collection
+final class AddressBookCollection extends EntityCollection
 {
+    public function getApiAlias(): string
+    {
+        return 'dotdigital_list_collection';
+    }
+
     /**
      * Collection expected class
      */
-    protected function getExpectedClass(): ?string
+    protected function getExpectedClass(): string
     {
         return AddressBookStruct::class;
     }

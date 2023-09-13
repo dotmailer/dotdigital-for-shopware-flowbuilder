@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="Dotdigital\Flow\Core\Content\List\ListDefinition">
+            <tag name="shopware.entity.definition" entity="dotdigital_list" />
+        </service>
+        <service class="Shopware\Core\Framework\DataAbstractionLayer\EntityRepository" id="dotdigital_list.repository">
+            <argument type="service" id="Dotdigital\Flow\Core\Content\List\ListDefinition"/>
+            <argument type="service" id="Dotdigital\Flow\Service\Repository\DotdigitalEntityReader"/>
+            <argument type="service" id="Dotdigital\Flow\Service\Repository\DotdigitalEntityWriter"/>
+            <argument type="service" id="Dotdigital\Flow\Service\Repository\DotdigitalEntitySearcher"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntityAggregatorInterface"/>
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Event\EntityLoadedEventFactory"/>
+        </service>
+    </services>
+</container>

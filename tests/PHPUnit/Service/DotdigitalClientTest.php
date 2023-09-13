@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Tests\Service;
 
@@ -13,6 +14,7 @@ use Dotdigital\Tests\Traits\InteractWithCampaignsTrait;
 use Dotdigital\Tests\Traits\InteractWithContactPersonalisationTrait;
 use Dotdigital\Tests\Traits\InteractWithContactsTrait;
 use Dotdigital\Tests\Traits\InteractWithRecipientsTrait;
+use Dotdigital\Tests\Utility\PHPUnitClassUtility;
 use GuzzleHttp\Exception\GuzzleException;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
@@ -21,11 +23,11 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 class DotdigitalClientTest extends TestCase
 {
-    use InteractWithRecipientsTrait;
     use InteractWithAddressBooksTrait;
+    use InteractWithCampaignsTrait;
     use InteractWithContactPersonalisationTrait;
     use InteractWithContactsTrait;
-    use InteractWithCampaignsTrait;
+    use InteractWithRecipientsTrait;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|SalesChannelEntity
@@ -50,7 +52,7 @@ class DotdigitalClientTest extends TestCase
     /**
      * Setup test prerequisites
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -106,7 +108,7 @@ class DotdigitalClientTest extends TestCase
 
         static::assertEquals(
             'https://mock-region-api.dotdigital.com',
-            $client->getBaseUrl()
+            PHPUnitClassUtility::callMethod($client, 'getApiEndpoint', [])
         );
     }
 

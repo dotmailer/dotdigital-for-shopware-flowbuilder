@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow\Service\EventDataResolver\BuildStrategies;
 
@@ -18,11 +19,11 @@ class ContactBuildStrategy implements BuildStrategyInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function build(StorableFlow $flow): ContactCollection
     {
-		$flowData = $flow->getConfig();
+        $flowData = $flow->getConfig();
         $contactCollection = new ContactCollection();
 
         $recipients = $this

@@ -9,6 +9,8 @@
         <import resource="./services/resolver.xml"/>
         <import resource="./flow-actions/dotdigital-flow-action.xml"/>
         <import resource="./services/controller.xml"/>
+        <import resource="./services/subscribers.xml"/>
+        <import resource="./services/repository.xml"/>
+        <import resource="./services/pages.xml"/>
     </imports>
-
 </container>

@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <imports>
+        <import resource="./entities/list.xml"/>
+    </imports>
+    <services>
+        <service id="Dotdigital\Flow\Service\Repository\DotdigitalEntityReader" public="true">
+            <argument type="service" id="Dotdigital\Flow\Service\Repository\DotdigitalEntityResolver" />
+        </service>
+        <service id="Dotdigital\Flow\Service\Repository\DotdigitalEntitySearcher" public="true">
+            <argument type="service" id="Dotdigital\Flow\Service\Repository\DotdigitalEntityResolver" />
+        </service>
+        <service id="Dotdigital\Flow\Service\Repository\DotdigitalEntityWriter" public="true">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Read\EntityReaderInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearcherInterface"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriteGatewayInterface"/>
+            <argument type="service" id="event_dispatcher"/>
+            <argument type="service" id="serializer"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Version\Aggregate\VersionCommit\VersionCommitDefinition"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Version\Aggregate\VersionCommitData\VersionCommitDataDefinition"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Version\VersionDefinition"/>
+            <argument type="service" id="lock.factory"/>
+        </service>
+        <service id="Dotdigital\Flow\Service\Repository\DotdigitalEntityResolver">
+            <argument type="service" id="Symfony\Contracts\Cache\TagAwareCacheInterface"/>
+            <argument type="service" id="Dotdigital\Flow\Service\Client\DotdigitalClientFactory"/>
+        </service>
+    </services>
+</container>

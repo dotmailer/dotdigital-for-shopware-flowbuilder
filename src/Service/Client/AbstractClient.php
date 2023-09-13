@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow\Service\Client;
 
@@ -48,6 +49,20 @@ class AbstractClient
     protected function get(string $uri, array $options): array
     {
         return $this->request(Request::METHOD_GET, $uri, $options);
+    }
+
+    /**
+     * Call Delete
+     *
+     * @param array<string, mixed> $options
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @return array<string, mixed>
+     */
+    protected function delete(string $uri, array $options): array
+    {
+        return $this->request(Request::METHOD_DELETE, $uri, $options);
     }
 
     /**

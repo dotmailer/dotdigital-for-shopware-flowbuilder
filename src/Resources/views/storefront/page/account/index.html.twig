@@ -1,0 +1,48 @@
+{% sw_extends "@Storefront/storefront/page/account/index.html.twig" %}
+{% block page_account_overview_newsletter %}
+    {{  parent() }}
+    {% set isConsentEnabled = config('DotdigitalFlow.config.consentCaptureAccount') %}
+    {% if isConsentEnabled %}
+    <div class="account-overview-card account-overview-sms-consent">
+        <div class="card">
+            <div class="card-body">
+
+                {% block page_account_overview_sms_consent_title %}
+                    <h2 class="card-title">
+                        SMS Subscriptions
+                    </h2>
+                {% endblock %}
+                {% block page_account_overview_sms_consent_text %}
+                        <p class="card-text">
+                            {% if page.extensions.dotdigital_sms_consent.isSubscribed %}
+                                You have agreed to receive SMS messages from us.
+                            {% else %}
+                                You have not agreed to receive SMS messages from us.
+                            {% endif %}
+                        </p>
+                        {% if page.extensions.dotdigital_sms_consent.isSubscribed %}
+                            <p class="card-text">
+                                <strong>Subscription Number</strong><br>
+                                {{  page.extensions.dotdigital_sms_consent.number }}
+                            </p>
+                        {% endif %}
+
+                {% endblock %}
+
+                {% block page_account_overview_sms_consent_modal_action %}
+                    <div class="card-actions">
+
+                        {% block page_account_overview_shipping_address_actions_link %}
+                            <a href="{{ path('dotdigital.account.subscriptions') }}"
+                               title="Edit SMS Consent"
+                               class="btn btn-light">
+                                Edit SMS Consent
+                            </a>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

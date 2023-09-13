@@ -1,0 +1,15 @@
+{% sw_extends "@Storefront/storefront/page/account/sidebar.html.twig" %}
+{% block page_account_sidebar_menu_inner %}
+    {{ parent() }}
+    {% block page_account_sidebar_link_dotdigital_subscriptions %}
+        {% set isConsentEnabled = config('DotdigitalFlow.config.consentCaptureAccount') %}
+        {% if isConsentEnabled %}
+        <a href="{{ path('dotdigital.account.subscriptions') }}"
+           title="Subscriptions"
+           class="list-group-item list-group-item-action account-aside-item{% if activeRoute is same as('dotdigital.account.subscriptions') %} is-active{% endif %}">
+            Subscriptions
+        </a>
+        {% endif %}
+    {% endblock %}
+{% endblock %}
+

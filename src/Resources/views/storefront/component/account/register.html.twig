@@ -1,0 +1,9 @@
+{% sw_extends "@Storefront/storefront/component/account/register.html.twig" %}
+
+{% block component_account_register_address %}
+    {{ parent() }}
+    {% set isConsentEnabled = config('DotdigitalFlow.config.consentCaptureRegistration') %}
+    {% if isConsentEnabled %}
+        {% include "@DotdigitalFlow/storefront/partials/sms-consent-capture-form-fields.html.twig" %}
+    {% endif %}
+{% endblock %}

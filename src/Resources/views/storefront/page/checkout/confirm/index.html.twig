@@ -1,0 +1,37 @@
+{% sw_extends "@Storefront/storefront/page/checkout/confirm/index.html.twig" %}
+
+{% block page_checkout_confirm %}
+    {% block page_checkout_confirm_alerts %} {{ parent() }} {% endblock %}
+    {% block page_checkout_confirm_tos %} {{ parent() }} {% endblock %}
+    {% block page_checkout_confirm_address %} {{ parent() }} {% endblock %}
+    {% block page_checkout_confirm_sms_consent %}
+    {% if page.extensions.dotdigital_sms_consent.showSmsConsentOnCheckout() %}
+    <div class="confirm-consent">
+        <div class="col-sm-6 card-col sms-consent">
+            <div class="card checkout-card">
+                <div class="card-body">
+                    <h2 class="card-title">
+                        SMS Opt-in
+                    </h2>
+                    <div class="card-body">
+                        <form
+                            data-form-validation="true"
+                            data-form-validation-options="{{ { phoneRequiredMessage: 'Phone number is required' } | json_encode() }}"
+                            class="sms-consent-capture"
+                        >
+                            {% sw_include '@DotdigitalFLow/storefront/partials/sms-consent-capture-form-fields.html.twig' with {
+                                attachTo: 'confirmOrderForm',
+                                formWrapperClass: 'col'
+                            } %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    {% endblock %}
+    {% block page_checkout_confirm_payment_shipping %} {{ parent() }} {% endblock %}
+    {% block page_checkout_confirm_product_table %} {{ parent() }} {% endblock %}
+    {% block page_checkout_confirm_hidden_line_items_information %} {{ parent() }} {% endblock %}
+{% endblock %}
+

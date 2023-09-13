@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow\Service\EventDataResolver\ValidateStrategies;
 
@@ -7,7 +8,7 @@ use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 class ContactDataFieldsValidateStrategy implements ValidateStrategyInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function validate(StorableFlow $flow): bool
     {

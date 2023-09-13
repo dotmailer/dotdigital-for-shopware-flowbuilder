@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php
+declare(strict_types=1);
 
 namespace Dotdigital\Flow\Setting;
 
@@ -24,5 +25,13 @@ class Settings
     /**
      * Date time formatting
      */
-    public const DATE_TIME_FORMAT = 'Y-m-d H:i:s.v';
+    public const DATE_TIME_FORMAT = \DateTimeInterface::ATOM;
+
+    /**
+     * Consent settings
+     */
+    public const SHOW_ACCOUNT_SMS_CONSENT = self::DOTDIGITAL_CONFIG_DOMAIN . 'consentCaptureAccount';
+    public const SHOW_CHECKOUT_SMS_CONSENT = self::DOTDIGITAL_CONFIG_DOMAIN . 'consentCaptureCheckout';
+    public const CONSENT_TEXT = self::DOTDIGITAL_CONFIG_DOMAIN . 'consentCheckboxText';
+    public const LIST = self::DOTDIGITAL_CONFIG_DOMAIN . 'dotdigitalList';
 }
