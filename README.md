@@ -51,6 +51,14 @@ bash bin/build-storefront.sh
 
 ## Changelog
 
+### 2.1.0
+
+#### What's new
+- Customers and guests can now sign up for SMS marketing, with consent, at registration and checkout.
+- Customers can manage their subscription and subscribed mobile number in their account.
+- SMS subscribers are pushed to a specific list in Dotdigital via the new V3 API.
+- Mobile numbers are validated client-side before submit.
+
 ### 2.0.1
 
 #### Improvements
