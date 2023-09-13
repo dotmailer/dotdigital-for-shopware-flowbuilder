@@ -43,6 +43,7 @@
             </call>
             <argument type="service" id="Dotdigital\Flow\Storefront\Page\SmsConsent\SmsConsentPageLoader" />
             <argument type="service" id="Dotdigital\Flow\Service\Client\SmsConsentService" />
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
         </service>
     </services>
 </container>

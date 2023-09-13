@@ -1,8 +1,11 @@
 {% sw_extends '@Storefront/storefront/page/account/_page.html.twig' %}
 
 {% block page_account_main_content %}
+
     {% block page_dotdigital_subscription_overview %}
-        <div class="dotdigital-subscription-overview">
+        {% set isConsentEnabled = config('DotdigitalFlow.config.consentCaptureAccount') %}
+        {% if isConsentEnabled %}
+            <div class="dotdigital-subscription-overview">
 
             {% block page_dotdigital_subscription_request_group_info %}
                 {% if page.customer.requestedGroup %}
@@ -24,10 +27,8 @@
                 </div>
             {% endblock %}
 
-
             <div class="row g-2">
             {% block page_dotdigital_sms_consent %}
-
                 <div class="mt-5 card-col account-overview-card account-overview-sms-consent">
                     <div class="card">
                         {% block page_dotdigita_sms_consent_title %}
@@ -44,11 +45,9 @@
                         </div>
                     </div>
                 </div>
-
             {% endblock %}
-
             </div>
-
         </div>
+        {% endif %}
     {% endblock %}
 {% endblock %}

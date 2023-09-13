@@ -7,6 +7,7 @@ use Dotdigital\Flow\Core\Framework\DataTypes\AddressBookStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\ContactStruct;
 use Dotdigital\Flow\Core\Framework\DataTypes\SmsConsent\SmsConsentDataBag;
 use Dotdigital\Flow\Service\SystemConfigurationTrait;
+use Dotdigital\Flow\Setting\Settings;
 use Dotdigital\V3\Models\Contact;
 use Http\Client\Exception;
 use Psr\Log\LoggerInterface;
@@ -153,7 +154,7 @@ class SmsConsentService
         return [
             [
                 'text' => $this->getEscapedConsentText(),
-                'dateTimeConsented' => date(\DateTimeInterface::ATOM),
+                'dateTimeConsented' => date(Settings::DATE_TIME_FORMAT),
                 'url' => $_SERVER['HTTP_REFERER'] ?? '',
                 'ipAddress' => $_SERVER['REMOTE_ADDR'] ?? '',
                 'userAgent' => $_SERVER['HTTP_USER_AGENT'] ?? '',

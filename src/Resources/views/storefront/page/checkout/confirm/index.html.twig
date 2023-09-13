@@ -5,7 +5,7 @@
     {% block page_checkout_confirm_tos %} {{ parent() }} {% endblock %}
     {% block page_checkout_confirm_address %} {{ parent() }} {% endblock %}
     {% block page_checkout_confirm_sms_consent %}
-    {% if page.extensions.dotdigital_sms_consent.showSmsConsent() %}
+    {% if page.extensions.dotdigital_sms_consent.showSmsConsentOnCheckout() %}
     <div class="confirm-consent">
         <div class="col-sm-6 card-col sms-consent">
             <div class="card checkout-card">

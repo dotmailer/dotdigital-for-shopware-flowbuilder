@@ -5,9 +5,11 @@ namespace Dotdigital\Flow\Storefront\Controller;
 
 use Dotdigital\Flow\Core\Framework\DataTypes\SmsConsent\SmsConsentDataBag;
 use Dotdigital\Flow\Service\Client\SmsConsentService;
+use Dotdigital\Flow\Setting\Settings;
 use Dotdigital\Flow\Storefront\Page\SmsConsent\SmsConsentPageLoader;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +23,7 @@ class SmsConsentCaptureController extends StorefrontController
     public function __construct(
         private SmsConsentPageLoader $smsConsentPageLoader,
         private SmsConsentService $smsConsentService,
+        private SystemConfigService $systemConfigService
     ) {
     }
 
@@ -37,6 +40,9 @@ class SmsConsentCaptureController extends StorefrontController
     )]
     public function save(Request $request, SalesChannelContext $context): Response
     {
+        if ((bool) $this->systemConfigService->get(Settings::SHOW_ACCOUNT_SMS_CONSENT) !== true) {
+            return new Response('', Response::HTTP_FORBIDDEN);
+        }
         $data = new SmsConsentDataBag($request->request->all());
 
         /**
@@ -73,6 +79,9 @@ class SmsConsentCaptureController extends StorefrontController
     )]
     public function view(Request $request, SalesChannelContext $context, CustomerEntity $customer): Response
     {
+        if ((bool) $this->systemConfigService->get(Settings::SHOW_ACCOUNT_SMS_CONSENT) !== true) {
+            return $this->redirectToRoute('frontend.account.home.page');
+        }
         $page = $this->smsConsentPageLoader->load($request, $context, $customer);
 
         return $this->renderStorefront('@DotdigitalFlow/storefront/page/account/subscriptions.html.twig', ['page' => $page]);

@@ -8,6 +8,7 @@ use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
 use Dotdigital\Flow\Setting\Settings;
 use Dotdigital\V3\Models\Contact;
 use Http\Client\Exception;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Page\Account\Overview\AccountOverviewPageLoadedEvent;
 use Shopware\Storefront\Page\Checkout\Confirm\CheckoutConfirmPageLoadedEvent;
@@ -17,7 +18,8 @@ class AddDotdigitalDataToPage implements EventSubscriberInterface
 {
     public function __construct(
         private DotdigitalClientFactory $dotdigitalClientFactory,
-        private SystemConfigService $systemConfigService
+        private SystemConfigService $systemConfigService,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -43,6 +45,12 @@ class AddDotdigitalDataToPage implements EventSubscriberInterface
         $isGuest = $event->getSalesChannelContext()->getCustomer()->getGuest();
         $salesChannelId = $event->getSalesChannelContext()->getSalesChannel()->getId();
         $customer = $event->getSalesChannelContext()->getCustomer();
+        $consent = new SmsConsentPageStruct(
+            '',
+            false,
+            $showSmsConsent,
+            $isGuest
+        );
 
         try {
             $contact = $this->dotdigitalClientFactory
@@ -50,29 +58,22 @@ class AddDotdigitalDataToPage implements EventSubscriberInterface
                 ->getClient()
                 ->contacts
                 ->getByIdentifier($customer->getEmail());
-        } catch (\Dotdigital\Exception\ResponseValidationException $e) {
-            $event->getPage()->setExtensions([
-                'dotdigital_sms_consent' => new SmsConsentPageStruct(
-                    '',
-                    false,
-                    $showSmsConsent,
-                ),
-            ]);
-
-            return;
+        } catch (\Dotdigital\Exception\ResponseValidationException|\Dotdigital\Exception\ValidationException $e) {
+            $this->logger->debug(
+                sprintf('Error fetching contact %s', $customer->getEmail()),
+                [$e]
+            );
         }
 
-        if ($this->isSubscribed($contact)) {
+        if (!empty($contact) && $this->isSubscribed($contact)) {
             $phoneNumber = $contact->getIdentifiers()->getMobileNumber();
-            $event->getPage()->setExtensions([
-                'dotdigital_sms_consent' => new SmsConsentPageStruct(
-                    $phoneNumber ? '+' . $phoneNumber : '',
-                    true,
-                    $showSmsConsent,
-                    $isGuest
-                ),
-            ]);
+            $consent->setNumber($phoneNumber ? '+' . $phoneNumber : '');
+            $consent->setIsSubscribed(true);
         }
+
+        $event->getPage()->setExtensions([
+            'dotdigital_sms_consent' => $consent,
+        ]);
     }
 
     /**
@@ -88,6 +89,12 @@ class AddDotdigitalDataToPage implements EventSubscriberInterface
 
         $showSmsConsent = (bool) $this->systemConfigService->get(Settings::SHOW_ACCOUNT_SMS_CONSENT);
         $salesChannelId = $event->getSalesChannelContext()->getSalesChannel()->getId();
+        $consent = new SmsConsentPageStruct(
+            '',
+            false,
+            $showSmsConsent,
+            false
+        );
 
         try {
             $contact = $this->dotdigitalClientFactory
@@ -95,30 +102,22 @@ class AddDotdigitalDataToPage implements EventSubscriberInterface
                 ->getClient()
                 ->contacts
                 ->getByIdentifier($event->getSalesChannelContext()->getCustomer()->getEmail());
-        } catch (\Dotdigital\Exception\ResponseValidationException $e) {
-            $event->getPage()->setExtensions([
-                'dotdigital_sms_consent' => new SmsConsentPageStruct(
-                    '',
-                    false,
-                    $showSmsConsent,
-                    false
-                ),
-            ]);
-
-            return;
+        } catch (\Dotdigital\Exception\ResponseValidationException|\Dotdigital\Exception\ValidationException $e) {
+            $this->logger->debug(
+                sprintf('Error fetching contact %s', $event->getSalesChannelContext()->getCustomer()->getEmail()),
+                [$e]
+            );
         }
 
-        if ($this->isSubscribed($contact)) {
+        if (!empty($contact) && $this->isSubscribed($contact)) {
             $phoneNumber = $contact->getIdentifiers()->getMobileNumber();
-            $event->getPage()->setExtensions([
-                'dotdigital_sms_consent' => new SmsConsentPageStruct(
-                    $phoneNumber ? '+' . $phoneNumber : '',
-                    true,
-                    $showSmsConsent,
-                    false
-                ),
-            ]);
+            $consent->setNumber($phoneNumber ? '+' . $phoneNumber : '');
+            $consent->setIsSubscribed(true);
         }
+
+        $event->getPage()->setExtensions([
+            'dotdigital_sms_consent' => $consent,
+        ]);
     }
 
     /**

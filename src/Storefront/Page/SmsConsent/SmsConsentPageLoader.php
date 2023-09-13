@@ -5,6 +5,7 @@ namespace Dotdigital\Flow\Storefront\Page\SmsConsent;
 
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
 use Dotdigital\Flow\Setting\Settings;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Content\Category\Exception\CategoryNotFoundException;
@@ -22,7 +23,8 @@ class SmsConsentPageLoader
         private readonly GenericPageLoaderInterface $genericLoader,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly DotdigitalClientFactory $dotdigitalClientFactory,
-        private readonly SystemConfigService $systemConfigService
+        private readonly SystemConfigService $systemConfigService,
+        private readonly LoggerInterface $logger
     ) {
     }
 
@@ -46,7 +48,11 @@ class SmsConsentPageLoader
                 ->getClient()
                 ->contacts
                 ->getByIdentifier($customer->getEmail());
-        } catch (\Dotdigital\Exception\ResponseValidationException $e) {
+        } catch (\Dotdigital\Exception\ResponseValidationException|\Dotdigital\Exception\ValidationException $e) {
+            $this->logger->debug(
+                sprintf('Error fetching contact %s', $customer->getEmail()),
+                [$e]
+            );
             $contact = null;
         }
 

@@ -39,7 +39,17 @@ class SmsConsentPageStruct extends AbstractStruct
         $this->isAuthedGuest = $isAuthedGuest;
     }
 
-    public function showSmsConsent(): bool
+    public function setNumber(string $number): void
+    {
+        $this->number = $number;
+    }
+
+    public function setIsSubscribed(bool $isSubscribed): bool
+    {
+        return $this->isSubscribed = $isSubscribed;
+    }
+
+    public function showSmsConsentOnCheckout(): bool
     {
         if (!$this->consentEnabled) {
             return false;

@@ -1,6 +1,8 @@
 {% sw_extends "@Storefront/storefront/page/account/index.html.twig" %}
 {% block page_account_overview_newsletter %}
     {{  parent() }}
+    {% set isConsentEnabled = config('DotdigitalFlow.config.consentCaptureAccount') %}
+    {% if isConsentEnabled %}
     <div class="account-overview-card account-overview-sms-consent">
         <div class="card">
             <div class="card-body">
@@ -42,4 +44,5 @@
             </div>
         </div>
     </div>
+    {% endif %}
 {% endblock %}

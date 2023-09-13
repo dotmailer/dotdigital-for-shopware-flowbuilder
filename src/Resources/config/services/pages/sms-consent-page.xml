@@ -7,6 +7,7 @@
             <argument type="service" id="event_dispatcher"/>
             <argument type="service" id="Dotdigital\Flow\Service\Client\DotdigitalClientFactory"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="Dotdigital\Flow\Util\DotdigitalLogger"/>
         </service>
     </services>
 </container>

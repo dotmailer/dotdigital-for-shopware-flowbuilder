@@ -25,7 +25,7 @@ class Settings
     /**
      * Date time formatting
      */
-    public const DATE_TIME_FORMAT = 'Y-m-d H:i:s.v';
+    public const DATE_TIME_FORMAT = \DateTimeInterface::ATOM;
 
     /**
      * Consent settings
