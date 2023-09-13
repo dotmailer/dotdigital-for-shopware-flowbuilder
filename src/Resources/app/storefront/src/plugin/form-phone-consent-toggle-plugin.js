@@ -13,16 +13,17 @@ export default class FormPhoneConsentTogglePlugin extends Plugin {
 
 	init() {
 		this.$phoneField = DomAccess.querySelector(this.el, this.options.phoneInputAttr);
-		this.$consentCheckobox =  DomAccess.querySelector(this.el, this.options.checkboxIdentifier);
+		this.$consentCheckbox =  DomAccess.querySelector(this.el, this.options.checkboxIdentifier);
+        this.$consentCheckbox.checked = false;
 		this.$consent =   DomAccess.querySelector(this.el, this.options.containerIdentifier);
 		this._registerEvents();
 	}
 
 	_registerEvents() {
-		this.$consentCheckobox.addEventListener('change', this._onConsentCheckboxChange.bind(this));
+		this.$consentCheckbox.addEventListener('change', this._onConsentCheckboxChange.bind(this));
 	}
 	_onConsentCheckboxChange(event) {
-		if (this.$consentCheckobox.checked) {
+		if (this.$consentCheckbox.checked) {
 			this.$consent.classList.remove('d-none');
 			this.$phoneField.setAttribute('required', true);
 			this.$phoneField.setAttribute('data-form-validation-phone-valid', true);
