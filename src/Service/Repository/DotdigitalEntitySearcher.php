@@ -24,7 +24,7 @@ class DotdigitalEntitySearcher implements EntitySearcherInterface
      */
     public function search(EntityDefinition $definition, Criteria $criteria, Context $context): IdSearchResult
     {
-        /** @var \Dotdigital\Flow\Service\Repository\Contracts\DotdigitalDefinitionInterface $definition */
+        /** @var Contracts\DotdigitalDefinitionInterface $definition */
         $entityCollection = $this->entityResolver->fetch($definition, $criteria, $context);
         $data = [];
 

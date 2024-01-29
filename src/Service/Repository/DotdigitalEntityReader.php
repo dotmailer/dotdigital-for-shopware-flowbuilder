@@ -27,10 +27,10 @@ class DotdigitalEntityReader implements EntityReaderInterface
      */
     public function read(EntityDefinition $definition, Criteria $criteria, Context $context): EntityCollection
     {
-        /** @var \Dotdigital\Flow\Service\Repository\Contracts\DotdigitalDefinitionInterface $definition */
+        /** @var DotdigitalDefinitionInterface $definition */
         $lists = $this->entityResolver->fetch($definition, $criteria, $context);
         $collectionClass = $definition->getCollectionClass();
-        /** @var \Shopware\Core\Framework\DataAbstractionLayer\EntityCollection $collection */
+        /** @var EntityCollection $collection */
         $collection = new $collectionClass();
         foreach ($lists as $list) {
             if (\in_array($list->getId(), $criteria->getIds(), true)) {

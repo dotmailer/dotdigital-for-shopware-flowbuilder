@@ -145,7 +145,7 @@ class DotdigitalClientTest extends TestCase
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function testSendEmailMethod(): void
     {
@@ -165,7 +165,7 @@ class DotdigitalClientTest extends TestCase
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      * @throws \Exception
      */
     public function testAddContactToAddressBookMethod(): void
@@ -185,7 +185,7 @@ class DotdigitalClientTest extends TestCase
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      * @throws \Exception
      */
     public function testResubscribeContactToAddressBookMethod(): void
@@ -205,7 +205,7 @@ class DotdigitalClientTest extends TestCase
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      * @throws \Exception
      */
     public function testResubscribeContactMethod(): void
@@ -241,7 +241,7 @@ class DotdigitalClientTest extends TestCase
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      * @throws \Exception
      */
     public function testGetAddressBooksMethod(): void
@@ -255,7 +255,7 @@ class DotdigitalClientTest extends TestCase
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      * @throws \Exception
      */
     public function testProgramsMethod(): void
