@@ -10,7 +10,7 @@
     <services>
 
         <service id="Dotdigital\Flow\Service\EventDataResolver\EventDataResolverExceptionHandler">
-            <argument type="service" id="Dotdigital\Flow\Util\DotdigitalLogger"/>
+            <argument type="service" id="monolog.logger.dotdigital"/>
         </service>
 
         <service id="Dotdigital\Flow\Service\EventDataResolver\EventDataResolverContextFactory">

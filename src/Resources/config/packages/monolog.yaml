@@ -1,0 +1,9 @@
+monolog:
+  channels: ['dotdigital']
+
+  handlers:
+    DotdigitalLogger:
+      type: rotating_file
+      path: "%kernel.logs_dir%/dotdigital_%kernel.environment%.log"
+      level: debug
+      channels: [ "dotdigital"]
