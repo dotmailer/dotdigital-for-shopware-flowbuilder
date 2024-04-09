@@ -15,9 +15,9 @@
     "dotdigital/dotdigital-php": "2.1.0"
   },
   "require-dev": {
-    "shopware/core": "^6.5.0.0",
-    "shopware/administration": "^6.5.0.0",
-    "shopware/storefront": "^6.5.0.0",
+    "shopware/core": "^6.5.7.4",
+    "shopware/administration": "^6.5.7.4",
+    "shopware/storefront": "^6.5.7.4",
     "phpunit/phpunit": "^9.5",
     "phpstan/phpstan": "^1.9",
     "dg/bypass-finals": "^1.4"
