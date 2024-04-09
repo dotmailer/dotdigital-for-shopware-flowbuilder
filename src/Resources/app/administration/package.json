@@ -11,7 +11,7 @@
         "lint-ci": "npm run lint -- --format junit --output-file eslint.junit.xml"
     },
     "devDependencies": {
-        "@babel/eslint-parser": "^7.19.1",
+        "@babel/eslint-parser": "^7.23.0",
         "@babel/plugin-proposal-class-properties": "^7.18.6",
         "@babel/plugin-transform-runtime": "^7.19.6",
         "@babel/preset-env": "^7.20.2",
