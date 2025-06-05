@@ -9,11 +9,9 @@ use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * @Route(defaults={"_routeScope"={"api"}})
- */
+#[Route(defaults: ['_routeScope' => ['api']])]
 class CampaignsController extends AbstractController
 {
     use InteractsWithResponseTrait;
@@ -26,15 +24,11 @@ class CampaignsController extends AbstractController
         $this->dotdigitalClientFactory = $dotdigitalClientFactory;
     }
 
-    /**
-     * @Route(
-     *     "/api/dotdigital/campaigns",
-     *     name="api.action.dotdigital.campaigns",
-     *     methods={"GET"}
-     * )
-     *
-     * @throws GuzzleException
-     */
+    #[Route(
+        '/api/dotdigital/campaigns',
+        name: 'api.action.dotdigital.campaigns',
+        methods: ['GET']
+    )]
     public function showCampaigns(): JsonResponse
     {
         $campaigns = [];
