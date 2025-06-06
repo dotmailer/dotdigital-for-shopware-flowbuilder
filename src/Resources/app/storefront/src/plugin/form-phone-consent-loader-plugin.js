@@ -1,11 +1,11 @@
-import Plugin from "src/plugin-system/plugin.class";
 import DomAccess from "src/helper/dom-access.helper";
 import intlTelInput from "@intl-tel-input";
 import HttpClient from "src/service/http-client.service";
 import ElementLoadingIndicatorUtil from "src/utility/loading-indicator/element-loading-indicator.util";
-export default class FormPhoneConsentLoaderPlugin extends Plugin {
+
+export default class FormPhoneConsentLoaderPlugin extends window.PluginBaseClass {
 	static options = {
-		...Plugin.options,
+		...window.PluginBaseClass.options,
 		reloadWindow: false,
 		autoSubmit: false,
 		phoneNumber: '',
