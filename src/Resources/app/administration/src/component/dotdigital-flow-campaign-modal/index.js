@@ -1,146 +1,135 @@
+import { ref, computed, onMounted, nextTick, inject, getCurrentInstance } from 'vue';
 import template from './dotdigital-flow-campaign-modal.html.twig';
 import '../shared/scss/dd-flow-modal.scss';
 
-const { Component } = Shopware;
-
-Component.register('dotdigital-flow-campaign-modal', { // eslint-disable-line
+const { Component, Mixin } = Shopware;
+Component.register('dotdigital-flow-campaign-modal', {
     template,
-    inject: ['DotdigitalApiService'],
+    mixins: [Mixin.getByName('notification')],
     props: {
         sequence: {
             type: Object,
             required: true,
         },
     },
-    data() {
-        return {
-            sequenceReady: false,
-            campaignList: [],
-            contactEmail: null,
-            campaignId: 0,
+
+    emits: ['process-finish', 'modal-close'],
+
+    setup(props, { emit }) {
+        // Get services via inject
+        const DotdigitalApiService = inject('DotdigitalApiService');
+        // Use current instance for notification service
+        const { proxy } = getCurrentInstance();
+        // Shopware's translation service
+        const $tc = (key, ...args) => Shopware.Snippet.tc(key, ...args);
+
+        // Reactive state
+        const sequenceReady = ref(false);
+        const campaignList = ref([]);
+        const contactEmail = ref(null);
+        const campaignId = ref('');
+
+        // Computed properties
+        const availableCampaigns = computed(() => {
+            // Format options in the exact structure sw-single-select expects
+            return campaignList.value.map(campaign => ({
+                id: String(campaign.id),
+                name: campaign.name,
+                value: String(campaign.id),
+                label: campaign.name,
+            }));
+        });
+
+        const isNew = computed(() => !props.sequence?.id);
+
+        const modalTitle = computed(() => $tc('sw-flow.actions.campaign.title'));
+        const modalSubTitle = computed(() => $tc('sw-flow.actions.campaign.subtitle'));
+
+        const entityAware = computed(() => [
+            'CustomerAware', 'UserAware', 'OrderAware', 'CustomerGroupAware',
+        ]);
+
+        // Methods
+        const handleCampaignSelection = (selectedValue) => {
+            campaignId.value = selectedValue;
         };
-    },
 
-    computed: {
+        const handleRecipientSelection = (event) => {
+            contactEmail.value = event.payload;
+        };
 
-        /**
-         * Get and mutate campaign list
-         * @returns {*[]}
-         */
-        availableCampaigns() {
-            return this.campaignList.map((campaign) => {
-                return {
-                    value: campaign.id,
-                    label: `${campaign.name}`,
-                };
-            });
-        },
-
-        /**
-         * Is this a new flow action?
-         * @returns {boolean}
-         */
-        isNew() {
-            return !this.sequence?.id;
-        },
-
-        modalTitle() {
-            return this.$tc('sw-flow.actions.campaign.title');
-        },
-
-        modalSubTitle() {
-            return this.$tc('sw-flow.actions.campaign.subtitle');
-        },
-
-        /**
-         * Get recipient aware of the current sequence
-         *
-         * @returns {string[]}
-         */
-        entityAware() {
-            return [
-                'CustomerAware',
-                'UserAware',
-                'OrderAware',
-                'CustomerGroupAware',
-            ];
-        },
-
-    },
-
-    /**
-     * Called component create life cycle hook
-     */
-    created() {
-        this.createdComponent()
-            .finally(() => {
-                this.sequenceReady = true;
-            })
-            .catch((error) => {
-                console.error(error);
-                this.createNotificationError({
-                    title: this.$tc('Error'),
-                    message: error.message,
-                });
-            });
-    },
-
-    methods: {
-
-        /**
-         * handle update event from campaign selection component
-         * @param campaignId
-         */
-        handleCampaignSelection(campaignId) {
-            this.campaignId = campaignId;
-        },
-
-        /**
-         * handle update event from recipient component
-         * @param event
-         */
-        handleRecipientSelection(event) {
-            this.contactEmail = event.payload;
-        },
-
-        /**
-         * Shopware sequence hook
-         */
-        async createdComponent() {
-            const { config } = this.sequence;
-            if (!this.isNew) {
-                this.contactEmail = config.recipient;
-                this.campaignId = config.campaignId;
+        const loadCampaigns = async () => {
+            try {
+                if (DotdigitalApiService?.getCampaigns) {
+                    const campaigns = await DotdigitalApiService.getCampaigns();
+                    return campaigns || [];
+                }
+                return [];
+            } catch (error) {
+                console.error('Failed to load campaigns:', error);
+                return [];
             }
-            this.campaignList = await this.DotdigitalApiService.getCampaigns();
-            return this.sequence;
-        },
+        };
 
-        /**
-         * Validate recipient and emit event
-         */
-        onAddAction() {
+        const createdComponent = async () => {
+            const { config } = props.sequence || {};
+            if (!isNew.value && config) {
+                contactEmail.value = config.recipient;
+                campaignId.value = config.campaignId ? String(config.campaignId) : '';
+            }
+
+            campaignList.value = await loadCampaigns();
+        };
+
+        const onAddAction = () => {
             const sequence = {
-                ...this.sequence,
+                ...props.sequence,
                 config: {
-                    ...this.sequence.config,
-                    campaignId: this.campaignId,
-                    recipient: this.contactEmail,
+                    ...(props.sequence.config || {}),
+                    campaignId: campaignId.value,
+                    recipient: contactEmail.value,
                 },
             };
 
-            this.$nextTick(() => {
-                this.$emit('process-finish', sequence);
+            nextTick(() => {
+                emit('process-finish', sequence);
             });
-        },
+        };
 
-        /**
-         * On Modal closed event hook
-         */
-        onClose() {
-            this.$emit('modal-close');
-        },
+        const onClose = () => {
+            emit('modal-close');
+        };
 
+        // Lifecycle hook
+        onMounted(() => {
+            sequenceReady.value = false;
 
+            createdComponent()
+                .finally(() => {
+                    sequenceReady.value = true;
+                })
+                .catch((error) => {
+                    proxy.createNotificationError({
+                        title: $tc('Error'),
+                        message: error.message,
+                    });
+                });
+        });
+
+        return {
+            $tc,
+            sequenceReady,
+            contactEmail,
+            campaignId,
+            availableCampaigns,
+            isNew,
+            modalTitle,
+            modalSubTitle,
+            entityAware,
+            handleCampaignSelection,
+            handleRecipientSelection,
+            onAddAction,
+            onClose,
+        };
     },
 });

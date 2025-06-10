@@ -5,9 +5,9 @@
     }
 
     .sw-modal__footer {
-        justify-content: end;
-        align-items: center;
-        display: flex;
+        justify-content: end !important;
+        align-items: center !important;
+        display: flex !important;
 
         .pull-left {
             margin-right: auto;
@@ -48,4 +48,3 @@
         }
     }
 }
-

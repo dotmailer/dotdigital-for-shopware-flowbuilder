@@ -73,7 +73,6 @@ class SmsConsentCaptureController extends StorefrontController
         defaults: [
             '_loginRequired' => true,
             '_noStore' => true,
-            'XmlHttpRequest' => true,
         ],
         methods: ['GET']
     )]

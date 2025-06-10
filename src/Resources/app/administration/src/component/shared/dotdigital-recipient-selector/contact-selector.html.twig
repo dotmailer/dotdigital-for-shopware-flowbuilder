@@ -1,12 +1,12 @@
 <span>
     {% block sw_flow_mail_send_modal_recipient %}
     <sw-single-select
-        v-model="mailRecipient"
+        v-model:value="mailRecipient"
         class="sw-flow-mail-send-modal__recipient"
         :options="recipientOptions"
         :label="$tc('sw-flow.shared.recipient-selector.fields.recipients.label')"
         :placeholder="$tc('sw-flow.modals.mail.placeholderRecipient')"
-        @change="onChangeRecipient"
+        @update:value="onChangeRecipient"
     />
     <small
         v-if="mailRecipientDescription"

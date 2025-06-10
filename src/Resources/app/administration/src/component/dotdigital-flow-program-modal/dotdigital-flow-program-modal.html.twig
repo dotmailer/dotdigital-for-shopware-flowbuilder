@@ -14,7 +14,7 @@
             @selected-recipient="handleRecipientSelection"
         />
         <sw-single-select
-            v-model="programId"
+            v-model:value="programId"
             class="sw-flow-mail-send-modal__select"
             :is-loading="!sequenceReady"
             :disabled="!sequenceReady"

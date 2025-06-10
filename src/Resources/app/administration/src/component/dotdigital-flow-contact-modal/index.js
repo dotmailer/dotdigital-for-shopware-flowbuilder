@@ -1,11 +1,10 @@
+import { ref, computed, onMounted, nextTick, inject, getCurrentInstance } from 'vue';
 import template from './dotdigital-flow-contact-modal.html.twig';
 import '../shared/scss/dd-flow-modal.scss';
 
 const { Component, Mixin } = Shopware;
-
-Component.register('dotdigital-flow-contact-modal', { // eslint-disable-line
+Component.register('dotdigital-flow-contact-modal', {
     template,
-    inject: ['DotdigitalApiService'],
     mixins: [Mixin.getByName('notification')],
     props: {
         sequence: {
@@ -13,42 +12,41 @@ Component.register('dotdigital-flow-contact-modal', { // eslint-disable-line
             required: true,
         },
     },
-    data() {
-        return {
-            sequenceReady: false,
-            addressBookList: [],
-            dataFieldList: [],
-            contactEmail: null,
-            addressBook: null,
-            dataFields: [],
-            contactOptIn: false,
-            resubscribe: false,
-        };
-    },
 
-    computed: {
+    emits: ['process-finish', 'modal-close'],
 
-        /**
-         * Get and mutate address book list
-         * @returns {*[]}
-         */
-        availableAddressBooks() {
-            return this.addressBookList.map((addressBook) => {
+    setup(props, { emit }) {
+        // Get services via inject
+        const DotdigitalApiService = inject('DotdigitalApiService');
+        // Use current instance for notification service
+        const { proxy } = getCurrentInstance();
+        // Shopware's translation service
+        const $tc = (key, ...args) => Shopware.Snippet.tc(key, ...args);
+
+        // Reactive state
+        const sequenceReady = ref(false);
+        const addressBookList = ref([]);
+        const dataFieldList = ref([]);
+        const contactEmail = ref(null);
+        const addressBook = ref(null);
+        const dataFields = ref([]);
+        const contactOptIn = ref(false);
+        const resubscribe = ref(false);
+
+        // Computed properties
+        const availableAddressBooks = computed(() => {
+            return addressBookList.value.map((addressBookOption) => {
                 return {
-                    value: addressBook.id,
-                    label: `${addressBook.name}`,
+                    value: addressBookOption.id,
+                    label: `${addressBookOption.name}`,
                 };
             }).filter((addressBookOption) => {
                 return addressBookOption.label !== 'Test';
             });
-        },
+        });
 
-        /**
-         * Get and mutate data filed list
-         * @returns {*}
-         */
-        availableDataFields() {
-            return this.dataFieldList
+        const availableDataFields = computed(() => {
+            return dataFieldList.value
                 .map((dataField) => {
                     return {
                         label: dataField.name,
@@ -58,140 +56,109 @@ Component.register('dotdigital-flow-contact-modal', { // eslint-disable-line
                         },
                     };
                 });
-        },
+        });
 
-        /**
-         * Is this a new flow action?
-         * @returns {boolean}
-         */
-        isNew() {
-            return !this.sequence?.id;
-        },
+        const isNew = computed(() => !props.sequence?.id);
 
-        /**
-         * Get help link
-         * @returns {string}
-         */
-        helpLink() {
-            return 'https://support.dotdigital.com/hc/en-gb/articles/8472407231762';
-        },
+        const helpLink = computed(() => 'https://support.dotdigital.com/hc/en-gb/articles/8472407231762');
 
-        /**
-         * Get title of modal
-         * @returns {*}
-         */
-        modalTitle() {
-            return this.$tc('sw-flow.actions.contact.title');
-        },
+        const modalTitle = computed(() => $tc('sw-flow.actions.contact.title'));
 
-        /**
-         * Get subtitle of modal
-         * @returns {*}
-         */
-        modalSubTitle() {
-            return this.$tc('sw-flow.actions.contact.subtitle');
-        },
+        const modalSubTitle = computed(() => $tc('sw-flow.actions.contact.subtitle'));
 
-        /**
-         * Get recipient aware of the current sequence
-         * @returns {string[]}
-         */
-        entityAware() {
-            return [
-                'CustomerAware',
-                'UserAware',
-                'OrderAware',
-                'CustomerGroupAware',
-            ];
-        },
-    },
+        const entityAware = computed(() => [
+            'CustomerAware',
+            'UserAware',
+            'OrderAware',
+            'CustomerGroupAware',
+        ]);
 
-    /**
-     * Called component create life cycle hook
-     */
-    created() {
-        this.createdComponent()
-            .finally(() => {
-                this.sequenceReady = true;
-            })
-            .catch((error) => {
-                this.createNotificationError({
-                    title: this.$tc('Error'),
-                    message: error.message,
-                });
-            });
-    },
+        // Methods
+        const handleRecipientSelection = (event) => {
+            contactEmail.value = event.payload;
+        };
 
-    methods: {
+        const handleAddressBookSelection = (addressBookId) => {
+            addressBook.value = addressBookId;
+        };
 
-        /**
-         * handle update event from recipient component
-         * @param event
-         */
-        handleRecipientSelection(event) {
-            this.contactEmail = event.payload;
-        },
+        const handleDataFieldSelection = (event) => {
+            dataFields.value = event.payload;
+        };
 
-        /**
-         * handle update event from address book component
-         * @param addressBookId
-         */
-        handleAddressBookSelection(addressBookId) {
-            this.addressBook = addressBookId;
-        },
-
-        /**
-         * handle update event from data field component
-         * @param event
-         */
-        handleDataFieldSelection(event) {
-            this.dataFields = event.payload;
-        },
-
-        /**
-         * Shopware sequence hook for created component
-         */
-        async createdComponent() {
-            const { config } = this.sequence;
-            if (!this.isNew) {
-                this.contactEmail = config.recipient;
-                this.addressBook = config.addressBook;
-                this.dataFields = config.dataFields;
-                this.contactOptIn = config.contactOptIn;
-                this.resubscribe = config.resubscribe;
+        const createdComponent = async () => {
+            const { config } = props.sequence;
+            if (!isNew.value) {
+                contactEmail.value = config.recipient;
+                addressBook.value = config.addressBook;
+                dataFields.value = config.dataFields;
+                contactOptIn.value = config.contactOptIn;
+                resubscribe.value = config.resubscribe;
             }
 
-            this.dataFieldList = await this.DotdigitalApiService.getDataFields();
-            this.addressBookList = await this.DotdigitalApiService.getAddressBooks();
-            return this.sequence;
-        },
+            dataFieldList.value = await DotdigitalApiService.getDataFields();
+            addressBookList.value = await DotdigitalApiService.getAddressBooks();
+            return props.sequence;
+        };
 
-        /**
-         * Shopware sequence hook to do all the things
-         */
-        onAddAction() {
+        const onAddAction = () => {
             const sequence = {
-                ...this.sequence,
+                ...props.sequence,
                 config: {
-                    ...this.sequence.config,
-                    addressBook: this.addressBook,
-                    dataFields: this.dataFields,
-                    recipient: this.contactEmail,
-                    contactOptIn: this.contactOptIn,
-                    resubscribe: this.resubscribe,
+                    ...props.sequence.config,
+                    addressBook: addressBook.value,
+                    dataFields: dataFields.value,
+                    recipient: contactEmail.value,
+                    contactOptIn: contactOptIn.value,
+                    resubscribe: resubscribe.value,
                 },
             };
 
-            this.$nextTick(() => {
-                this.$emit('process-finish', sequence);
+            nextTick(() => {
+                emit('process-finish', sequence);
             });
-        },
+        };
 
-        /**
-         * On Modal closed event hook
-         */
-        onClose() {
-            this.$emit('modal-close');
-        },
+        const onClose = () => {
+            emit('modal-close');
+        };
+
+        // Lifecycle hook
+        onMounted(() => {
+            sequenceReady.value = false;
+
+            createdComponent()
+                .finally(() => {
+                    sequenceReady.value = true;
+                })
+                .catch((error) => {
+                    proxy.createNotificationError({
+                        title: $tc('Error'),
+                        message: error.message,
+                    });
+                });
+        });
+
+        return {
+            $tc,
+            sequenceReady,
+            contactEmail,
+            addressBook,
+            dataFields,
+            contactOptIn,
+            resubscribe,
+            availableAddressBooks,
+            availableDataFields,
+            isNew,
+            helpLink,
+            modalTitle,
+            modalSubTitle,
+            entityAware,
+            handleRecipientSelection,
+            handleAddressBookSelection,
+            handleDataFieldSelection,
+            onAddAction,
+            onClose,
+        };
     },
 });

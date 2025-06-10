@@ -15,7 +15,7 @@
 
     {% block dotdigital_flowbuilder_plugin_modal_content %}
         <sw-single-select
-            v-model="campaignId"
+            v-model:value="campaignId"
             class="sw-flow-mail-send-modal__select"
             :is-loading="!sequenceReady"
             :disabled="!sequenceReady"

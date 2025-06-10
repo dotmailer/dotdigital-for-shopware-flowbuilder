@@ -18,12 +18,14 @@
         <template #column-key="{ item, column, isInlineEdit, compact }">
             <sw-single-select
                 v-if="isInlineEdit"
-                v-model="item.opt.dataFieldSelection"
+                v-model:value="item.opt.dataFieldSelection"
+                :labelProperty="'label'"
+                :valueProperty="'value.name'"
                 class="sw-flow-data-field-modal__select"
                 :options="availableDataFieldOptions"
                 :size="compact ? 'small' : 'default'"
                 :placeholder="$tc('sw-flow.shared.data-field-selector.grid.columns.key.placeholder')"
-                @change="handleDataFieldSelection"
+                @update:value="handleDataFieldSelection"
             />
         </template>
         <template #column-type="{ item, column, isInlineEdit, compact }">
@@ -38,7 +40,7 @@
         <template #column-value="{ item, column, isInlineEdit, compact }">
             <sw-text-field
                 v-if="isInlineEdit"
-                v-model="selectedDataField.value"
+                v-model:value="selectedDataField.value"
                 class="sw-flow-mail-send-modal__dataField-email ddg-custom-dataField-email"
                 :disabled="!selectedDataField?.type"
                 :size="compact ? 'small' : 'default'"
