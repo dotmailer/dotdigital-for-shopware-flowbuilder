@@ -8,7 +8,7 @@
             <argument type="service" id="Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer" />
             <argument type="service" id="Shopware\Core\Framework\Webhook\BusinessEventEncoder" />
             <argument type="service" id="Doctrine\DBAL\Connection" />
-            <argument type="service" id="Dotdigital\Flow\Util\DotdigitalLogger"/>
+            <argument type="service" id="monolog.logger.dotdigital"/>
         </service>
     </services>
 </container>
