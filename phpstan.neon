@@ -5,3 +5,5 @@ parameters:
     paths:
         - ./src
     checkGenericClassInNonGenericObjectType: false
+    ignoreErrors:
+            - '#Property Dotdigital\\Flow\\Storefront\\Controller\\SmsConsentCaptureController::\$twig is never read, only written.#'
