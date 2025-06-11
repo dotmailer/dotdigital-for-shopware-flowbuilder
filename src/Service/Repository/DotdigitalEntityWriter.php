@@ -11,7 +11,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteResult;
 
 class DotdigitalEntityWriter extends VersionManager implements EntityWriterInterface
 {
-    // @phpstan-ignore-next-line-pattern 'Method Dotdigital\Flow\Service\Repository\DotdigitalEntityWriter::sync() has parameter $operations with no value type specified in iterable type array'
     public function sync(array $operations, WriteContext $context): WriteResult
     {
         throw new \Exception('Not allowed');
