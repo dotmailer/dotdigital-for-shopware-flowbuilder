@@ -29,8 +29,8 @@ class DotdigitalEntitySearcher implements EntitySearcherInterface
         $data = [];
 
         foreach ($entityCollection->getIterator() as $entity) {
-            $expression = sprintf('/%s/i', $criteria->getTerm());
-            $getter = sprintf('get%s', ucfirst($definition->getSearchKeyword()));
+            $expression = \sprintf('/%s/i', $criteria->getTerm());
+            $getter = \sprintf('get%s', ucfirst($definition->getSearchKeyword()));
             if (!preg_match($expression, $entity->$getter())) {
                 continue;
             }

@@ -129,11 +129,11 @@ class DotdigitalProgramActionTest extends TestCase
         $this->resolveContactDataFieldsMock = $this->createMock(ResolveContactDataFieldsInterface::class);
         $this->resolveProgramMock = $this->createMock(ResolveProgramInterface::class);
 
-        $this->resolveContactMock->expects(static::once())
+        $this->resolveContactMock->expects($this->once())
             ->method('resolve')
             ->willReturn($this->contactCollectionMock);
 
-        $this->resolveProgramMock->expects(static::once())
+        $this->resolveProgramMock->expects($this->once())
             ->method('resolve')
             ->willReturn($this->programCollectionMock);
 
@@ -163,11 +163,11 @@ class DotdigitalProgramActionTest extends TestCase
      */
     public function testDotdigitalProgramEnrolmentDefault(): void
     {
-        $this->flowMock->expects(static::once())
+        $this->flowMock->expects($this->once())
             ->method('getContext')
             ->willReturn($this->contextMock);
 
-        $this->contextMock->expects(static::once())
+        $this->contextMock->expects($this->once())
             ->method('getSource')
             ->willReturn($this->contextSourceMock);
 
@@ -179,11 +179,11 @@ class DotdigitalProgramActionTest extends TestCase
      */
     public function testDotdigitalProgramEnrolmentFromCustom(): void
     {
-        $this->flowMock->expects(static::once())
+        $this->flowMock->expects($this->once())
             ->method('getContext')
             ->willReturn($this->contextMock);
 
-        $this->contextMock->expects(static::once())
+        $this->contextMock->expects($this->once())
             ->method('getSource')
             ->willReturn($this->contextSourceMock);
 

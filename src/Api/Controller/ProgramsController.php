@@ -22,6 +22,7 @@ class ProgramsController extends AbstractController
     ) {
         $this->dotdigitalClientFactory = $dotdigitalClientFactory;
     }
+
     #[Route(
         '/api/dotdigital/programs',
         name: 'api.action.dotdigital.programs',

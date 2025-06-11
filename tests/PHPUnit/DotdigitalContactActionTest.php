@@ -85,31 +85,31 @@ class DotdigitalContactActionTest extends TestCase
      */
     public function testDotdigitalContactResubscribeHandler(): void
     {
-        $this->eventContactResolverMock->expects(static::atLeastOnce())
+        $this->eventContactResolverMock->expects($this->atLeastOnce())
             ->method('resolve')
             ->willReturn($this->generateContactCollection());
 
-        $this->eventAddressBookResolverMock->expects(static::atLeastOnce())
+        $this->eventAddressBookResolverMock->expects($this->atLeastOnce())
             ->method('resolve')
             ->willReturn($this->generateAddressBookCollection());
 
-        $this->resolveContactDataFieldsMock->expects(static::atLeastOnce())
+        $this->resolveContactDataFieldsMock->expects($this->atLeastOnce())
             ->method('resolve')
             ->willReturn($this->generateContactDataFieldCollection());
 
-        $this->flowMock->expects(static::atLeastOnce())
+        $this->flowMock->expects($this->atLeastOnce())
             ->method('getContext')
             ->willReturn($this->contextMock);
 
-        $this->contextMock->expects(static::atLeastOnce())
+        $this->contextMock->expects($this->atLeastOnce())
             ->method('getSource')
             ->willReturn($this->contextSourceMock);
 
-        $this->contextSourceMock->expects(static::atLeastOnce())
+        $this->contextSourceMock->expects($this->atLeastOnce())
             ->method('getSalesChannelId')
             ->willReturn('salesChannelId');
 
-        $this->flowMock->expects(static::once())
+        $this->flowMock->expects($this->once())
             ->method('getConfig')
             ->willReturn([
                 'recipient' => [

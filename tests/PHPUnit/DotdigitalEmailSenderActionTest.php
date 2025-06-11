@@ -96,15 +96,15 @@ class DotdigitalEmailSenderActionTest extends TestCase
         $this->eventCampaignResolverMock = $this->createMock(EventDataResolverContext::class);
         $this->eventPersonalisedValuesResolverMock = $this->createMock(EventDataResolverContext::class);
 
-        $this->eventCampaignResolverMock->expects(static::atLeastOnce())
+        $this->eventCampaignResolverMock->expects($this->atLeastOnce())
             ->method('resolve')
             ->willReturn($this->generateCampaignCollection());
 
-        $this->eventContactResolverMock->expects(static::atLeastOnce())
+        $this->eventContactResolverMock->expects($this->atLeastOnce())
             ->method('resolve')
             ->willReturn($this->generateContactCollection());
 
-        $this->eventPersonalisedValuesResolverMock->expects(static::atLeastOnce())
+        $this->eventPersonalisedValuesResolverMock->expects($this->atLeastOnce())
             ->method('resolve')
             ->willReturn($this->generateContactPersonalisationCollection());
 
@@ -121,11 +121,11 @@ class DotdigitalEmailSenderActionTest extends TestCase
      */
     public function testDotdigitalEmailSenderCustomerEmail(): void
     {
-        $this->flowMock->expects(static::once())
+        $this->flowMock->expects($this->once())
             ->method('getContext')
             ->willReturn($this->contextMock);
 
-        $this->contextMock->expects(static::once())
+        $this->contextMock->expects($this->once())
             ->method('getSource')
             ->willReturn($this->contextSourceMock);
 
@@ -137,11 +137,11 @@ class DotdigitalEmailSenderActionTest extends TestCase
      */
     public function testDotdigitalEmailSenderContactFormEmail(): void
     {
-        $this->flowMock->expects(static::once())
+        $this->flowMock->expects($this->once())
             ->method('getContext')
             ->willReturn($this->contextMock);
 
-        $this->contextMock->expects(static::once())
+        $this->contextMock->expects($this->once())
             ->method('getSource')
             ->willReturn($this->contextSourceMock);
 
@@ -153,11 +153,11 @@ class DotdigitalEmailSenderActionTest extends TestCase
      */
     public function testDotdigitalEmailSenderAdminEmail(): void
     {
-        $this->flowMock->expects(static::once())
+        $this->flowMock->expects($this->once())
             ->method('getContext')
             ->willReturn($this->contextMock);
 
-        $this->contextMock->expects(static::once())
+        $this->contextMock->expects($this->once())
             ->method('getSource')
             ->willReturn($this->contextSourceMock);
 

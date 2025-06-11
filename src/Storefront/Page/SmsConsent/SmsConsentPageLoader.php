@@ -50,7 +50,7 @@ class SmsConsentPageLoader
                 ->getByIdentifier($customer->getEmail());
         } catch (\Dotdigital\Exception\ResponseValidationException|\Dotdigital\Exception\ValidationException $e) {
             $this->logger->debug(
-                sprintf('Error fetching contact %s', $customer->getEmail()),
+                \sprintf('Error fetching contact %s', $customer->getEmail()),
                 [$e]
             );
             $contact = null;

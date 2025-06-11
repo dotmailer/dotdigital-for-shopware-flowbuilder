@@ -55,7 +55,7 @@ class DotdigitalEntityReader implements EntityReaderInterface
             if (method_exists($entity, 'set' . ucfirst($key))) {
                 if ($key === 'id') {
                     /** @phpstan-ignore-next-line-pattern 'Parameter #2 ...$values of function sprintf expects bool|float|int|string|null, callable given.' */
-                    $value = sprintf('%s', $value);
+                    $value = \sprintf('%s', $value);
                 }
                 $entity->{'set' . ucfirst($key)}($value);
                 $visibilityProperties[] = $key;

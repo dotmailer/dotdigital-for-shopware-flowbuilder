@@ -9,11 +9,11 @@ use Dotdigital\Flow\Service\EventDataResolver\ResolveAddressBookInterface;
 use Dotdigital\Flow\Service\EventDataResolver\ResolveContactDataFieldsInterface;
 use Dotdigital\Flow\Service\EventDataResolver\ResolveContactInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Flow\Dispatching\Action\FlowAction;
 use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Event\MailAware;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Psr\Log\LoggerInterface;
 
 class DotdigitalContactAction extends FlowAction implements EventSubscriberInterface
 {
@@ -72,7 +72,7 @@ class DotdigitalContactAction extends FlowAction implements EventSubscriberInter
      */
     public function handleFlow(StorableFlow $flow): void
     {
-        try{
+        try {
             $flowConfig = $flow->getConfig();
 
             $contact = $this->resolveContact->resolve($flow)->first();

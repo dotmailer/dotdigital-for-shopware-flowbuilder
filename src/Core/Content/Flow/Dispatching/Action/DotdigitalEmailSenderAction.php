@@ -10,11 +10,11 @@ use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
 use Dotdigital\Flow\Service\EventDataResolver\ResolveCampaignInterface;
 use Dotdigital\Flow\Service\EventDataResolver\ResolveContactInterface;
 use Dotdigital\Flow\Service\EventDataResolver\ResolvePersonalisedValuesInterface;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Flow\Dispatching\Action\FlowAction;
 use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Event\MailAware;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Psr\Log\LoggerInterface;
 
 class DotdigitalEmailSenderAction extends FlowAction implements EventSubscriberInterface
 {
@@ -91,7 +91,7 @@ class DotdigitalEmailSenderAction extends FlowAction implements EventSubscriberI
         } catch (\Throwable $e) {
             $this->logger->error('DotdigitalEmailSenderAction failed', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
             throw $e;
         }

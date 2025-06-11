@@ -6,7 +6,6 @@ namespace Dotdigital\Flow\Api\Controller;
 use Dotdigital\Flow\Core\Framework\Traits\InteractsWithResponseTrait;
 use Dotdigital\Flow\Service\Client\AbstractClient;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
-use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;

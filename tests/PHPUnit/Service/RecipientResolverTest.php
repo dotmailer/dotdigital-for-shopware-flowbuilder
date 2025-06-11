@@ -74,11 +74,11 @@ class RecipientResolverTest extends TestCase
             'data' => ['chaz@emailsim.io', 'test@test.test'],
         ];
 
-        $this->businessEventEncoderMock->expects(static::exactly(2))
+        $this->businessEventEncoderMock->expects($this->exactly(2))
             ->method('encodeData')
             ->willReturn([]);
 
-        $this->rendererMock->expects(static::exactly(2))
+        $this->rendererMock->expects($this->exactly(2))
             ->method('render')
             ->willReturnOnConsecutiveCalls(
                 $recipients['data'][0],
@@ -99,7 +99,7 @@ class RecipientResolverTest extends TestCase
             ['email' => 'bossman@emailsim.io'],
         ];
 
-        $this->connectionMock->expects(static::once())
+        $this->connectionMock->expects($this->once())
             ->method('fetchAllAssociative')
             ->willReturn($admins);
 
@@ -112,7 +112,7 @@ class RecipientResolverTest extends TestCase
             'type' => 'contactFormMail',
         ];
 
-        $this->flowMock->expects(static::once())
+        $this->flowMock->expects($this->once())
             ->method('getData')
             ->with('contactFormData')
             ->willReturn([
@@ -130,12 +130,12 @@ class RecipientResolverTest extends TestCase
 
         $mailRecipientStructMock = $this->createMock(MailRecipientStruct::class);
 
-        $this->flowMock->expects(static::once())
+        $this->flowMock->expects($this->once())
             ->method('getData')
             ->with('mailStruct')
             ->willReturn($mailRecipientStructMock);
 
-        $mailRecipientStructMock->expects(static::once())
+        $mailRecipientStructMock->expects($this->once())
             ->method('getRecipients')
             ->willReturn(['chaz@emailsim.io' => []]);
 
