@@ -32,7 +32,7 @@
 
         {% block sw_event_action_detail_recipients_grid_column_email %}
         <template #column-email="{ item, column, isInlineEdit, compact }">
-            <sw-text-field
+            <sw-email-field
                 v-if="isInlineEdit"
                 v-model="item.email"
                 class="sw-flow-mail-send-modal__recipient-email ddg-custom-recipient-email"
