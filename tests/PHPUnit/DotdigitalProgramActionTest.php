@@ -154,7 +154,8 @@ class DotdigitalProgramActionTest extends TestCase
             $dotdigitalClientFactoryMock,
             $this->resolveContactMock,
             $this->resolveContactDataFieldsMock,
-            $this->resolveProgramMock
+            $this->resolveProgramMock,
+            $this->loggerMock
         );
     }
 

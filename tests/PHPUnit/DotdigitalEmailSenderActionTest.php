@@ -13,6 +13,7 @@ use Dotdigital\Tests\Traits\InteractWithCampaignsTrait;
 use Dotdigital\Tests\Traits\InteractWithContactPersonalisationTrait;
 use Dotdigital\Tests\Traits\InteractWithContactsTrait;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Api\Context\ContextSource;
 use Shopware\Core\Framework\Context;
@@ -79,6 +80,11 @@ class DotdigitalEmailSenderActionTest extends TestCase
      */
     private $eventPersonalisedValuesResolverMock;
 
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|LoggerInterface
+     */
+    private $loggerMock;
+
     protected function setUp(): void
     {
         BypassFinals::enable();
@@ -95,6 +101,7 @@ class DotdigitalEmailSenderActionTest extends TestCase
         $this->eventContactResolverMock = $this->createMock(EventDataResolverContext::class);
         $this->eventCampaignResolverMock = $this->createMock(EventDataResolverContext::class);
         $this->eventPersonalisedValuesResolverMock = $this->createMock(EventDataResolverContext::class);
+        $this->loggerMock = $this->createMock(LoggerInterface::class);
 
         $this->eventCampaignResolverMock->expects($this->atLeastOnce())
             ->method('resolve')
@@ -112,7 +119,8 @@ class DotdigitalEmailSenderActionTest extends TestCase
             $this->dotdigitalClientFactoryMock,
             $this->eventContactResolverMock,
             $this->eventCampaignResolverMock,
-            $this->eventPersonalisedValuesResolverMock
+            $this->eventPersonalisedValuesResolverMock,
+            $this->loggerMock
         );
     }
 

@@ -13,6 +13,7 @@ use Dotdigital\Tests\Traits\InteractWithContactDataFieldsTrait;
 use Dotdigital\Tests\Traits\InteractWithContactsTrait;
 use Dotdigital\Tests\Traits\UtilitiesTrait;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Api\Context\ContextSource;
 use Shopware\Core\Framework\Context;
@@ -59,6 +60,11 @@ class DotdigitalContactActionTest extends TestCase
      */
     private $resolveContactDataFieldsMock;
 
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|LoggerInterface
+     */
+    private $loggerMock;
+
     protected function setUp(): void
     {
         BypassFinals::enable();
@@ -71,11 +77,14 @@ class DotdigitalContactActionTest extends TestCase
         $this->eventContactResolverMock = $this->createMock(EventDataResolverContext::class);
         $this->eventAddressBookResolverMock = $this->createMock(EventDataResolverContext::class);
         $this->resolveContactDataFieldsMock = $this->createMock(EventDataResolverContext::class);
+        $this->loggerMock = $this->createMock(LoggerInterface::class);
+
         $this->dotdigitalContactAction = new DotdigitalContactAction(
             $dotdigitalClientFactoryMock,
             $this->eventAddressBookResolverMock,
             $this->eventContactResolverMock,
-            $this->resolveContactDataFieldsMock
+            $this->resolveContactDataFieldsMock,
+            $this->loggerMock
         );
     }
 
