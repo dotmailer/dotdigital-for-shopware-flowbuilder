@@ -107,15 +107,8 @@ class DotdigitalContactActionTest extends TestCase
             ->willReturn($this->generateContactDataFieldCollection());
 
         $this->flowMock->expects($this->atLeastOnce())
-            ->method('getContext')
-            ->willReturn($this->contextMock);
-
-        $this->contextMock->expects($this->atLeastOnce())
-            ->method('getSource')
-            ->willReturn($this->contextSourceMock);
-
-        $this->contextSourceMock->expects($this->atLeastOnce())
-            ->method('getSalesChannelId')
+            ->method('getData')
+            ->with('salesChannelId')
             ->willReturn('salesChannelId');
 
         $this->flowMock->expects($this->once())

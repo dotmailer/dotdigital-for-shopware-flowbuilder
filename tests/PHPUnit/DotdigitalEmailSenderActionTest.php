@@ -129,13 +129,10 @@ class DotdigitalEmailSenderActionTest extends TestCase
      */
     public function testDotdigitalEmailSenderCustomerEmail(): void
     {
-        $this->flowMock->expects($this->once())
-            ->method('getContext')
-            ->willReturn($this->contextMock);
-
-        $this->contextMock->expects($this->once())
-            ->method('getSource')
-            ->willReturn($this->contextSourceMock);
+        $this->flowMock->expects($this->atLeastOnce())
+            ->method('getData')
+            ->with('salesChannelId')
+            ->willReturn('salesChannelId');
 
         $this->dotdigitalSenderAction->handleFlow($this->flowMock);
     }
@@ -145,13 +142,10 @@ class DotdigitalEmailSenderActionTest extends TestCase
      */
     public function testDotdigitalEmailSenderContactFormEmail(): void
     {
-        $this->flowMock->expects($this->once())
-            ->method('getContext')
-            ->willReturn($this->contextMock);
-
-        $this->contextMock->expects($this->once())
-            ->method('getSource')
-            ->willReturn($this->contextSourceMock);
+        $this->flowMock->expects($this->atLeastOnce())
+            ->method('getData')
+            ->with('salesChannelId')
+            ->willReturn('salesChannelId');
 
         $this->dotdigitalSenderAction->handleFlow($this->flowMock);
     }
@@ -161,13 +155,10 @@ class DotdigitalEmailSenderActionTest extends TestCase
      */
     public function testDotdigitalEmailSenderAdminEmail(): void
     {
-        $this->flowMock->expects($this->once())
-            ->method('getContext')
-            ->willReturn($this->contextMock);
-
-        $this->contextMock->expects($this->once())
-            ->method('getSource')
-            ->willReturn($this->contextSourceMock);
+        $this->flowMock->expects($this->atLeastOnce())
+            ->method('getData')
+            ->with('salesChannelId')
+            ->willReturn('salesChannelId');
 
         $this->dotdigitalSenderAction->handleFlow($this->flowMock);
     }

@@ -164,13 +164,10 @@ class DotdigitalProgramActionTest extends TestCase
      */
     public function testDotdigitalProgramEnrolmentDefault(): void
     {
-        $this->flowMock->expects($this->once())
-            ->method('getContext')
-            ->willReturn($this->contextMock);
-
-        $this->contextMock->expects($this->once())
-            ->method('getSource')
-            ->willReturn($this->contextSourceMock);
+        $this->flowMock->expects($this->atLeastOnce())
+            ->method('getData')
+            ->with('salesChannelId')
+            ->willReturn('salesChannelId');
 
         $this->dotdigitalProgramAction->handleFlow($this->flowMock);
     }
@@ -180,13 +177,10 @@ class DotdigitalProgramActionTest extends TestCase
      */
     public function testDotdigitalProgramEnrolmentFromCustom(): void
     {
-        $this->flowMock->expects($this->once())
-            ->method('getContext')
-            ->willReturn($this->contextMock);
-
-        $this->contextMock->expects($this->once())
-            ->method('getSource')
-            ->willReturn($this->contextSourceMock);
+        $this->flowMock->expects($this->atLeastOnce())
+            ->method('getData')
+            ->with('salesChannelId')
+            ->willReturn('salesChannelId');
 
         $this->dotdigitalProgramAction->handleFlow($this->flowMock);
     }
