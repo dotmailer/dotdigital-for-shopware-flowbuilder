@@ -37,9 +37,14 @@ Component.register('dotdigital-recipient-selector', {
     emits: ['selected-recipient'],
 
     setup(props, { emit }) {
+        // Access triggerEvent from Shopware Store
         const triggerEvent = computed(() => {
             try {
-                return Shopware.Store.get('swFlow')?.triggerEvent;
+                if (Shopware.Store && Shopware.Store.list().includes('swFlow')) {
+                    return Shopware.Store.get('swFlow')?.triggerEvent;
+                }
+                // Fallback for older versions of Shopware
+                return Shopware.State.get('swFlowState')?.triggerEvent;
             } catch (e) {
                 console.error('Error accessing flow state:', e);
                 return undefined;

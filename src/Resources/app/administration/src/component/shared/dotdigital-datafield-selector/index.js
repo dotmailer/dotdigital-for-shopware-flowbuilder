@@ -68,16 +68,6 @@ Component.register('dotdigital-data-field-selector', {
             'CustomerGroupAware',
         ];
 
-        // Access triggerEvent from Shopware Store
-        const triggerEvent = computed(() => {
-            try {
-                return Shopware.Store.get('swFlow')?.triggerEvent;
-            } catch (e) {
-                console.error('Error accessing flow state:', e);
-                return undefined;
-            }
-        });
-
         // Computed properties
         const isLimitReached = computed(() => {
             return props.limit < dataFieldsGridData.value.length
@@ -307,7 +297,6 @@ Component.register('dotdigital-data-field-selector', {
             selectedDataField,
             dataFieldGridError,
             dataFieldsGridData,
-            triggerEvent,
             isLimitReached,
             availableDataFieldOptions,
             entityAware,
