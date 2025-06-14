@@ -1,10 +1,11 @@
-import { ref, computed, onMounted, nextTick, inject, getCurrentInstance } from 'vue';
 import template from './dotdigital-flow-program-modal.html.twig';
 import '../shared/scss/dd-flow-modal.scss';
 
 const { Component, Mixin } = Shopware;
-Component.register('dotdigital-flow-program-modal', {
+
+Component.register('dotdigital-flow-program-modal', { // eslint-disable-line
     template,
+    inject: ['DotdigitalApiService'],
     mixins: [Mixin.getByName('notification')],
     props: {
         sequence: {
@@ -12,37 +13,38 @@ Component.register('dotdigital-flow-program-modal', {
             required: true,
         },
     },
+    data() {
+        return {
+            sequenceReady: false,
+            programList: [],
+            dataFieldList: [],
+            contactEmail: null,
+            programId: null,
+            dataFields: [],
+        };
+    },
 
-    emits: ['process-finish', 'modal-close'],
+    computed: {
 
-    setup(props, { emit }) {
-        // Get services via inject
-        const DotdigitalApiService = inject('DotdigitalApiService');
-        // Use current instance for notification service
-        const { proxy } = getCurrentInstance();
-        // Shopware's translation service
-        const $tc = (key, ...args) => Shopware.Snippet.tc(key, ...args);
-
-        // Reactive state
-        const sequenceReady = ref(false);
-        const programList = ref([]);
-        const dataFieldList = ref([]);
-        const contactEmail = ref(null);
-        const programId = ref(null);
-        const dataFields = ref([]);
-
-        // Computed properties
-        const availablePrograms = computed(() => {
-            return programList.value.map((program) => {
+        /**
+         * Get and mutate program list
+         * @returns {*[]}
+         */
+        availablePrograms() {
+            return this.programList.map((program) => {
                 return {
                     value: program.id,
                     label: `${program.name} (${program.status})`,
                 };
             });
-        });
+        },
 
-        const availableDataFields = computed(() => {
-            return dataFieldList.value
+        /**
+         * Get and mutate data filed list
+         * @returns {*}
+         */
+        availableDataFields() {
+            return this.dataFieldList
                 .map((dataField) => {
                     return {
                         label: dataField.name,
@@ -52,103 +54,136 @@ Component.register('dotdigital-flow-program-modal', {
                         },
                     };
                 });
-        });
+        },
 
-        const isNew = computed(() => !props.sequence?.id);
+        /**
+         * Is this a new flow action?
+         * @returns {boolean}
+         */
+        isNew() {
+            return !this.sequence?.id;
+        },
 
-        const helpLink = computed(() => 'https://support.dotdigital.com/hc/en-gb/articles/9682026340498');
+        /**
+         * Get help link
+         * @returns {string}
+         */
+        helpLink() {
+            return 'https://support.dotdigital.com/hc/en-gb/articles/9682026340498';
+        },
 
-        const modalTitle = computed(() => $tc('sw-flow.actions.program.title'));
+        /**
+         * Get title of modal
+         * @returns {*}
+         */
+        modalTitle() {
+            return this.$tc('sw-flow.actions.program.title');
+        },
 
-        const modalSubTitle = computed(() => $tc('sw-flow.actions.program.subtitle'));
+        /**
+         * Get subtitle of modal
+         * @returns {*}
+         */
+        modalSubTitle() {
+            return this.$tc('sw-flow.actions.program.subtitle');
+        },
 
-        const entityAware = computed(() => [
-            'CustomerAware',
-            'UserAware',
-            'OrderAware',
-            'CustomerGroupAware',
-        ]);
+        /**
+         * Get recipient aware of the current sequence
+         * @returns {string[]}
+         */
+        entityAware() {
+            return [
+                'CustomerAware',
+                'UserAware',
+                'OrderAware',
+                'CustomerGroupAware',
+            ];
+        },
+    },
 
-        // Methods
-        const handleRecipientSelection = (event) => {
-            contactEmail.value = event.payload;
-        };
+    /**
+     * Called component create life cycle hook
+     */
+    created() {
+        this.createdComponent()
+            .finally(() => {
+                this.sequenceReady = true;
+            })
+            .catch((error) => {
+                this.createNotificationError({
+                    title: this.$tc('Error'),
+                    message: error.message,
+                });
+            });
+    },
 
-        const handleProgramSelection = (selectedProgramId) => {
-            programId.value = selectedProgramId;
-        };
+    methods: {
 
-        const handleDataFieldSelection = (event) => {
-            dataFields.value = event.payload;
-        };
+        /**
+         * handle update event from recipient component
+         * @param event
+         */
+        handleRecipientSelection(event) {
+            this.contactEmail = event.payload;
+        },
 
-        const createdComponent = async () => {
-            const { config } = props.sequence;
-            if (!isNew.value) {
-                contactEmail.value = config.recipient;
-                programId.value = config.programId;
-                dataFields.value = config.dataFields;
+        /**
+         * handle update event from program component
+         * @param programId
+         */
+        handleProgramSelection(programId) {
+            this.programId = programId;
+        },
+
+        /**
+         * handle update event from data field component
+         * @param event
+         */
+        handleDataFieldSelection(event) {
+            this.dataFields = event.payload;
+        },
+
+        /**
+         * Shopware sequence hook for created component
+         */
+        async createdComponent() {
+            const { config } = this.sequence;
+            if (!this.isNew) {
+                this.contactEmail = config.recipient;
+                this.programId = config.programId;
+                this.dataFields = config.dataFields;
             }
 
-            dataFieldList.value = await DotdigitalApiService.getDataFields();
-            programList.value = await DotdigitalApiService.getPrograms();
-            return props.sequence;
-        };
+            this.dataFieldList = await this.DotdigitalApiService.getDataFields();
+            this.programList = await this.DotdigitalApiService.getPrograms();
+            return this.sequence;
+        },
 
-        const onAddAction = () => {
+        /**
+         * Shopware sequence hook to do all the things
+         */
+        onAddAction() {
             const sequence = {
-                ...props.sequence,
+                ...this.sequence,
                 config: {
-                    ...props.sequence.config,
-                    programId: programId.value,
-                    dataFields: dataFields.value,
-                    recipient: contactEmail.value,
+                    ...this.sequence.config,
+                    programId: this.programId,
+                    dataFields: this.dataFields,
+                    recipient: this.contactEmail,
                 },
             };
 
-            nextTick(() => {
-                emit('process-finish', sequence);
+            this.$nextTick(() => {
+                this.$emit('process-finish', sequence);
             });
-        };
+        },
 
-        const onClose = () => {
-            emit('modal-close');
-        };
-
-        // Lifecycle hook
-        onMounted(() => {
-            sequenceReady.value = false;
-
-            createdComponent()
-                .finally(() => {
-                    sequenceReady.value = true;
-                })
-                .catch((error) => {
-                    proxy.createNotificationError({
-                        title: $tc('Error'),
-                        message: error.message,
-                    });
-                });
-        });
-
-        return {
-            $tc,
-            sequenceReady,
-            contactEmail,
-            programId,
-            dataFields,
-            availablePrograms,
-            availableDataFields,
-            isNew,
-            helpLink,
-            modalTitle,
-            modalSubTitle,
-            entityAware,
-            handleRecipientSelection,
-            handleProgramSelection,
-            handleDataFieldSelection,
-            onAddAction,
-            onClose,
-        };
+        /**
+         * On Modal closed event hook
+         */
+        onClose() {
+            this.$emit('modal-close');
+        },
     },
 });

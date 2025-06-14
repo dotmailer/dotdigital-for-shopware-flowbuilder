@@ -22,7 +22,7 @@
             :options="availableCampaigns"
             :label="$tc('sw-flow.actions.campaign.fields.campaign.label')"
             :placeholder="$tc('sw-flow.actions.campaign.fields.campaign.placeholder')"
-            @change="handleCampaignSelection"
+            @update:value="handleCampaignSelection"
         />
         <small class="dd-description">
             {{ $tc('sw-flow.actions.campaign.fields.campaign.description') }}

@@ -1,13 +1,12 @@
-import { ref, computed, nextTick, onMounted, watch } from 'vue';
 import template from './datafield-selector.html.twig';
 import './datafield-selector.scss';
 
 const { Component, Utils } = Shopware;
+const { mapState } = Component.getComponentHelper();
 
-Component.register('dotdigital-data-field-selector', {
-    name: 'dotdigital-data-field-selector',
+Component.register('dotdigital-data-field-selector', {// eslint-disable-line
     template,
-
+    mixins: [],
     props: {
         unique: {
             type: Boolean,
@@ -46,125 +45,170 @@ Component.register('dotdigital-data-field-selector', {
             default: true,
         },
     },
+    data() {
+        return {
+            showDataFields: false,
+            selectedDataField: null,
+            dataFieldGridError: null,
+            dataFieldsGridData: [],
+            entityAwareness: [
+                'CustomerAware',
+                'UserAware',
+                'OrderAware',
+                'CustomerGroupAware',
+            ],
+        };
+    },
 
-    emits: ['selected-data-field'],
+    watch: {
+        loading: {
+            handler(value) {
+                if (!value) this.addDataField();
+            },
+        },
+    },
 
-    setup(props, { emit }) {
-        // Direct access to Shopware's translation service
-        const $tc = (key, ...args) => Shopware.Snippet.tc(key, ...args);
+    computed: {
 
-        // Reactive state
-        const dataFieldsGrid = ref(null);
-        const showDataFields = ref(false);
-        const selectedDataField = ref(null);
-        const dataFieldGridError = ref(null);
-        const dataFieldsGridData = ref([]);
+        /**
+         * Has max limit been reached
+         * @returns {boolean}
+         */
+        isLimitReached() {
+            return this.limit < this.dataFieldsGridData.length
+                || this.dataFieldsGridData.length >= this.dataFieldOptions.length;
+        },
 
-        // Constants
-        const entityAwareness = [
-            'CustomerAware',
-            'UserAware',
-            'OrderAware',
-            'CustomerGroupAware',
-        ];
+        /**
+         * Insure data fields are not duplicated
+         * @returns {*}
+         */
+        availableDataFieldOptions() {
+            if (!this.unique) return this.dataFieldOptions;
 
-        // Computed properties
-        const isLimitReached = computed(() => {
-            return props.limit < dataFieldsGridData.value.length
-                || dataFieldsGridData.value.length >= props.dataFieldOptions.length;
-        });
+            return this.dataFieldOptions.filter(dataFieldOption => {
+                const currentEditingKey = this.selectedDataField?.key;
 
-        const availableDataFieldOptions = computed(() => {
-            if (!props.unique) {
-                return props.dataFieldOptions;
-            }
-
-            // Filter out options that are already used in dataFieldsGridData
-            return props.dataFieldOptions.filter(dataFieldOption => {
-                const currentEditingKey = selectedDataField.value?.key;
-
-                return !dataFieldsGridData.value.some(dataField => {
+                return !this.dataFieldsGridData.some(dataField => {
                     // If this is the dataField we're currently editing, don't filter it out
                     if (currentEditingKey && dataField.key === currentEditingKey
-                        && dataField.id === selectedDataField.value?.id) {
+                        && dataField.id === this.selectedDataField?.id) {
                         return false;
                     }
                     return dataField.key === dataFieldOption.value.name && !dataField.isNew;
                 });
             });
-        });
+        },
 
-        const entityAware = computed(() => {
-            return [...props.aware, ...entityAwareness];
-        });
+        /**
+         * Get awareness of the current sequence
+         * @returns {*[]}
+         */
+        entityAware() {
+            return [...this.aware, ...this.entityAwareness];
+        },
 
-        const isNew = computed(() => {
-            return !dataFieldsGridData.value.length > 0;
-        });
+        /**
+         * Is new dataField entity?
+         * @returns {boolean}
+         */
+        isNew() {
+            return !this.dataFieldsGridData.length > 0;
+        },
 
-        const dataFieldColumns = computed(() => {
+        /**
+         * Get dataField columns
+         * @returns {[{property: string, inlineEdit: string, label: *}]}
+         */
+        dataFieldColumns() {
             return [
                 {
                     property: 'key',
-                    label: $tc('sw-flow.shared.data-field-selector.grid.columns.key.header'),
+                    label: this.$tc('sw-flow.shared.data-field-selector.grid.columns.key.header'),
                     inlineEdit: 'string',
                 },
                 {
                     property: 'type',
-                    label: $tc('sw-flow.shared.data-field-selector.grid.columns.type.header'),
+                    label: this.$tc('sw-flow.shared.data-field-selector.grid.columns.type.header'),
                     inlineEdit: 'string',
                 },
                 {
                     property: 'value',
-                    label: $tc('sw-flow.shared.data-field-selector.grid.columns.value.header'),
+                    label: this.$tc('sw-flow.shared.data-field-selector.grid.columns.value.header'),
                     inlineEdit: 'string',
                 },
             ];
-        });
+        },
 
-        // Methods
-        function handleDataFieldSelection(dataFieldName) {
+        ...mapState('swFlowState', ['triggerEvent']),
+
+    },
+
+    /**
+     * Called component create life cycle hook
+     */
+    created() {
+        this.createdComponent();
+    },
+
+    methods: {
+
+        /**
+         * Shopware sequence hook
+         */
+        createdComponent() {
+            this.addDataField();
+            this.dataFieldsGridData = [...this.dataFields];
+        },
+
+        /**
+         * Add dataField
+         */
+        handleDataFieldSelection(dataFieldName) {
             // Find the complete data field object from props.dataFieldOptions
-            const dataFieldOption = props.dataFieldOptions.find(option => option.value.name === dataFieldName);
+            const dataFieldOption = this.dataFieldOptions.find(option => option.value.name === dataFieldName);
 
             if (!dataFieldOption) {
                 return;
             }
 
             const dataField = dataFieldOption.value;
-
-            selectedDataField.value = {
-                ...selectedDataField.value,
-                key: dataField.name,
-                type: evaluateDataFieldTypeDescription(dataField.type),
+            this.selectedDataField = {
+                ...this.selectedDataField,
+                ...{ key: dataField.name },
+                ...{ type: this.evaluateDataFieldTypeDescription(dataField.type) },
             };
-        }
+        },
 
-        function emit$() {
-            emit('selected-data-field', {
-                payload: getDataFields(),
+        /**
+         * Filter dataFields and emit to parent component
+         */
+        emit() {
+            this.$emit('selected-data-field', {
+                payload: this.getDataFields(),
             });
-        }
+        },
 
-        function evaluateDataFieldTypeDescription(type = null) {
+        evaluateDataFieldTypeDescription(type = null) {
             if (!type) {
-                return $tc('sw-flow.shared.data-field-selector.grid.columns.type.placeholder');
+                return this.$tc('sw-flow.shared.data-field-selector.grid.columns.type.placeholder');
             }
-            return $tc(`sw-flow.shared.data-field-selector.grid.columns.type.values.${type.toLowerCase()}`);
-        }
+            return this.$tc(`sw-flow.shared.data-field-selector.grid.columns.type.values.${type.toLowerCase()}`);
+        },
 
-        function getDataFields() {
-            return dataFieldsGridData.value.filter(dataField => {
+        getDataFields() {
+            return this.dataFieldsGridData.filter(dataField => {
                 return dataField.key && dataField.value && !dataField.isNew;
             });
-        }
+        },
 
-        function addDataField() {
-            // Check if we've already reached the limit
-            if (isLimitReached.value) return;
-
+        /**
+         * Add new dataField to grid
+         */
+        addDataField() {
+            if (this.isLimitReached) return;
             // Check if there are any incomplete entries (with empty key or value)
-            const hasIncompleteEntries = dataFieldsGridData.value.some(dataField => {
+            const hasIncompleteEntries = this.dataFieldsGridData.some(dataField => {
                 return (!dataField.key || !dataField.value);
             });
 
@@ -172,9 +216,8 @@ Component.register('dotdigital-data-field-selector', {
             if (hasIncompleteEntries) {
                 return;
             }
-
             const newId = Utils.createId();
-            dataFieldsGridData.value.push({
+            this.dataFieldsGridData.push({
                 id: newId,
                 opt: {
                     dataFieldSelection: null,
@@ -185,131 +228,87 @@ Component.register('dotdigital-data-field-selector', {
                 type: null,
             });
 
-            const index = dataFieldsGridData.value.findIndex((item) => {
+            const index = this.dataFieldsGridData.findIndex((item) => {
                 return item.id === newId;
             });
 
-            nextTick(() => {
-                dataFieldsGrid.value.currentInlineEditId = newId;
-                dataFieldsGrid.value.enableInlineEdit();
-                selectedDataField.value = { ...dataFieldsGridData.value[index] };
+            this.$nextTick(() => {
+                this.$refs.dataFieldsGrid.currentInlineEditId = newId;
+                this.$refs.dataFieldsGrid.enableInlineEdit();
+                this.selectedDataField = { ...this.dataFieldsGridData[index] };
             });
-        }
+        },
 
-        function saveDataField(dataField) {
-            const index = dataFieldsGridData.value.findIndex((item) => {
+        /**
+         * Remove dataField from grid
+         * @param dataField
+         */
+        saveDataField(dataField) {
+            const index = this.dataFieldsGridData.findIndex((item) => {
                 return item.id === dataField.id;
             });
 
-            dataFieldsGridData.value[index] = {
-                ...dataFieldsGridData.value[index],
-                ...selectedDataField.value,
+            this.dataFieldsGridData[index] = {
+                ...this.dataFieldsGridData[index],
+                ...this.selectedDataField,
             };
 
             if (dataField.isNew) {
-                dataFieldsGridData.value[index].isNew = false;
+                this.dataFieldsGridData[index].isNew = false;
             }
 
-            addDataField();
-            emit$();
-        }
+            this.addDataField();
+            this.emit();
+        },
 
-        function cancelSaveDataField(dataField) {
+        /**
+         * Cancel edit of dataField
+         * @param dataField
+         */
+        cancelSaveDataField(dataField) {
             if (!dataField.isNew) {
-                const index = dataFieldsGridData.value.findIndex((item) => {
-                    return item.id === selectedDataField.value.id;
+                const index = this.dataFieldsGridData.findIndex((item) => {
+                    return item.id === this.selectedDataField.id;
                 });
 
                 // Reset data when saving is cancelled
-                dataFieldsGridData.value[index] = selectedDataField.value;
+                this.dataFieldsGridData[index] = this.selectedDataField;
             }
-            emit$();
-        }
+            this.emit();
+        },
 
-        function onEditDataField(item) {
-            if (dataFieldsGrid.value.currentInlineEditId) {
-                dataFieldsGrid.value.disableInlineEdit();
-            }
-
-            const index = dataFieldsGridData.value.findIndex((dataField) => {
+        /**
+         * Update dataField data
+         * @param item
+         */
+        onEditDataField(item) {
+            const index = this.dataFieldsGridData.findIndex((dataField) => {
                 return item.id === dataField.id;
             });
 
-            dataFieldsGridData.value[index] = { ...item, errorMail: null };
+            this.dataFieldsGridData[index] = { ...item, errorMail: null };
+            this.$refs.dataFieldsGrid.currentInlineEditId = item.id;
+            this.$refs.dataFieldsGrid.enableInlineEdit();
+            this.selectedDataField = { ...item };
+            this.emit();
+        },
 
-            nextTick(() => {
-                dataFieldsGrid.value.currentInlineEditId = item.id;
-                dataFieldsGrid.value.enableInlineEdit();
-                selectedDataField.value = { ...item };
-                emit$();
-            });
-        }
+        /**
+         * Remove dataField from grid
+         * @param itemIndex
+         */
+        onDeleteDataField(itemIndex) {
+            this.dataFieldsGridData.splice(itemIndex, 1);
+            this.emit();
+        },
 
-        function onDeleteDataField(itemIndex) {
-            dataFieldsGridData.value.splice(itemIndex, 1);
-            emit$();
-        }
-
-        function allowDeleteDataField(itemIndex) {
-            return itemIndex !== dataFieldsGridData.value.length - 1;
-        }
-
-        function initializeComponent() {
-            // Clear existing data to prevent duplication
-            dataFieldsGridData.value = [];
-
-            // If we have saved dataFields, add them to the grid
-            if (props.dataFields && props.dataFields.length > 0) {
-                dataFieldsGridData.value = props.dataFields.map(field => {
-                    return {
-                        ...field,
-                        id: field.id || Utils.createId(),
-                        isNew: false,
-                        opt: {
-                            dataFieldSelection: field.key,
-                        },
-                    };
-                });
-            }
-
-            // Always add a new empty row for additional entries
-            addDataField();
-        }
-
-        // Watch for loading state changes
-        watch(() => props.loading, (value) => {
-            if (!value) {
-                initializeComponent();
-            }
-        });
-
-        // Initial setup on mount
-        onMounted(() => {
-            if (!props.loading) {
-                initializeComponent();
-            }
-        });
-
-        return {
-            $tc,
-            dataFieldsGrid,
-            showDataFields,
-            selectedDataField,
-            dataFieldGridError,
-            dataFieldsGridData,
-            isLimitReached,
-            availableDataFieldOptions,
-            entityAware,
-            isNew,
-            dataFieldColumns,
-            handleDataFieldSelection,
-            addDataField,
-            saveDataField,
-            cancelSaveDataField,
-            onEditDataField,
-            onDeleteDataField,
-            allowDeleteDataField,
-            evaluateDataFieldTypeDescription,
-        };
+        /**
+         * Can delete dataField
+         * @param itemIndex
+         * @returns {boolean}
+         */
+        allowDeleteDataField(itemIndex) {
+            return itemIndex !== this.dataFieldsGridData.length - 1;
+        },
     },
 });
