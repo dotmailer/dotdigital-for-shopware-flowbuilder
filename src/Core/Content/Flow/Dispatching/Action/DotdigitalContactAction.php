@@ -74,7 +74,6 @@ class DotdigitalContactAction extends FlowAction implements EventSubscriberInter
     {
         try {
             $flowConfig = $flow->getConfig();
-
             $contact = $this->resolveContact->resolve($flow)->first();
             $contactDataFieldsCollection = $this->resolveContactDataFields->resolve($flow);
             $contact->setDataFields($contactDataFieldsCollection->jsonSerialize());
