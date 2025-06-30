@@ -52,6 +52,16 @@ bash bin/build-storefront.sh
 
 ## Changelog
 
+### 2.2.0
+
+#### What's new
+- The plugin is now compatible with Shopware 6.6.x.
+
+#### Improvements
+- Our implementation of a DotdigitalLogger has been updated to use monolog configuration.
+- We added an MIT license file to the plugin.
+- We resolved various security alerts in the plugin's dependencies.
+
 ### 2.1.0
 
 #### What's new
