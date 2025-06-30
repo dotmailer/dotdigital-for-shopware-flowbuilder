@@ -59,6 +59,7 @@ class DotdigitalFlow extends Plugin
         $classLoader->unregister();
         $classLoader->register(false);
     }
+
     public function executeComposerCommands(): bool
     {
         return true;

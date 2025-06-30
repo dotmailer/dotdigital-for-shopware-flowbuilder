@@ -9,7 +9,8 @@ Shopware's merchants can now integrate with Dotdigital using Flow Builder action
 
 ## Requirements
 - PHP 8.1+
-- Shopware 6.5+
+- Shopware 6.6+
+  - Shopware 6.5.x is compatible up to version 2.1.0.
   - Shopware 6.4.x is compatible with the plugin's 1.x release line.
 
 ## Installation
