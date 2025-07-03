@@ -3,7 +3,7 @@
     {% set consentLabelText = config('DotdigitalFlow.config.consentCheckboxLabel') %}
     {% set consentText = config('DotdigitalFlow.config.consentCheckboxText') %}
 
-    <div class="{{ formRowClass }}" data-form-phone-consent="true">
+    <div class="{{ formRowClass }} sms-consent-capture" data-form-phone-consent="true">
         <div class="form-group {% if formWrapperClass %} {{ formWrapperClass }} {% else %} col-md-6" {% endif %}>
                 {% block dotdigital_sms_consent_checkbox %}
                     <div class="form-check">
