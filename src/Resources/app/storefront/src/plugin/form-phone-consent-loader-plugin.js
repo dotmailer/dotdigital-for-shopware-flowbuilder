@@ -81,7 +81,7 @@ export default class FormPhoneConsentLoaderPlugin extends window.PluginBaseClass
                     setTimeout(() => {
                         try {
                             this.iti.setNumber(this.options.phoneNumber);
-                            const input = this.iti.getElements().input || this.$phoneFormInput;
+                            const input = this.$phoneFormInput;
                             if (input) {
                                 input.value = this.options.phoneNumber;
                             }
