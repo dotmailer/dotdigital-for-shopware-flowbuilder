@@ -85,7 +85,7 @@ class DotdigitalClientTest extends TestCase
     public function testGetBaseUrlMethod(): void
     {
         $this->mockSystemConfig
-            ->expects(static::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('getString')
             ->withConsecutive(
                 [Settings::HOST_REGION_CONFIG_KEY],
@@ -115,7 +115,7 @@ class DotdigitalClientTest extends TestCase
     public function testAuthorizationTokenMethod(): void
     {
         $this->mockSystemConfig
-            ->expects(static::atLeastOnce())
+            ->expects($this->atLeastOnce())
             ->method('getString')
             ->withConsecutive(
                 [Settings::HOST_REGION_CONFIG_KEY],
@@ -153,7 +153,7 @@ class DotdigitalClientTest extends TestCase
         $campaign = $this->generateCampaign();
         $contactPersonalisationCollection = $this->generateContactPersonalisationCollection();
 
-        $this->mockDotdigitalClient->expects(static::atLeastOnce())
+        $this->mockDotdigitalClient->expects($this->atLeastOnce())
             ->method('sendEmail')
             ->with($contactCollection, $campaign, $contactPersonalisationCollection);
 
@@ -174,7 +174,7 @@ class DotdigitalClientTest extends TestCase
         $contact = $this->generateContact();
         $addressBook = $this->generateAddressBook();
 
-        $this->mockDotdigitalClient->expects(static::atLeastOnce())
+        $this->mockDotdigitalClient->expects($this->atLeastOnce())
             ->method('addContactToAddressBook')
             ->with($contact, $addressBook);
 
@@ -194,7 +194,7 @@ class DotdigitalClientTest extends TestCase
         $contact = $this->generateContact();
         $addresbook = $this->generateAddressBook();
 
-        $this->mockDotdigitalClient->expects(static::atLeastOnce())
+        $this->mockDotdigitalClient->expects($this->atLeastOnce())
             ->method('resubscribeContactToAddressBook')
             ->with($contact, $addresbook);
 
@@ -213,7 +213,7 @@ class DotdigitalClientTest extends TestCase
         BypassFinals::enable();
         $contact = $this->generateContact();
 
-        $this->mockDotdigitalClient->expects(static::atLeastOnce())
+        $this->mockDotdigitalClient->expects($this->atLeastOnce())
             ->method('resubscribeContact')
             ->with($contact);
 
@@ -231,7 +231,7 @@ class DotdigitalClientTest extends TestCase
         BypassFinals::enable();
         $contact = $this->generateContact();
 
-        $this->mockDotdigitalClient->expects(static::atLeastOnce())
+        $this->mockDotdigitalClient->expects($this->atLeastOnce())
             ->method('createOrUpdateContact')
             ->with($contact);
 
@@ -247,7 +247,7 @@ class DotdigitalClientTest extends TestCase
     public function testGetAddressBooksMethod(): void
     {
         BypassFinals::enable();
-        $this->mockDotdigitalClient->expects(static::atLeastOnce())
+        $this->mockDotdigitalClient->expects($this->atLeastOnce())
             ->method('getAddressBooks');
 
         $response = $this->mockDotdigitalClient->getAddressBooks();
@@ -261,7 +261,7 @@ class DotdigitalClientTest extends TestCase
     public function testProgramsMethod(): void
     {
         BypassFinals::enable();
-        $this->mockDotdigitalClient->expects(static::atLeastOnce())
+        $this->mockDotdigitalClient->expects($this->atLeastOnce())
             ->method('getPrograms');
 
         $response = $this->mockDotdigitalClient->getPrograms();

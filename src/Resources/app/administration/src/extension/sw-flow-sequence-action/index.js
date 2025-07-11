@@ -53,12 +53,11 @@ Component.override('sw-flow-sequence-action', {
 
         getDotdigitalContactDescription(config) {
             let description = '';
-
             const recipientRaw = config.recipient;
             const recipientType = recipientRaw.type.charAt(0).toUpperCase() + recipientRaw.type.slice(1);
-            const contactDescription = this.$tc(
+
+            const contactDescription = this.$t(
                 'sw-flow.actions.contact.sequence-description.contact',
-                recipientRaw.data.length,
                 {
                     recipient: `<strong>${recipientType}</strong>`,
                 },
@@ -69,7 +68,7 @@ Component.override('sw-flow-sequence-action', {
             }
 
             const addressBookId = (config.addressBook) ? config.addressBook : 'Not specified';
-            const addressBookDescription = this.$tc('sw-flow.actions.contact.sequence-description.address-book', 0, {
+            const addressBookDescription = this.$t('sw-flow.actions.contact.sequence-description.address-book', {
                 addressBook: `<strong>${addressBookId}</strong>`,
             });
 
@@ -78,7 +77,7 @@ Component.override('sw-flow-sequence-action', {
             }
 
             const optIn = (config.contactOptIn) ? 'Yes' : 'No' || null;
-            const optInDescription = this.$tc('sw-flow.actions.contact.sequence-description.opt-in', 0, {
+            const optInDescription = this.$t('sw-flow.actions.contact.sequence-description.opt-in', {
                 optIn: `<strong>${optIn}</strong>`,
             });
 
@@ -87,7 +86,7 @@ Component.override('sw-flow-sequence-action', {
             }
 
             const resubscribe = (config.resubscribe) ? 'Yes' : 'No' || null;
-            const resubscribeDescription = this.$tc('sw-flow.actions.contact.sequence-description.resubscribe', 0, {
+            const resubscribeDescription = this.$t('sw-flow.actions.contact.sequence-description.resubscribe', {
                 resubscribe: `<strong>${resubscribe}</strong>`,
             });
 
@@ -96,7 +95,7 @@ Component.override('sw-flow-sequence-action', {
             }
 
             const hasDataFields = (config.dataFields.length > 0) ? 'Yes' : 'No' || null;
-            const dataFieldsDescription = this.$tc('sw-flow.actions.contact.sequence-description.data-fields', 0, {
+            const dataFieldsDescription = this.$t('sw-flow.actions.contact.sequence-description.data-fields', {
                 hasDataFields: `<strong>${hasDataFields}</strong>`,
             });
 
@@ -112,9 +111,8 @@ Component.override('sw-flow-sequence-action', {
 
             const recipientRaw = config.recipient;
             const recipientType = recipientRaw.type.charAt(0).toUpperCase() + recipientRaw.type.slice(1);
-            const contactDescription = this.$tc(
+            const contactDescription = this.$t(
                 'sw-flow.actions.contact.sequence-description.contact',
-                recipientRaw.data.length,
                 {
                     recipient: `<strong>${recipientType}</strong>`,
                 },
@@ -125,7 +123,7 @@ Component.override('sw-flow-sequence-action', {
             }
 
             const programId = (config.programId) ? config.programId : 'Not specified';
-            const programDescription = this.$tc('sw-flow.actions.program.sequence-description.program', 0, {
+            const programDescription = this.$t('sw-flow.actions.program.sequence-description.program', {
                 programId: `<strong>${programId}</strong>`,
             });
 
@@ -134,7 +132,7 @@ Component.override('sw-flow-sequence-action', {
             }
 
             const hasDataFields = (config.dataFields.length > 0) ? 'Yes' : 'No' || null;
-            const dataFieldsDescription = this.$tc('sw-flow.actions.contact.sequence-description.data-fields', 0, {
+            const dataFieldsDescription = this.$t('sw-flow.actions.contact.sequence-description.data-fields', {
                 hasDataFields: `<strong>${hasDataFields}</strong>`,
             });
 
@@ -147,13 +145,14 @@ Component.override('sw-flow-sequence-action', {
 
         getDotdigitalEmailSenderDescription(config) {
             const recipientRaw = config.recipient;
+
             const recipientType = recipientRaw.type.charAt(0).toUpperCase() + recipientRaw.type.slice(1);
-            const recipientDescription = this.$tc('sw-flow.actions.campaign.sequence-description.recipient', 0, {
+            const recipientDescription = this.$t('sw-flow.actions.campaign.sequence-description.recipient', {
                 recipient: `<strong>${recipientType}</strong>`,
             });
 
             const campaignId = config.campaignId;
-            const campaignDescription = this.$tc('sw-flow.actions.campaign.sequence-description.campaign', 0, {
+            const campaignDescription = this.$t('sw-flow.actions.campaign.sequence-description.campaign', {
                 campaignId: `<strong>${campaignId}</strong>`,
             });
 

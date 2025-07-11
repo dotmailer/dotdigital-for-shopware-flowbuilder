@@ -116,7 +116,7 @@ class ContactStruct extends AbstractStruct
     }
 
     /**
-     * @param  iterable<int, mixed> $dataFields
+     * @param iterable<int, mixed> $dataFields
      */
     public function setDataFields(iterable $dataFields): self
     {

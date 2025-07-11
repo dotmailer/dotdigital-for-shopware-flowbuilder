@@ -1,13 +1,30 @@
 .dotdigital-flowbuilder-plugin-modal {
 
+    .sw-data-grid__row.is--inline-edit{
+        .sw-data-grid__cell{
+            height: 70px;
+
+            .sw-data-grid__cell-content{
+                height: 70px;
+            }
+
+            .sw-flow-mail-send-modal__recipient-email{
+                margin: 0;
+                .mt-email-field__block {
+                    min-height: 36px;
+                }
+            }
+        }
+    }
+
     .sw-field + small {
         margin: -27px 0 20px;
     }
 
     .sw-modal__footer {
-        justify-content: end;
-        align-items: center;
-        display: flex;
+        justify-content: end !important;
+        align-items: center !important;
+        display: flex !important;
 
         .pull-left {
             margin-right: auto;
@@ -48,4 +65,3 @@
         }
     }
 }
-

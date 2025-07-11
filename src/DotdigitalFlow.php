@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Dotdigital\Flow;
 
 use Composer\Autoload\ClassLoader;
+use Shopware\Core\Framework\Parameter\AdditionalBundleParameters;
+use Shopware\Core\Framework\Plugin;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 use Symfony\Component\Config\Loader\LoaderResolver;
@@ -11,8 +13,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\DirectoryLoader;
 use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Shopware\Core\Framework\Parameter\AdditionalBundleParameters;
-use Shopware\Core\Framework\Plugin;
 
 class DotdigitalFlow extends Plugin
 {
@@ -58,5 +58,10 @@ class DotdigitalFlow extends Plugin
 
         $classLoader->unregister();
         $classLoader->register(false);
+    }
+
+    public function executeComposerCommands(): bool
+    {
+        return true;
     }
 }

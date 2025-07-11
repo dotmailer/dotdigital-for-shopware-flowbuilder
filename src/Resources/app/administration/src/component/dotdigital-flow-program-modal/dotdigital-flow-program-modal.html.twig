@@ -14,14 +14,14 @@
             @selected-recipient="handleRecipientSelection"
         />
         <sw-single-select
-            v-model="programId"
+            v-model:value="programId"
             class="sw-flow-mail-send-modal__select"
             :is-loading="!sequenceReady"
             :disabled="!sequenceReady"
             :options="availablePrograms"
             :label="$tc('sw-flow.actions.program.fields.program.label')"
             :placeholder="$tc('sw-flow.actions.program.fields.program.placeholder')"
-            @change="handleProgramSelection"
+            @update:value="handleProgramSelection"
         />
         <small class="dd-description">
             {{ $tc('sw-flow.actions.program.fields.program.description') }}

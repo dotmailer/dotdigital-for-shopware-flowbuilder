@@ -85,10 +85,17 @@ Component.register('dotdigital-data-field-selector', {// eslint-disable-line
          */
         availableDataFieldOptions() {
             if (!this.unique) return this.dataFieldOptions;
+
             return this.dataFieldOptions.filter(dataFieldOption => {
-                return !this.dataFieldsGridData.find(dataField => {
-                    if (this.selectedDataField && this.selectedDataField.key === dataFieldOption.value) return false;
-                    return dataField.key === dataFieldOption.value;
+                const currentEditingKey = this.selectedDataField?.key;
+
+                return !this.dataFieldsGridData.some(dataField => {
+                    // If this is the dataField we're currently editing, don't filter it out
+                    if (currentEditingKey && dataField.key === currentEditingKey
+                        && dataField.id === this.selectedDataField?.id) {
+                        return false;
+                    }
+                    return dataField.key === dataFieldOption.value.name && !dataField.isNew;
                 });
             });
         },
@@ -157,7 +164,15 @@ Component.register('dotdigital-data-field-selector', {// eslint-disable-line
         /**
          * Add dataField
          */
-        handleDataFieldSelection(dataField) {
+        handleDataFieldSelection(dataFieldName) {
+            // Find the complete data field object from props.dataFieldOptions
+            const dataFieldOption = this.dataFieldOptions.find(option => option.value.name === dataFieldName);
+
+            if (!dataFieldOption) {
+                return;
+            }
+
+            const dataField = dataFieldOption.value;
             this.selectedDataField = {
                 ...this.selectedDataField,
                 ...{ key: dataField.name },
@@ -192,6 +207,15 @@ Component.register('dotdigital-data-field-selector', {// eslint-disable-line
          */
         addDataField() {
             if (this.isLimitReached) return;
+            // Check if there are any incomplete entries (with empty key or value)
+            const hasIncompleteEntries = this.dataFieldsGridData.some(dataField => {
+                return (!dataField.key || !dataField.value);
+            });
+
+            // Don't add a new field if there are incomplete entries
+            if (hasIncompleteEntries) {
+                return;
+            }
             const newId = Utils.createId();
             this.dataFieldsGridData.push({
                 id: newId,
@@ -262,7 +286,7 @@ Component.register('dotdigital-data-field-selector', {// eslint-disable-line
                 return item.id === dataField.id;
             });
 
-            this.$set(this.dataFieldsGridData, index, { ...item, errorMail: null });
+            this.dataFieldsGridData[index] = { ...item, errorMail: null };
             this.$refs.dataFieldsGrid.currentInlineEditId = item.id;
             this.$refs.dataFieldsGrid.enableInlineEdit();
             this.selectedDataField = { ...item };

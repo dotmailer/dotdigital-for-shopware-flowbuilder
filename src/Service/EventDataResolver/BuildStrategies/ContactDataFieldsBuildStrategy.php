@@ -47,7 +47,7 @@ class ContactDataFieldsBuildStrategy implements BuildStrategyInterface
                     )
                 );
             } catch (StringTemplateRenderingException $exception) {
-                $dataFieldCollection->pushErrorMessage(sprintf('Data field %s could not be rendered', $dataField['key']));
+                $dataFieldCollection->pushErrorMessage(\sprintf('Data field %s could not be rendered', $dataField['key']));
 
                 continue;
             } catch (\Exception $exception) {

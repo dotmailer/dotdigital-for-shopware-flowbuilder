@@ -13,6 +13,7 @@ use Dotdigital\Tests\Traits\InteractWithCampaignsTrait;
 use Dotdigital\Tests\Traits\InteractWithContactPersonalisationTrait;
 use Dotdigital\Tests\Traits\InteractWithContactsTrait;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Api\Context\ContextSource;
 use Shopware\Core\Framework\Context;
@@ -79,6 +80,11 @@ class DotdigitalEmailSenderActionTest extends TestCase
      */
     private $eventPersonalisedValuesResolverMock;
 
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|LoggerInterface
+     */
+    private $loggerMock;
+
     protected function setUp(): void
     {
         BypassFinals::enable();
@@ -95,16 +101,17 @@ class DotdigitalEmailSenderActionTest extends TestCase
         $this->eventContactResolverMock = $this->createMock(EventDataResolverContext::class);
         $this->eventCampaignResolverMock = $this->createMock(EventDataResolverContext::class);
         $this->eventPersonalisedValuesResolverMock = $this->createMock(EventDataResolverContext::class);
+        $this->loggerMock = $this->createMock(LoggerInterface::class);
 
-        $this->eventCampaignResolverMock->expects(static::atLeastOnce())
+        $this->eventCampaignResolverMock->expects($this->atLeastOnce())
             ->method('resolve')
             ->willReturn($this->generateCampaignCollection());
 
-        $this->eventContactResolverMock->expects(static::atLeastOnce())
+        $this->eventContactResolverMock->expects($this->atLeastOnce())
             ->method('resolve')
             ->willReturn($this->generateContactCollection());
 
-        $this->eventPersonalisedValuesResolverMock->expects(static::atLeastOnce())
+        $this->eventPersonalisedValuesResolverMock->expects($this->atLeastOnce())
             ->method('resolve')
             ->willReturn($this->generateContactPersonalisationCollection());
 
@@ -112,7 +119,8 @@ class DotdigitalEmailSenderActionTest extends TestCase
             $this->dotdigitalClientFactoryMock,
             $this->eventContactResolverMock,
             $this->eventCampaignResolverMock,
-            $this->eventPersonalisedValuesResolverMock
+            $this->eventPersonalisedValuesResolverMock,
+            $this->loggerMock
         );
     }
 
@@ -121,13 +129,10 @@ class DotdigitalEmailSenderActionTest extends TestCase
      */
     public function testDotdigitalEmailSenderCustomerEmail(): void
     {
-        $this->flowMock->expects(static::once())
-            ->method('getContext')
-            ->willReturn($this->contextMock);
-
-        $this->contextMock->expects(static::once())
-            ->method('getSource')
-            ->willReturn($this->contextSourceMock);
+        $this->flowMock->expects($this->atLeastOnce())
+            ->method('getData')
+            ->with('salesChannelId')
+            ->willReturn('salesChannelId');
 
         $this->dotdigitalSenderAction->handleFlow($this->flowMock);
     }
@@ -137,13 +142,10 @@ class DotdigitalEmailSenderActionTest extends TestCase
      */
     public function testDotdigitalEmailSenderContactFormEmail(): void
     {
-        $this->flowMock->expects(static::once())
-            ->method('getContext')
-            ->willReturn($this->contextMock);
-
-        $this->contextMock->expects(static::once())
-            ->method('getSource')
-            ->willReturn($this->contextSourceMock);
+        $this->flowMock->expects($this->atLeastOnce())
+            ->method('getData')
+            ->with('salesChannelId')
+            ->willReturn('salesChannelId');
 
         $this->dotdigitalSenderAction->handleFlow($this->flowMock);
     }
@@ -153,13 +155,10 @@ class DotdigitalEmailSenderActionTest extends TestCase
      */
     public function testDotdigitalEmailSenderAdminEmail(): void
     {
-        $this->flowMock->expects(static::once())
-            ->method('getContext')
-            ->willReturn($this->contextMock);
-
-        $this->contextMock->expects(static::once())
-            ->method('getSource')
-            ->willReturn($this->contextSourceMock);
+        $this->flowMock->expects($this->atLeastOnce())
+            ->method('getData')
+            ->with('salesChannelId')
+            ->willReturn('salesChannelId');
 
         $this->dotdigitalSenderAction->handleFlow($this->flowMock);
     }

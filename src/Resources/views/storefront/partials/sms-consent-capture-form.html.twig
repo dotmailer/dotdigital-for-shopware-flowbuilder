@@ -19,8 +19,8 @@
           data-form-ajax-submit="true"
           data-form-validation="true"
           data-form-validation-options="{{ { phoneRequiredMessage: 'Phone number is required' } | json_encode() }}"
-          data-form-phone-consent-loader-options='{{ formSmsConsentAutoSubmitOptions|json_encode }}'
-          data-form-ajax-submit-options='{{ formSmsConsentAutoSubmitOptions|json_encode }}'>
+          data-form-phone-consent-loader-options="{{ formSmsConsentAutoSubmitOptions|json_encode }}"
+          data-form-ajax-submit-options="{{ formSmsConsentAutoSubmitOptions|json_encode }}">
 
         {% block dotdigital_account_overview_sms_consent_content %}
             <div class="js-sms-consent-wrapper"></div>

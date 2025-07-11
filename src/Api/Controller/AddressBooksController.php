@@ -8,11 +8,9 @@ use Dotdigital\Flow\Service\Client\AbstractClient;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * @Route(defaults={"_routeScope"={"api"}})
- */
+#[Route(defaults: ['_routeScope' => ['api']])]
 class AddressBooksController extends AbstractController
 {
     use InteractsWithResponseTrait;
@@ -25,13 +23,11 @@ class AddressBooksController extends AbstractController
         $this->dotdigitalClientFactory = $dotdigitalClientFactory;
     }
 
-    /**
-     * @Route(
-     *     "/api/dotdigital/address-books",
-     *     name="api.action.dotdigital.address.books",
-     *     methods={"GET"}
-     * )
-     */
+    #[Route(
+        '/api/dotdigital/address-books',
+        name: 'api.action.dotdigital.address.books',
+        methods: ['GET']
+    )]
     public function showAddressBooks(): JsonResponse
     {
         $addressBooks = [];

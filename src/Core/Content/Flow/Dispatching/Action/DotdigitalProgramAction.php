@@ -9,10 +9,10 @@ use Dotdigital\Flow\Service\EventDataResolver\ResolveContactDataFieldsInterface;
 use Dotdigital\Flow\Service\EventDataResolver\ResolveContactInterface;
 use Dotdigital\Flow\Service\EventDataResolver\ResolveProgramInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Flow\Dispatching\Action\FlowAction;
 use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Event\MailAware;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class DotdigitalProgramAction extends FlowAction implements EventSubscriberInterface
@@ -25,16 +25,20 @@ class DotdigitalProgramAction extends FlowAction implements EventSubscriberInter
 
     private ResolveProgramInterface $resolveProgram;
 
+    private LoggerInterface $logger;
+
     public function __construct(
         DotdigitalClientFactory $dotdigitalClientFactory,
         ResolveContactInterface $resolveContact,
         ResolveContactDataFieldsInterface $resolveContactDataFields,
-        ResolveProgramInterface $resolveProgram
+        ResolveProgramInterface $resolveProgram,
+        LoggerInterface $logger
     ) {
         $this->dotdigitalClientFactory = $dotdigitalClientFactory;
         $this->resolveContact = $resolveContact;
         $this->resolveContactDataFields = $resolveContactDataFields;
         $this->resolveProgram = $resolveProgram;
+        $this->logger = $logger;
     }
 
     /**
@@ -66,21 +70,27 @@ class DotdigitalProgramAction extends FlowAction implements EventSubscriberInter
      */
     public function handleFlow(StorableFlow $flow): void
     {
-        $contactCollection = $this->resolveContact->resolve($flow);
-        $dataFieldCollection = $this->resolveContactDataFields->resolve($flow);
-        $programCollection = $this->resolveProgram->resolve($flow);
-        $contactCollection->first()->setDataFields($dataFieldCollection->jsonSerialize());
-        $context = $flow->getContext();
-        /** @var SalesChannelContext $channelContext */
-        $channelContext = $context->getSource();
+        try {
+            $contactCollection = $this->resolveContact->resolve($flow);
+            $dataFieldCollection = $this->resolveContactDataFields->resolve($flow);
+            $programCollection = $this->resolveProgram->resolve($flow);
+            $contactCollection->first()->setDataFields($dataFieldCollection->jsonSerialize());
+            $salesChannelId = $flow->getData('salesChannelId');
 
-        $apiContact = $this->dotdigitalClientFactory
-            ->createClient($channelContext->getSalesChannelId())
-            ->createOrUpdateContact($contactCollection->first());
+            $apiContact = $this->dotdigitalClientFactory
+                ->createClient($salesChannelId)
+                ->createOrUpdateContact($contactCollection->first());
 
-        $this->dotdigitalClientFactory
-            ->createClient($channelContext->getSalesChannelId())
-            ->enrolContactToProgram($apiContact, $programCollection->first());
+            $this->dotdigitalClientFactory
+                ->createClient($salesChannelId)
+                ->enrolContactToProgram($apiContact, $programCollection->first());
+        } catch (\Throwable $e) {
+            $this->logger->error('DotdigitalProgramAction failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw $e;
+        }
     }
 
     public static function getName(): string

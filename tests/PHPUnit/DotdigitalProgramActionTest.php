@@ -129,11 +129,11 @@ class DotdigitalProgramActionTest extends TestCase
         $this->resolveContactDataFieldsMock = $this->createMock(ResolveContactDataFieldsInterface::class);
         $this->resolveProgramMock = $this->createMock(ResolveProgramInterface::class);
 
-        $this->resolveContactMock->expects(static::once())
+        $this->resolveContactMock->expects($this->once())
             ->method('resolve')
             ->willReturn($this->contactCollectionMock);
 
-        $this->resolveProgramMock->expects(static::once())
+        $this->resolveProgramMock->expects($this->once())
             ->method('resolve')
             ->willReturn($this->programCollectionMock);
 
@@ -154,7 +154,8 @@ class DotdigitalProgramActionTest extends TestCase
             $dotdigitalClientFactoryMock,
             $this->resolveContactMock,
             $this->resolveContactDataFieldsMock,
-            $this->resolveProgramMock
+            $this->resolveProgramMock,
+            $this->loggerMock
         );
     }
 
@@ -163,13 +164,10 @@ class DotdigitalProgramActionTest extends TestCase
      */
     public function testDotdigitalProgramEnrolmentDefault(): void
     {
-        $this->flowMock->expects(static::once())
-            ->method('getContext')
-            ->willReturn($this->contextMock);
-
-        $this->contextMock->expects(static::once())
-            ->method('getSource')
-            ->willReturn($this->contextSourceMock);
+        $this->flowMock->expects($this->atLeastOnce())
+            ->method('getData')
+            ->with('salesChannelId')
+            ->willReturn('salesChannelId');
 
         $this->dotdigitalProgramAction->handleFlow($this->flowMock);
     }
@@ -179,13 +177,10 @@ class DotdigitalProgramActionTest extends TestCase
      */
     public function testDotdigitalProgramEnrolmentFromCustom(): void
     {
-        $this->flowMock->expects(static::once())
-            ->method('getContext')
-            ->willReturn($this->contextMock);
-
-        $this->contextMock->expects(static::once())
-            ->method('getSource')
-            ->willReturn($this->contextSourceMock);
+        $this->flowMock->expects($this->atLeastOnce())
+            ->method('getData')
+            ->with('salesChannelId')
+            ->willReturn('salesChannelId');
 
         $this->dotdigitalProgramAction->handleFlow($this->flowMock);
     }
