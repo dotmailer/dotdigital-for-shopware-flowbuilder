@@ -10,10 +10,10 @@ use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
 use Dotdigital\Flow\Service\EventDataResolver\ResolveCampaignInterface;
 use Dotdigital\Flow\Service\EventDataResolver\ResolveContactInterface;
 use Dotdigital\Flow\Service\EventDataResolver\ResolvePersonalisedValuesInterface;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Flow\Dispatching\Action\FlowAction;
 use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Event\MailAware;
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class DotdigitalEmailSenderAction extends FlowAction implements EventSubscriberInterface
@@ -26,16 +26,20 @@ class DotdigitalEmailSenderAction extends FlowAction implements EventSubscriberI
 
     private ResolvePersonalisedValuesInterface $resolvePersonalisedValues;
 
+    private LoggerInterface $logger;
+
     public function __construct(
         DotdigitalClientFactory $dotdigitalClientFactory,
         ResolveContactInterface $resolveContact,
         ResolveCampaignInterface $resolveCampaign,
-        ResolvePersonalisedValuesInterface $resolvePersonalisedValues
+        ResolvePersonalisedValuesInterface $resolvePersonalisedValues,
+        LoggerInterface $logger
     ) {
         $this->dotdigitalClientFactory = $dotdigitalClientFactory;
         $this->resolveContact = $resolveContact;
         $this->resolveCampaign = $resolveCampaign;
         $this->resolvePersonalisedValues = $resolvePersonalisedValues;
+        $this->logger = $logger;
     }
 
     /**
@@ -67,21 +71,30 @@ class DotdigitalEmailSenderAction extends FlowAction implements EventSubscriberI
      */
     public function handleFlow(StorableFlow $flow): void
     {
-        $campaignCollection = $this->resolveCampaign->resolve($flow);
-        /** @var ContactCollection $contactCollection */
-        $contactCollection = $this->resolveContact->resolve($flow);
-        /** @var ContactPersonalisationCollection $personalisedValues */
-        $personalisedValues = $this->resolvePersonalisedValues->resolve($flow);
-        $context = $flow->getContext();
-        /** @var SalesChannelContext $channelContext */
-        $channelContext = $context->getSource();
-        $this->dotdigitalClientFactory
-            ->createClient($channelContext->getSalesChannelId())
-            ->sendEmail(
-                $contactCollection,
-                $campaignCollection->first(),
-                $personalisedValues
-            );
+        try {
+            $campaignCollection = $this->resolveCampaign->resolve($flow);
+
+            /** @var ContactCollection $contactCollection */
+            $contactCollection = $this->resolveContact->resolve($flow);
+
+            /** @var ContactPersonalisationCollection $personalisedValues */
+            $personalisedValues = $this->resolvePersonalisedValues->resolve($flow);
+            $salesChannelId = $flow->getData('salesChannelId');
+
+            $this->dotdigitalClientFactory
+                ->createClient($salesChannelId)
+                ->sendEmail(
+                    $contactCollection,
+                    $campaignCollection->first(),
+                    $personalisedValues
+                );
+        } catch (\Throwable $e) {
+            $this->logger->error('DotdigitalEmailSenderAction failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw $e;
+        }
     }
 
     public static function getName(): string

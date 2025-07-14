@@ -8,12 +8,7 @@ use Dotdigital\Flow\Service\EventDataResolver\ValidateStrategies\ValidateStrateg
 use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Struct\Collection;
 
-class EventDataResolverContext implements ResolveContactInterface,
-    ResolveContactDataFieldsInterface,
-    ResolveCampaignInterface,
-    ResolvePersonalisedValuesInterface,
-    ResolveAddressBookInterface,
-    ResolveProgramInterface
+class EventDataResolverContext implements ResolveContactInterface, ResolveContactDataFieldsInterface, ResolveCampaignInterface, ResolvePersonalisedValuesInterface, ResolveAddressBookInterface, ResolveProgramInterface
 {
     private BuildStrategyInterface $buildStrategy;
 

@@ -9,6 +9,7 @@
             <argument type="service" id="Dotdigital\Flow\Service\EventDataResolver\ResolveAddressBookInterface" />
             <argument type="service" id="Dotdigital\Flow\Service\EventDataResolver\ResolveContactInterface" />
             <argument type="service" id="Dotdigital\Flow\Service\EventDataResolver\ResolveContactDataFieldsInterface" />
+            <argument type="service" id="monolog.logger.dotdigital"/>
             <tag name="kernel.event_subscriber"/>
             <tag name="flow.action" key="action.create.dotdigital_contact" priority="600"/>
         </service>

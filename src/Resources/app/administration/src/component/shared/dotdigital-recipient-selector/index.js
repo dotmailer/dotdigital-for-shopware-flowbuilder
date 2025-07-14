@@ -2,7 +2,6 @@ import template from './contact-selector.html.twig';
 import './contact-selector.scss';
 
 const { Component, Utils, Mixin, Classes: { ShopwareError } } = Shopware;
-const { mapState } = Component.getComponentHelper();
 
 Component.register('dotdigital-recipient-selector', {// eslint-disable-line
     template,
@@ -249,7 +248,20 @@ Component.register('dotdigital-recipient-selector', {// eslint-disable-line
             }];
         },
 
-        ...mapState('swFlowState', ['triggerEvent']),
+        triggerEvent() {
+            // First try Pinia store (Shopware 6.7+)
+            if (Shopware.Store && Shopware.Store.list().includes('swFlow')) {
+                return Shopware.Store.get('swFlow').triggerEvent;
+            }
+
+            // Fall back to Vuex store (Shopware 6.6)
+            if (this.$store && this.$store.state.swFlowState) {
+                return this.$store.state.swFlowState.triggerEvent;
+            }
+
+            // Return empty object as fallback to prevent errors
+            return {};
+        },
 
     },
 
@@ -445,7 +457,7 @@ Component.register('dotdigital-recipient-selector', {// eslint-disable-line
 
             // Recheck error in current item
             if (!item.email) {
-                this.$set(this.recipients, index, { ...item, errorMail: null });
+                this.recipients[index] = { ...item, errorMail: null };
             } else {
                 this.validateRecipient(item, index);
             }
@@ -489,6 +501,16 @@ Component.register('dotdigital-recipient-selector', {// eslint-disable-line
                 error = new ShopwareError({
                     code: 'c1051bb4-d103-4f74-8988-acbcafc7fdc3',
                 });
+            } else {
+                // Email validation regex pattern
+                const emailPattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+                if (!emailPattern.test(mail)) {
+                    error = new ShopwareError({
+                        code: 'c1051bb4-d103-4f74-8988-acbcafc7fdc3',
+                        detail: this.$tc('global.error-codes.INVALID_MAIL'),
+                    });
+                }
             }
 
             return error;
@@ -504,10 +526,7 @@ Component.register('dotdigital-recipient-selector', {// eslint-disable-line
         validateRecipient(item, itemIndex) {
             const errorMail = this.setMailError(item.email);
 
-            this.$set(this.recipients, itemIndex, {
-                ...item,
-                errorMail,
-            });
+            this.recipients[itemIndex] = { ...item, errorMail };
 
             return errorMail;
         },

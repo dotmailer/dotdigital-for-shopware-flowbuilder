@@ -1,10 +1,8 @@
-import Plugin from "src/plugin-system/plugin.class";
 import DomAccess from "src/helper/dom-access.helper";
-
-export default class FormPhoneConsentTogglePlugin extends Plugin {
+export default class FormPhoneConsentTogglePlugin extends window.PluginBaseClass {
 
 	static options = {
-		...Plugin.options,
+        ...window.PluginBaseClass.options,
 		consentContainer: '[data-form-phone-consent]',
 		checkboxIdentifier: '[data-consent-checkbox]',
 		containerIdentifier: '[data-consent-container]',

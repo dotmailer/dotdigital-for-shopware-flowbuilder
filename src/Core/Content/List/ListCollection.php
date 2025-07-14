@@ -6,10 +6,10 @@ namespace Dotdigital\Flow\Core\Content\List;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 
 /**
- * @method void            add(ListEntity $entity)
- * @method void            set(string $key, ListEntity $entity)
- * @method ListEntity[]    getIterator()
- * @method ListEntity[]    getElements()
+ * @method void add(ListEntity $entity)
+ * @method void set(string $key, ListEntity $entity)
+ * @method ListEntity[] getIterator()
+ * @method ListEntity[] getElements()
  * @method ListEntity|null get(string $key)
  * @method ListEntity|null first()
  * @method ListEntity|null last()

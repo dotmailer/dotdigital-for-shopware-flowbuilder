@@ -27,10 +27,10 @@ class DotdigitalEntityReader implements EntityReaderInterface
      */
     public function read(EntityDefinition $definition, Criteria $criteria, Context $context): EntityCollection
     {
-        /** @var \Dotdigital\Flow\Service\Repository\Contracts\DotdigitalDefinitionInterface $definition */
+        /** @var DotdigitalDefinitionInterface $definition */
         $lists = $this->entityResolver->fetch($definition, $criteria, $context);
         $collectionClass = $definition->getCollectionClass();
-        /** @var \Shopware\Core\Framework\DataAbstractionLayer\EntityCollection $collection */
+        /** @var EntityCollection $collection */
         $collection = new $collectionClass();
         foreach ($lists as $list) {
             if (\in_array($list->getId(), $criteria->getIds(), true)) {
@@ -55,7 +55,7 @@ class DotdigitalEntityReader implements EntityReaderInterface
             if (method_exists($entity, 'set' . ucfirst($key))) {
                 if ($key === 'id') {
                     /** @phpstan-ignore-next-line-pattern 'Parameter #2 ...$values of function sprintf expects bool|float|int|string|null, callable given.' */
-                    $value = sprintf('%s', $value);
+                    $value = \sprintf('%s', $value);
                 }
                 $entity->{'set' . ucfirst($key)}($value);
                 $visibilityProperties[] = $key;

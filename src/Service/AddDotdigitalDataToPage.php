@@ -60,7 +60,7 @@ class AddDotdigitalDataToPage implements EventSubscriberInterface
                 ->getByIdentifier($customer->getEmail());
         } catch (\Dotdigital\Exception\ResponseValidationException|\Dotdigital\Exception\ValidationException $e) {
             $this->logger->debug(
-                sprintf('Error fetching contact %s', $customer->getEmail()),
+                \sprintf('Error fetching contact %s', $customer->getEmail()),
                 [$e]
             );
         }
@@ -104,7 +104,7 @@ class AddDotdigitalDataToPage implements EventSubscriberInterface
                 ->getByIdentifier($event->getSalesChannelContext()->getCustomer()->getEmail());
         } catch (\Dotdigital\Exception\ResponseValidationException|\Dotdigital\Exception\ValidationException $e) {
             $this->logger->debug(
-                sprintf('Error fetching contact %s', $event->getSalesChannelContext()->getCustomer()->getEmail()),
+                \sprintf('Error fetching contact %s', $event->getSalesChannelContext()->getCustomer()->getEmail()),
                 [$e]
             );
         }

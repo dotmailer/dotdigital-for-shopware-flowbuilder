@@ -71,7 +71,7 @@ class DotdigitalClient extends AbstractClient
     public function getContactByEmail(string $email): ?ContactStruct
     {
         $response = $this->get(
-            sprintf(
+            \sprintf(
                 '%s/%s',
                 self::CONTACT_ENDPOINT,
                 $email
@@ -92,7 +92,7 @@ class DotdigitalClient extends AbstractClient
         AddressBookStruct $addressBook
     ): ?ContactStruct {
         $response = $this->post(
-            sprintf(self::RESUBSCRIBE_CONTACT_TO_ADDRESS_BOOK_ENDPOINT, $addressBook->getId()),
+            \sprintf(self::RESUBSCRIBE_CONTACT_TO_ADDRESS_BOOK_ENDPOINT, $addressBook->getId()),
             [
                 'json' => [
                     'unsubscribedContact' => [
@@ -185,7 +185,7 @@ class DotdigitalClient extends AbstractClient
         AddressBookStruct $addressBook
     ): ?ContactStruct {
         $response = $this->post(
-            sprintf(self::ADD_CONTACT_TO_ADDRESS_BOOK_ENDPOINT, $addressBook->getId()),
+            \sprintf(self::ADD_CONTACT_TO_ADDRESS_BOOK_ENDPOINT, $addressBook->getId()),
             [
                 'json' => [
                     'email' => $contact->getEmail(),
@@ -236,7 +236,7 @@ class DotdigitalClient extends AbstractClient
     public function getAddressBooks(int $skip = 0, int $take = 1000): AddressBookCollection
     {
         $addressBooksResponse = $this->get(
-            sprintf(
+            \sprintf(
                 '%s?select=%s&skip=%s',
                 self::GET_ADDRESS_BOOKS_ENDPOINT,
                 $take,
@@ -289,7 +289,7 @@ class DotdigitalClient extends AbstractClient
     public function getPrograms(int $skipLimit = 0): ProgramCollection
     {
         $programsResponse = $this->get(
-            sprintf(
+            \sprintf(
                 '%s?select=%s&skip=%s',
                 self::GET_PROGRAMS_ENDPOINT,
                 self::SELECT_LIMIT,
@@ -338,7 +338,7 @@ class DotdigitalClient extends AbstractClient
     public function getCampaigns(int $skipLimit = 0): CampaignCollection
     {
         $campaignResponse = $this->get(
-            sprintf(
+            \sprintf(
                 '%s?select=%s&skip=%s',
                 self::GET_CAMPAIGNS_ENDPOINT,
                 self::SELECT_LIMIT,
@@ -367,7 +367,7 @@ class DotdigitalClient extends AbstractClient
         AddressBookStruct $list
     ): array {
         $contactRemovalResponse = $this->delete(
-            sprintf(
+            \sprintf(
                 '%s/%s/contacts/%s',
                 self::GET_ADDRESS_BOOKS_ENDPOINT,
                 $list->getId(),

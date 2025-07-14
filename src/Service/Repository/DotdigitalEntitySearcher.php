@@ -24,13 +24,13 @@ class DotdigitalEntitySearcher implements EntitySearcherInterface
      */
     public function search(EntityDefinition $definition, Criteria $criteria, Context $context): IdSearchResult
     {
-        /** @var \Dotdigital\Flow\Service\Repository\Contracts\DotdigitalDefinitionInterface $definition */
+        /** @var Contracts\DotdigitalDefinitionInterface $definition */
         $entityCollection = $this->entityResolver->fetch($definition, $criteria, $context);
         $data = [];
 
         foreach ($entityCollection->getIterator() as $entity) {
-            $expression = sprintf('/%s/i', $criteria->getTerm());
-            $getter = sprintf('get%s', ucfirst($definition->getSearchKeyword()));
+            $expression = \sprintf('/%s/i', $criteria->getTerm());
+            $getter = \sprintf('get%s', ucfirst($definition->getSearchKeyword()));
             if (!preg_match($expression, $entity->$getter())) {
                 continue;
             }

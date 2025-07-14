@@ -13,6 +13,7 @@ use Dotdigital\Tests\Traits\InteractWithContactDataFieldsTrait;
 use Dotdigital\Tests\Traits\InteractWithContactsTrait;
 use Dotdigital\Tests\Traits\UtilitiesTrait;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
 use Shopware\Core\Framework\Api\Context\ContextSource;
 use Shopware\Core\Framework\Context;
@@ -59,6 +60,11 @@ class DotdigitalContactActionTest extends TestCase
      */
     private $resolveContactDataFieldsMock;
 
+    /**
+     * @var \PHPUnit\Framework\MockObject\MockObject|LoggerInterface
+     */
+    private $loggerMock;
+
     protected function setUp(): void
     {
         BypassFinals::enable();
@@ -71,11 +77,14 @@ class DotdigitalContactActionTest extends TestCase
         $this->eventContactResolverMock = $this->createMock(EventDataResolverContext::class);
         $this->eventAddressBookResolverMock = $this->createMock(EventDataResolverContext::class);
         $this->resolveContactDataFieldsMock = $this->createMock(EventDataResolverContext::class);
+        $this->loggerMock = $this->createMock(LoggerInterface::class);
+
         $this->dotdigitalContactAction = new DotdigitalContactAction(
             $dotdigitalClientFactoryMock,
             $this->eventAddressBookResolverMock,
             $this->eventContactResolverMock,
-            $this->resolveContactDataFieldsMock
+            $this->resolveContactDataFieldsMock,
+            $this->loggerMock
         );
     }
 
@@ -85,31 +94,24 @@ class DotdigitalContactActionTest extends TestCase
      */
     public function testDotdigitalContactResubscribeHandler(): void
     {
-        $this->eventContactResolverMock->expects(static::atLeastOnce())
+        $this->eventContactResolverMock->expects($this->atLeastOnce())
             ->method('resolve')
             ->willReturn($this->generateContactCollection());
 
-        $this->eventAddressBookResolverMock->expects(static::atLeastOnce())
+        $this->eventAddressBookResolverMock->expects($this->atLeastOnce())
             ->method('resolve')
             ->willReturn($this->generateAddressBookCollection());
 
-        $this->resolveContactDataFieldsMock->expects(static::atLeastOnce())
+        $this->resolveContactDataFieldsMock->expects($this->atLeastOnce())
             ->method('resolve')
             ->willReturn($this->generateContactDataFieldCollection());
 
-        $this->flowMock->expects(static::atLeastOnce())
-            ->method('getContext')
-            ->willReturn($this->contextMock);
-
-        $this->contextMock->expects(static::atLeastOnce())
-            ->method('getSource')
-            ->willReturn($this->contextSourceMock);
-
-        $this->contextSourceMock->expects(static::atLeastOnce())
-            ->method('getSalesChannelId')
+        $this->flowMock->expects($this->atLeastOnce())
+            ->method('getData')
+            ->with('salesChannelId')
             ->willReturn('salesChannelId');
 
-        $this->flowMock->expects(static::once())
+        $this->flowMock->expects($this->once())
             ->method('getConfig')
             ->willReturn([
                 'recipient' => [

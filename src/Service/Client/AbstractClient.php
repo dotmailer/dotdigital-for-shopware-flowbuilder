@@ -93,7 +93,7 @@ class AbstractClient
                 'Received {code} from {method} {uri} with following response: {response}',
                 [
                     'method' => mb_strtoupper($method),
-                    'code' => sprintf('%s %s', $response->getStatusCode(), $response->getReasonPhrase()),
+                    'code' => \sprintf('%s %s', $response->getStatusCode(), $response->getReasonPhrase()),
                     'uri' => $uri,
                     'headers' => $response->getHeaders(),
                     'response' => $body,

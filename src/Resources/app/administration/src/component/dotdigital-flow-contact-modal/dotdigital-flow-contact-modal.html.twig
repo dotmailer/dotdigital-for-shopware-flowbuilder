@@ -17,19 +17,19 @@
         <span class="border-separator"></span>
     </div>
     <sw-single-select
-        v-model="addressBook"
+        v-model:value="addressBook"
         class="sw-flow-mail-send-modal__select"
         :is-loading="!sequenceReady"
         :disabled="!sequenceReady"
         :options="availableAddressBooks"
         :label="$tc('sw-flow.actions.contact.fields.address-book.label')"
         :placeholder="$tc('sw-flow.actions.contact.fields.address-book.placeholder')"
-        @change="handleAddressBookSelection"
+        @update:value="handleAddressBookSelection"
     />
     <small class="dd-description">
         {{ $tc('sw-flow.actions.contact.fields.address-book.description') }}
     </small>
-    <sw-checkbox-field v-model="resubscribe">
+    <sw-checkbox-field v-model:value="resubscribe">
         <template #label>
             <span class="dd-checkbox-label">
                 <label class="dd-label">{{ $tc('sw-flow.actions.contact.fields.resubscribe.label') }}</label>
@@ -40,7 +40,7 @@
         </template>
     </sw-checkbox-field>
 
-    <sw-checkbox-field v-model="contactOptIn">
+    <sw-checkbox-field v-model:value="contactOptIn">
         <template #label>
             <span class="dd-checkbox-label">
                 <label class="dd-label">{{ $tc('sw-flow.actions.contact.fields.opt-in.label') }}</label>

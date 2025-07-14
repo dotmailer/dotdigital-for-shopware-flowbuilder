@@ -8,11 +8,9 @@ use Dotdigital\Flow\Service\Client\AbstractClient;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * @Route(defaults={"_routeScope"={"api"}})
- */
+#[Route(defaults: ['_routeScope' => ['api']])]
 class ProgramsController extends AbstractController
 {
     use InteractsWithResponseTrait;
@@ -25,13 +23,11 @@ class ProgramsController extends AbstractController
         $this->dotdigitalClientFactory = $dotdigitalClientFactory;
     }
 
-    /**
-     * @Route(
-     *     "/api/dotdigital/programs",
-     *     name="api.action.dotdigital.",
-     *     methods={"GET"}
-     * )
-     */
+    #[Route(
+        '/api/dotdigital/programs',
+        name: 'api.action.dotdigital.programs',
+        methods: ['GET']
+    )]
     public function showPrograms(): JsonResponse
     {
         $programs = [];

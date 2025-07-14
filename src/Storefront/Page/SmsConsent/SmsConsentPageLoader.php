@@ -6,11 +6,7 @@ namespace Dotdigital\Flow\Storefront\Page\SmsConsent;
 use Dotdigital\Flow\Service\Client\DotdigitalClientFactory;
 use Dotdigital\Flow\Setting\Settings;
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
-use Shopware\Core\Content\Category\Exception\CategoryNotFoundException;
-use Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaIdsException;
-use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Storefront\Page\GenericPageLoaderInterface;
@@ -29,10 +25,8 @@ class SmsConsentPageLoader
     }
 
     /**
-     * @throws CategoryNotFoundException
-     * @throws CustomerNotLoggedInException
-     * @throws InconsistentCriteriaIdsException
-     * @throws MissingRequestParameterException
+     * @throws \Dotdigital\Exception\ResponseValidationException
+     * @throws \Dotdigital\Exception\ValidationException
      */
     public function load(Request $request, SalesChannelContext $salesChannelContext, CustomerEntity $customer): SmsConsentPage
     {
@@ -50,7 +44,7 @@ class SmsConsentPageLoader
                 ->getByIdentifier($customer->getEmail());
         } catch (\Dotdigital\Exception\ResponseValidationException|\Dotdigital\Exception\ValidationException $e) {
             $this->logger->debug(
-                sprintf('Error fetching contact %s', $customer->getEmail()),
+                \sprintf('Error fetching contact %s', $customer->getEmail()),
                 [$e]
             );
             $contact = null;

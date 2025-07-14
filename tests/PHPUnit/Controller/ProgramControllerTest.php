@@ -39,7 +39,7 @@ class ProgramControllerTest extends TestCase
         $this->dotdigitalClientFactoryMock = $this->createMock(DotdigitalClientFactory::class);
         $this->dotdigitalClientMock = $this->createMock(DotdigitalClient::class);
 
-        $this->dotdigitalClientFactoryMock->expects(static::any())
+        $this->dotdigitalClientFactoryMock->expects($this->any())
             ->method('createClient')
             ->willReturn($this->dotdigitalClientMock);
 
@@ -50,7 +50,7 @@ class ProgramControllerTest extends TestCase
 
     public function testControllerForLessItemsThanTheApiLimit(): void
     {
-        $this->dotdigitalClientMock->expects(static::any())
+        $this->dotdigitalClientMock->expects($this->any())
             ->method('getPrograms')
             ->willReturn($this->generateProgramCollection(self::LIMIT_NOT_EXCEEDED));
 
@@ -62,7 +62,7 @@ class ProgramControllerTest extends TestCase
 
     public function testControllerForMoreItemsThanTheApiLimit(): void
     {
-        $this->dotdigitalClientMock->expects(static::any())
+        $this->dotdigitalClientMock->expects($this->any())
             ->method('getPrograms')
             ->willReturnOnConsecutiveCalls(
                 $this->generateProgramCollection(1000),

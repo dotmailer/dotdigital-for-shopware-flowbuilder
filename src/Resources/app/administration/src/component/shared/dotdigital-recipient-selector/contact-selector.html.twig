@@ -1,12 +1,12 @@
 <span>
     {% block sw_flow_mail_send_modal_recipient %}
     <sw-single-select
-        v-model="mailRecipient"
+        v-model:value="mailRecipient"
         class="sw-flow-mail-send-modal__recipient"
         :options="recipientOptions"
         :label="$tc('sw-flow.shared.recipient-selector.fields.recipients.label')"
         :placeholder="$tc('sw-flow.modals.mail.placeholderRecipient')"
-        @change="onChangeRecipient"
+        @update:value="onChangeRecipient"
     />
     <small
         v-if="mailRecipientDescription"
@@ -34,7 +34,7 @@
         <template #column-email="{ item, column, isInlineEdit, compact }">
             <sw-text-field
                 v-if="isInlineEdit"
-                v-model="item.email"
+                v-model:value="item.email"
                 class="sw-flow-mail-send-modal__recipient-email ddg-custom-recipient-email"
                 :size="compact ? 'small' : 'default'"
                 :error="item.errorMail"
