@@ -4,4 +4,6 @@ parameters:
     level: 8
     paths:
         - ./src
-    checkGenericClassInNonGenericObjectType: false
+    ignoreErrors:
+        - identifier: missingType.generics
+        - '#Property Dotdigital\\Flow\\Storefront\\Controller\\SmsConsentCaptureController::\$twig is never read, only written.#'

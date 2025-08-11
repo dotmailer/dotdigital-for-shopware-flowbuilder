@@ -1,7 +1,7 @@
 {
   "name": "dotdigital/dotdigital-for-shopware-flowbuilder",
   "description": "Integrate with Dotdigital using Flow Builder actions.",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "type": "shopware-platform-plugin",
   "license": "MIT",
   "authors": [
@@ -15,9 +15,9 @@
     "dotdigital/dotdigital-php": "^2.6.0"
   },
   "require-dev": {
-    "shopware/core": "~6.6.0.0",
-    "shopware/administration": "~6.6.0.0",
-    "shopware/storefront": "~6.6.0.0",
+    "shopware/core": "~6.7.0.0",
+    "shopware/administration": "~6.7.0.0",
+    "shopware/storefront": "~6.7.0.0",
     "phpunit/phpunit": "^9.5",
     "phpstan/phpstan": "^1.9",
     "dg/bypass-finals": "^1.4"

@@ -8,7 +8,7 @@ use Dotdigital\Flow\Core\Framework\DataTypes\RecipientCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\RecipientStruct;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
-use Shopware\Core\Framework\Adapter\Twig\Exception\StringTemplateRenderingException;
+use Shopware\Core\Framework\Adapter\AdapterException;
 use Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer;
 use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
 
@@ -63,7 +63,7 @@ class RecipientResolver
                                 $flow->getContext()
                             )
                         ));
-                    } catch (StringTemplateRenderingException $exception) {
+                    } catch (AdapterException $exception) {
                         $this->logger->error(
                             'Dotdigital template render error',
                             ['exception' => $exception]

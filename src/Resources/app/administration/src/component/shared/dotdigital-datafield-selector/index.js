@@ -2,7 +2,6 @@ import template from './datafield-selector.html.twig';
 import './datafield-selector.scss';
 
 const { Component, Utils } = Shopware;
-const { mapState } = Component.getComponentHelper();
 
 Component.register('dotdigital-data-field-selector', {// eslint-disable-line
     template,
@@ -140,7 +139,9 @@ Component.register('dotdigital-data-field-selector', {// eslint-disable-line
             ];
         },
 
-        ...mapState('swFlowState', ['triggerEvent']),
+        triggerEvent() {
+            return Shopware.Store.get('swFlow').triggerEvent;
+        },
 
     },
 

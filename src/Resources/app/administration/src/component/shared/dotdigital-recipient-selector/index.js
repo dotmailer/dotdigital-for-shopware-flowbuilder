@@ -249,18 +249,7 @@ Component.register('dotdigital-recipient-selector', {// eslint-disable-line
         },
 
         triggerEvent() {
-            // First try Pinia store (Shopware 6.7+)
-            if (Shopware.Store && Shopware.Store.list().includes('swFlow')) {
-                return Shopware.Store.get('swFlow').triggerEvent;
-            }
-
-            // Fall back to Vuex store (Shopware 6.6)
-            if (this.$store && this.$store.state.swFlowState) {
-                return this.$store.state.swFlowState.triggerEvent;
-            }
-
-            // Return empty object as fallback to prevent errors
-            return {};
+            return Shopware.Store.get('swFlow').triggerEvent;
         },
 
     },

@@ -6,7 +6,7 @@ namespace Dotdigital\Flow\Service\EventDataResolver\BuildStrategies;
 use Dotdigital\Flow\Core\Framework\DataTypes\ContactDataCollection;
 use Dotdigital\Flow\Core\Framework\DataTypes\ContactDataStruct;
 use Shopware\Core\Content\Flow\Dispatching\StorableFlow;
-use Shopware\Core\Framework\Adapter\Twig\Exception\StringTemplateRenderingException;
+use Shopware\Core\Framework\Adapter\AdapterException;
 use Shopware\Core\Framework\Adapter\Twig\StringTemplateRenderer;
 use Shopware\Core\Framework\Webhook\BusinessEventEncoder;
 
@@ -46,7 +46,7 @@ class ContactDataFieldsBuildStrategy implements BuildStrategyInterface
                         $value
                     )
                 );
-            } catch (StringTemplateRenderingException $exception) {
+            } catch (AdapterException $exception) {
                 $dataFieldCollection->pushErrorMessage(\sprintf('Data field %s could not be rendered', $dataField['key']));
 
                 continue;
