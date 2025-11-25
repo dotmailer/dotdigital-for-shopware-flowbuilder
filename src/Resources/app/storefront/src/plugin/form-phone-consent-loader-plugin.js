@@ -23,7 +23,11 @@ export default class FormPhoneConsentLoaderPlugin extends window.PluginBaseClass
     };
 
     init() {
-        this.$phoneFormInput = DomAccess.querySelector(this.el, this.options.phoneIdentifier);
+        const phoneElement = DomAccess.querySelector(this.el, this.options.phoneIdentifier, false);
+        if (!phoneElement) {
+            return;
+        }
+        this.$phoneFormInput = phoneElement;
         this.$phoneInput = DomAccess.querySelector(this.el, this.options.phoneIdentifier);
         this.$checkbox = DomAccess.querySelector(this.el, this.options.checkboxIdentifier);
         this.$consent = DomAccess.querySelector(this.el, this.options.consentContainer);
